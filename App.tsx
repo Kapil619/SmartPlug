@@ -1,3 +1,4 @@
+import "./gesture-handler";
 import React, { useState, useEffect } from "react";
 import Main from "./src/navigation/Main";
 import { FIREBASE_AUTH } from "./firebaseConfig";

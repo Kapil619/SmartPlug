@@ -5,11 +5,14 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
+import Home from "./Home";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigation = useNavigation<any>();
 
   const handlesignup = async () => {
     try {
@@ -18,6 +21,7 @@ const Login = () => {
         email,
         password
       );
+      navigation.navigate("Home");
       console.log("user signed up", userCredential.user);
     } catch (error) {
       console.log("error", error);
@@ -31,6 +35,7 @@ const Login = () => {
         email,
         password
       );
+      navigation.navigate("Home");
       console.log("user logged in", userCredential.user);
     } catch (error) {
       console.log("error", error);
