@@ -1,8 +1,10 @@
 import { User } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import Main from "./src/navigation/Main";
 import { AuthChanged } from "./src/utils/firebaseMethods";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { globalStyles } from "./src/styles/globalStyles";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -28,5 +30,9 @@ export default function App() {
     );
   }
 
-  return <Main user={user} />;
+  return (
+    <SafeAreaView style={globalStyles.safeArea}>
+      <Main user={user} />
+    </SafeAreaView>
+  );
 }
