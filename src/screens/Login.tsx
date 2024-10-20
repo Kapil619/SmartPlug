@@ -1,12 +1,7 @@
-import React, { useState } from "react";
-import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
-import Home from "./Home";
+import React, { useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { signIn, signUp } from "../utils/firebaseMethods";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,13 +11,9 @@ const Login = () => {
 
   const handlesignup = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        FIREBASE_AUTH,
-        email,
-        password
-      );
+      await signUp(email, password);
       navigation.navigate("Home");
-      console.log("user signed up", userCredential.user);
+      console.log("user signed up");
     } catch (error) {
       console.log("error", error);
     }
@@ -30,13 +21,9 @@ const Login = () => {
 
   const handlelogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        FIREBASE_AUTH,
-        email,
-        password
-      );
+      await signIn(email, password);
       navigation.navigate("Home");
-      console.log("user logged in", userCredential.user);
+      console.log("user logged in");
     } catch (error) {
       console.log("error", error);
     }

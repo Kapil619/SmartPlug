@@ -1,15 +1,14 @@
+import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
-import About from "../screens/About";
-import Home from "../screens/Home";
-import Login from "../screens/Login";
 import { User } from "firebase/auth";
+import React from "react";
 import Devices from "../screens/Devices";
 import Energy from "../screens/Energy";
+import Home from "../screens/Home";
+import Login from "../screens/Login";
 import Profile from "../screens/Profile";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
 
 // Navigator Declarations
 const Stack = createNativeStackNavigator();
@@ -19,7 +18,6 @@ type MainProps = {
   user: User | null;
 };
 
-// Tab Navigator at the top level
 const TabNavigator = () => {
   return (
     <Tab.Navigator

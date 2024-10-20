@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Main from "./src/navigation/Main";
-import { FIREBASE_AUTH } from "./firebaseConfig";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { User } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import Main from "./src/navigation/Main";
+import { AuthChanged } from "./src/utils/firebaseMethods";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+    const unsubscribe = AuthChanged((user) => {
       if (user) {
         setUser(user);
       } else {
