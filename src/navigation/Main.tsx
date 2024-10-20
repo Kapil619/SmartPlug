@@ -89,7 +89,7 @@ const Main = ({ user }: MainProps) => {
             name="Login"
             component={Login}
             options={{
-              title: "Login",
+              headerShown: false,
             }}
           />
         )}
