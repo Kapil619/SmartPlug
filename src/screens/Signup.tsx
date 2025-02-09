@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
+  Button,
   Image,
   StyleSheet,
   Text,
@@ -8,25 +9,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { signIn } from "../utils/firebaseMethods";
+import { signUp } from "../utils/firebaseMethods";
 
-const Login = () => {
+const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [specialCode, setSpecialCode] = useState("");
   const navigation = useNavigation<any>();
 
-  const navigateToSignup = () => {
-    navigation.navigate("Signup");
+  const navigateToLogin = () => {
+    navigation.navigate("Login");
   };
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     try {
-      await signIn(email, password);
+      await signUp(email, password);
       navigation.navigate("Home");
-      console.log("user logged in");
+      console.log("user signed up");
     } catch (error) {
       console.log("error", error);
     }
+  };
+
+  const handleScanQRCode = () => {
+    // Placeholder for QR code scanning functionality
+    console.log("Scan QR Code");
   };
 
   return (
@@ -37,8 +44,8 @@ const Login = () => {
         }}
         style={styles.logo}
       />
-      <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.subtitle}>Sign in to continue</Text>
+      <Text style={styles.title}>Create Account</Text>
+      <Text style={styles.subtitle}>Sign up to get started</Text>
 
       <TextInput
         style={styles.input}
@@ -55,12 +62,20 @@ const Login = () => {
         onChangeText={setPassword}
         placeholderTextColor="#999"
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Special Code"
+        value={specialCode}
+        onChangeText={setSpecialCode}
+        placeholderTextColor="#999"
+      />
 
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity onPress={handleSignup} style={styles.button}>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.link} onPress={navigateToSignup}>
-        <Text style={styles.linkText}>Don't have an account? Sign up</Text>
+      <Button title="Scan QR Code" onPress={handleScanQRCode} />
+      <TouchableOpacity style={styles.link} onPress={navigateToLogin}>
+        <Text style={styles.linkText}>Already have an account? Log in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -104,7 +119,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     height: 50,
-    backgroundColor: "#007bff",
+    backgroundColor: "#28a745",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -124,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Signup;

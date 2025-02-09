@@ -9,6 +9,7 @@ import Energy from "../screens/Energy";
 import Home from "../screens/Home";
 import Login from "../screens/Login";
 import Profile from "../screens/Profile";
+import Signup from "../screens/Signup";
 
 // Navigator Declarations
 const Stack = createNativeStackNavigator();
@@ -85,13 +86,20 @@ const Main = ({ user }: MainProps) => {
             />
           </>
         ) : (
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              headerShown: false,
-            }}
-          />
+          <>
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{ headerShown: false }}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
