@@ -57,7 +57,6 @@ const Energy: React.FC = () => {
       colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
       style={{ flex: 1 }}
     >
-      <Header title="Energy Insights" />
       <SafeAreaView style={energyStyles.container}>
         <ScrollView contentContainerStyle={energyStyles.scrollContent}>
           {/* Header */}

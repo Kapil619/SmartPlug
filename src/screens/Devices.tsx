@@ -1,240 +1,300 @@
+import { Ionicons } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  FlatList,
-  Switch,
-  TouchableOpacity,
-  StyleSheet,
   Modal,
-  Button,
-  Image,
+  SafeAreaView,
+  ScrollView,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { deviceStyles } from "../styles/deviceStyles";
+import { ScheduleItem } from "../utils/types";
 
-const Devices = () => {
-  const [devices, setDevices] = useState([
-    {
-      id: "1",
-      name: "Smart Plug 1",
-      status: true,
-      energyUsage: "12 kWh",
-      type: "Smart Plug",
-      room: "Living Room",
-      image: "https://via.placeholder.com/150?text=Smart+Plug+1",
-    },
-    {
-      id: "2",
-      name: "Smart Plug 2",
-      status: false,
-      energyUsage: "8 kWh",
-      type: "Smart Plug",
-      room: "Bedroom",
-      image: "https://via.placeholder.com/150?text=Smart+Plug+1",
-    },
-    {
-      id: "3",
-      name: "Smart Plug 3",
-      status: true,
-      energyUsage: "6 kWh",
-      type: "Smart Plug",
-      room: "Kitchen",
-      image: "https://via.placeholder.com/150?text=Smart+Plug+1",
-    },
-    {
-      id: "4",
-      name: "Smart Plug 4",
-      status: false,
-      energyUsage: "10 kWh",
-      type: "Smart Plug",
-      room: "Garage",
-      image: "https://via.placeholder.com/150?text=Smart+Plug+1",
-    },
-  ]);
+// Dummy device data
+const DEVICES = [
+  { id: "1", name: "Living Room Plug" },
+  { id: "2", name: "Bedroom Plug" },
+  { id: "3", name: "Kitchen Plug" },
+];
 
-  const [selectedDevice, setSelectedDevice] = useState<any>(null);
+// For day-of-week selection
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export default function SchedulesScreen() {
+  const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const toggleDevice = (id: string) => {
-    setDevices(
-      devices.map((device) =>
-        device.id === id ? { ...device, status: !device.status } : device
-      )
-    );
+  // Form states
+  const [selectedDevice, setSelectedDevice] = useState(DEVICES[0]);
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedHour, setSelectedHour] = useState(8);
+  const [selectedMinute, setSelectedMinute] = useState(30);
+  const [turnOn, setTurnOn] = useState(true);
+  const [usageLimit, setUsageLimit] = useState<number>(0);
+  const [costLimit, setCostLimit] = useState<number>(0);
+
+  const deleteSchedule = (id: string) => {
+    setSchedules(schedules.filter((schedule) => schedule.id !== id));
+  };
+  // Toggle day-of-week selection
+  const toggleDay = (day: string) => {
+    if (selectedDays.includes(day)) {
+      setSelectedDays(selectedDays.filter((d) => d !== day));
+    } else {
+      setSelectedDays([...selectedDays, day]);
+    }
   };
 
-  const openDeviceDetails = (device: any) => {
-    setSelectedDevice(device);
-    setModalVisible(true);
+  const addSchedule = () => {
+    const newSchedule: ScheduleItem = {
+      id: Date.now().toString(),
+      deviceId: selectedDevice.id,
+      deviceName: selectedDevice.name,
+      days: selectedDays,
+      hour: selectedHour,
+      minute: selectedMinute,
+      turnOn,
+      usageLimit,
+      costLimit,
+    };
+    setSchedules([...schedules, newSchedule]);
+    setModalVisible(false);
+    // Reset form
+    setSelectedDays([]);
+    setSelectedHour(8);
+    setSelectedMinute(30);
+    setTurnOn(true);
+    setUsageLimit(0);
+    setCostLimit(0);
   };
-
-  const renderDevice = ({ item }: { item: any }) => (
-    <TouchableOpacity onPress={() => openDeviceDetails(item)}>
-      <View style={styles.deviceCard}>
-        <Image source={{ uri: item.image }} style={styles.deviceImage} />
-        <View style={styles.deviceInfo}>
-          <View>
-            <Text style={styles.deviceName}>{item.name}</Text>
-            <Text style={styles.deviceDetails}>Room: {item.room}</Text>
-            <Text style={styles.deviceDetails}>Energy: {item.energyUsage}</Text>
-          </View>
-        </View>
-        <Switch
-          value={item.status}
-          onValueChange={() => toggleDevice(item.id)}
-          trackColor={{ false: "#d3d3d3", true: "#4CAF50" }}
-          thumbColor={item.status ? "#ffffff" : "#ffffff"}
-        />
-      </View>
-    </TouchableOpacity>
-  );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Connected Devices</Text>
+    <LinearGradient
+      colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={deviceStyles.container}>
+        <View style={deviceStyles.header}>
+          <Text style={deviceStyles.headerTitle}>Schedules & Automations</Text>
+        </View>
 
-      {/* Device List */}
-      <FlatList
-        data={devices}
-        keyExtractor={(item) => item.id}
-        renderItem={renderDevice}
-        contentContainerStyle={styles.deviceList}
-      />
+        <ScrollView contentContainerStyle={deviceStyles.scrollContent}>
+          {schedules.map((schedule) => (
+            <View key={schedule.id} style={deviceStyles.scheduleCard}>
+              <View style={deviceStyles.scheduleHeader}>
+                <View style={{ flex: 1 }}>
+                  <Text style={deviceStyles.scheduleDevice}>
+                    {schedule.deviceName}
+                  </Text>
+                  <Text style={deviceStyles.scheduleTime}>
+                    {schedule.hour.toString().padStart(2, "0")}:
+                    {schedule.minute.toString().padStart(2, "0")}{" "}
+                    {schedule.turnOn ? "ON" : "OFF"}
+                  </Text>
+                </View>
+                <TouchableOpacity onPress={() => deleteSchedule(schedule.id)}>
+                  <Ionicons name="close" size={24} color="#D35400" />
+                </TouchableOpacity>
+              </View>
+              <Text style={deviceStyles.scheduleDays}>
+                {schedule.days.length
+                  ? schedule.days.join(", ")
+                  : "No specific days"}
+              </Text>
+              {(schedule.usageLimit || schedule.costLimit) && (
+                <Text style={deviceStyles.limitInfo}>
+                  {schedule.usageLimit
+                    ? `Usage Limit: ${schedule.usageLimit.toFixed(1)} kWh  `
+                    : ""}
+                  {schedule.costLimit
+                    ? `Cost Limit: ₹ ${schedule.costLimit.toFixed(2)}`
+                    : ""}
+                </Text>
+              )}
+            </View>
+          ))}
+        </ScrollView>
 
-      {/* Add New Device Button */}
-      <TouchableOpacity style={styles.addButton}>
-        <Ionicons name="add-circle-outline" size={24} color="white" />
-        <Text style={styles.addButtonText}>Add Device</Text>
-      </TouchableOpacity>
+        {/* Floating Button */}
+        <TouchableOpacity
+          style={deviceStyles.floatingButton}
+          onPress={() => setModalVisible(true)}
+        >
+          <Ionicons name="add" size={30} color="#fff" />
+        </TouchableOpacity>
 
-      {/* Device Detail Modal */}
-      {selectedDevice && (
+        {/* Modal for Creating a Schedule */}
         <Modal
           visible={modalVisible}
           animationType="slide"
-          transparent={true}
+          transparent
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Image
-                source={{ uri: selectedDevice.image }}
-                style={styles.modalImage}
-              />
-              <Text style={styles.modalTitle}>{selectedDevice.name}</Text>
-              <Text style={styles.modalText}>Type: {selectedDevice.type}</Text>
-              <Text style={styles.modalText}>Room: {selectedDevice.room}</Text>
-              <Text style={styles.modalText}>
-                Energy Usage: {selectedDevice.energyUsage}
-              </Text>
-              <Text style={styles.modalText}>
-                Status: {selectedDevice.status ? "ON" : "OFF"}
-              </Text>
+          <View style={deviceStyles.modalOverlay}>
+            <View style={deviceStyles.modalContainer}>
+              <Text style={deviceStyles.modalTitle}>Create Schedule</Text>
 
-              <Button title="Close" onPress={() => setModalVisible(false)} />
+              {/* Device Picker (simple row of device names) */}
+              <ScrollView
+                horizontal
+                contentContainerStyle={{ marginVertical: 10 }}
+              >
+                {DEVICES.map((dev) => (
+                  <TouchableOpacity
+                    key={dev.id}
+                    onPress={() => setSelectedDevice(dev)}
+                    style={[
+                      deviceStyles.devicePickerItem,
+                      dev.id === selectedDevice.id &&
+                        deviceStyles.devicePickerItemActive,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        deviceStyles.devicePickerText,
+                        dev.id === selectedDevice.id &&
+                          deviceStyles.devicePickerTextActive,
+                      ]}
+                    >
+                      {dev.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              {/* Day of Week Selection */}
+              <Text style={deviceStyles.label}>Days of Week:</Text>
+              <View style={deviceStyles.daysRow}>
+                {DAYS.map((day) => {
+                  const isSelected = selectedDays.includes(day);
+                  return (
+                    <TouchableOpacity
+                      key={day}
+                      style={[
+                        deviceStyles.dayItem,
+                        isSelected && deviceStyles.dayItemSelected,
+                      ]}
+                      onPress={() => toggleDay(day)}
+                    >
+                      <Text
+                        style={[
+                          deviceStyles.dayItemText,
+                          isSelected && deviceStyles.dayItemTextSelected,
+                        ]}
+                      >
+                        {day}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* Time Sliders (Hours / Minutes) */}
+              <Text style={deviceStyles.label}>Time to Execute:</Text>
+              <View style={{ marginBottom: 10 }}>
+                <Text style={deviceStyles.timeText}>
+                  {selectedHour.toString().padStart(2, "0")}:
+                  {selectedMinute.toString().padStart(2, "0")}
+                </Text>
+                <Text style={deviceStyles.subLabel}>Hour</Text>
+                <Slider
+                  style={{ width: "100%" }}
+                  minimumValue={0}
+                  maximumValue={23}
+                  step={1}
+                  value={selectedHour}
+                  onValueChange={(val) => setSelectedHour(val)}
+                  minimumTrackTintColor="#007aff"
+                  maximumTrackTintColor="#ccc"
+                />
+                <Text style={deviceStyles.subLabel}>Minute</Text>
+                <Slider
+                  style={{ width: "100%" }}
+                  minimumValue={0}
+                  maximumValue={59}
+                  step={1}
+                  value={selectedMinute}
+                  onValueChange={(val) => setSelectedMinute(val)}
+                  minimumTrackTintColor="#007aff"
+                  maximumTrackTintColor="#ccc"
+                />
+              </View>
+
+              {/* Toggle On/Off */}
+              <View style={deviceStyles.toggleRow}>
+                <Text style={deviceStyles.label}>Turn Device:</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{ marginRight: 5 }}>
+                    {turnOn ? "ON" : "OFF"}
+                  </Text>
+                  <Switch
+                    value={turnOn}
+                    onValueChange={(val) => setTurnOn(val)}
+                  />
+                </View>
+              </View>
+
+              {/* Usage/Cost Limits */}
+              <Text style={deviceStyles.label}>
+                Usage Limit (kWh): {usageLimit.toFixed(1)}
+              </Text>
+              <Slider
+                style={{ width: "100%" }}
+                minimumValue={0}
+                maximumValue={50}
+                step={0.5}
+                value={usageLimit}
+                onValueChange={(val) => setUsageLimit(val)}
+                minimumTrackTintColor="#007aff"
+                maximumTrackTintColor="#ccc"
+              />
+              <Text style={deviceStyles.label}>
+                Cost Limit (₹): {costLimit.toFixed(2)}
+              </Text>
+              <Slider
+                style={{ width: "100%" }}
+                minimumValue={0}
+                maximumValue={1000}
+                step={10}
+                value={costLimit}
+                onValueChange={(val) => setCostLimit(val)}
+                minimumTrackTintColor="#007aff"
+                maximumTrackTintColor="#ccc"
+              />
+
+              {/* Action Buttons */}
+              <View style={deviceStyles.modalButtonsRow}>
+                <TouchableOpacity
+                  style={[
+                    deviceStyles.modalButton,
+                    { backgroundColor: "#ccc" },
+                  ]}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={deviceStyles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    deviceStyles.modalButton,
+                    { backgroundColor: "#007aff" },
+                  ]}
+                  onPress={addSchedule}
+                >
+                  <Text
+                    style={[deviceStyles.modalButtonText, { color: "#fff" }]}
+                  >
+                    Save
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
-      )}
-    </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#F4F7FC",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  deviceList: {
-    paddingBottom: 20,
-  },
-  deviceCard: {
-    backgroundColor: "#ffffff",
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  deviceImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-  },
-  deviceInfo: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  deviceName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 5,
-  },
-  deviceDetails: {
-    fontSize: 14,
-    color: "#777",
-  },
-  addButton: {
-    backgroundColor: "#3B82F6",
-    paddingVertical: 12,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "#fffff6",
-    height: "60%",
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-  },
-  modalImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  modalText: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 5,
-  },
-});
-
-export default Devices;
+}
