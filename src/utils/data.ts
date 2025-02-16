@@ -31,18 +31,21 @@ export const devices = [
         name: "Living Room Plug",
         status: "On",
         appliance: "Ceiling Fan",
+        location: "Living Room",
     },
-    { id: "2", name: "Bedroom Plug", status: "Off", appliance: null },
+    { id: "2", name: "Bedroom Plug", status: "Off", appliance: null, location: "Bedroom" },
     {
         id: "3",
         name: "Kitchen Plug",
         status: "On",
         appliance: "Air Conditioner",
+        location: "Kitchen",
     },
     {
         id: "4",
         name: "Cooler3",
         status: "On",
         appliance: "Cooler",
+        location: "Living Room",
     },
 ];

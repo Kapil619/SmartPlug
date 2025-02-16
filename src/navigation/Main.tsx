@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 import React from "react";
+import DeviceDetail from "../screens/DeviceDetail";
 import Devices from "../screens/Devices";
 import Energy from "../screens/Energy";
 import Home from "../screens/Home";
@@ -79,6 +80,13 @@ const Main = ({ user }: MainProps) => {
           <Stack.Screen
             name="Main"
             component={TabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="DeviceDetail"
+            component={DeviceDetail}
             options={{
               headerShown: false,
             }}

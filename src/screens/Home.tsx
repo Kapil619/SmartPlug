@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
@@ -18,6 +19,7 @@ import { devices, topCardData } from "../utils/data";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
+  const navigation = useNavigation<any>();
   return (
     <LinearGradient
       colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
@@ -72,7 +74,12 @@ const Home = () => {
                   ? "#E1F0FF"
                   : "#fff";
               return (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("DeviceDetail", {
+                      device,
+                    });
+                  }}
                   key={device.id}
                   style={[
                     styles.deviceCard,
@@ -114,7 +121,7 @@ const Home = () => {
                   <Text style={homeStyles.applianceName}>
                     {device.appliance ? device.appliance : "No appliance"}
                   </Text>
-                </View>
+                </TouchableOpacity>
               );
             })}
           </View>
