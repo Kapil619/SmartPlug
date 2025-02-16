@@ -24,7 +24,9 @@ const Signup = () => {
   const handleSignup = async () => {
     try {
       await signUp(email, password);
-      navigation.navigate("Home");
+      navigation.navigate("Main", {
+        screen: "Home",
+      });
       console.log("user signed up");
     } catch (error) {
       console.log("error", error);

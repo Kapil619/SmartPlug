@@ -22,7 +22,9 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       await signIn(email, password);
-      navigation.navigate("Home");
+      navigation.navigate("Main", {
+        screen: "Home",
+      });
       console.log("user logged in");
     } catch (error) {
       console.log("error", error);

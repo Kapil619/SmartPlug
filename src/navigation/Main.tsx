@@ -75,32 +75,27 @@ const Main = ({ user }: MainProps) => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={user ? "Main" : "Login"}>
-        {user ? (
-          <>
-            <Stack.Screen
-              name="Main"
-              component={TabNavigator}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="Signup"
-              component={Signup}
-              options={{ headerShown: false }}
-            />
-          </>
-        )}
+        <>
+          <Stack.Screen
+            name="Main"
+            component={TabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Signup"
+            component={Signup}
+            options={{ headerShown: false }}
+          />
+        </>
       </Stack.Navigator>
     </NavigationContainer>
   );
