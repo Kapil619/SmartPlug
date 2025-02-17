@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -13,44 +13,64 @@ import {
   View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-// Example signIn function from your code
 import Button from "../components/Button";
 import { authStyles } from "../styles/authStyles";
-import { signIn } from "../utils/firebaseMethods";
-import { validateEmail, validatePassword } from "../utils/validator";
+import { signUp } from "../utils/firebaseMethods";
+import {
+  validateEmail,
+  validatePassword,
+  validateSpecialCode,
+} from "../utils/validator";
 
-export default function Login() {
+export default function Signup() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [specialCode, setSpecialCode] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
-  const handleLogin = async () => {
+  const handleInfoPress = () => {
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 4000);
+  };
+  const handleSignup = async () => {
+    // Validate email
     if (!validateEmail(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
+    // Validate password
     if (!validatePassword(password)) {
       setErrorMessage("Password must be at least 6 characters long.");
+      return;
+    }
+    // (Optional) Validate special code if necessary
+    // After validating email and password...
+    if (!validateSpecialCode(specialCode)) {
+      setErrorMessage("Device Code must be exactly 10 digits.");
       return;
     }
     setErrorMessage("");
     setIsLoading(true);
     try {
-      await signIn(email, password);
+      await signUp(email, password);
       navigation.navigate("Main", { screen: "Home" });
-      console.log("user logged in");
     } catch (error: any) {
       console.log("error", error);
-      setErrorMessage(error.message || "Login failed. Please try again.");
+      setErrorMessage(error.message || "Signup failed! Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const navigateToSignup = () => {
-    navigation.replace("Signup");
+  const handleScanQRCode = () => {
+    console.log("Scan QR Code");
+  };
+
+  const navigateToLogin = () => {
+    navigation.replace("Login");
   };
 
   return (
@@ -60,8 +80,8 @@ export default function Login() {
     >
       <SafeAreaView style={authStyles.container}>
         <KeyboardAvoidingView
-          style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
         >
           {/* Header / Logo */}
           <Animatable.View
@@ -71,29 +91,19 @@ export default function Login() {
           >
             <Image
               source={require("../../assets/realplug.png")}
-              style={[
-                authStyles.logo,
-                {
-                  width: 170,
-                  height: 170,
-                },
-              ]}
+              style={authStyles.logo}
             />
-            <Text style={authStyles.title}>Welcome</Text>
-            <Text style={authStyles.subtitle}>Sign in to continue</Text>
+            <Text style={authStyles.title}>Create Account</Text>
+            <Text style={authStyles.subtitle}>Sign up to get started</Text>
           </Animatable.View>
 
           {/* Form Container */}
           <Animatable.View
             animation="fadeInUp"
             delay={400}
-            style={[
-              authStyles.formContainer,
-              {
-                marginTop: 50,
-              },
-            ]}
+            style={authStyles.formContainer}
           >
+            {/* Email */}
             <View style={authStyles.inputRow}>
               <Ionicons name="mail-outline" size={20} color="#007aff" />
               <TextInput
@@ -102,11 +112,12 @@ export default function Login() {
                 placeholderTextColor="#999"
                 value={email}
                 onChangeText={setEmail}
-                autoCapitalize="none"
                 keyboardType="email-address"
+                autoCapitalize="none"
               />
             </View>
 
+            {/* Password */}
             <View style={authStyles.inputRow}>
               <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
               <TextInput
@@ -118,6 +129,36 @@ export default function Login() {
                 onChangeText={setPassword}
               />
             </View>
+
+            {/* Special Code */}
+            <View style={authStyles.inputRow}>
+              <Ionicons name="key-outline" size={20} color="#007aff" />
+              <TextInput
+                style={authStyles.input}
+                placeholder="Device Code"
+                placeholderTextColor="#999"
+                value={specialCode}
+                onChangeText={setSpecialCode}
+              />
+              <Ionicons
+                name="information-circle-outline"
+                size={24}
+                color="green"
+                onPress={handleInfoPress}
+              />
+            </View>
+            {showPopup && (
+              <Animatable.View
+                animation={"fadeInUp"}
+                delay={50}
+                style={authStyles.popup}
+              >
+                <Text style={authStyles.popupText}>
+                  Device code required. Please see the back of your device for
+                  the 10 digit code.
+                </Text>
+              </Animatable.View>
+            )}
             {errorMessage ? (
               <Text
                 style={{
@@ -129,23 +170,29 @@ export default function Login() {
                 {errorMessage}
               </Text>
             ) : null}
-
-            {/* Login Button */}
+            {/* Sign Up Button */}
             <Button
-              title="Login"
-              onPress={handleLogin}
+              title="Sign Up"
+              onPress={handleSignup}
               loading={isLoading}
               buttonStyle={authStyles.button}
               textStyle={authStyles.buttonText}
             />
 
-            {/* Navigate to Signup */}
+            {/* QR Code Scanner */}
             <TouchableOpacity
-              style={authStyles.link}
-              onPress={navigateToSignup}
+              style={authStyles.qrButton}
+              onPress={handleScanQRCode}
+              activeOpacity={0.8}
             >
+              <Ionicons name="qr-code-outline" size={20} color="#fff" />
+              <Text style={authStyles.qrButtonText}>Scan QR Code</Text>
+            </TouchableOpacity>
+
+            {/* Navigate to Login */}
+            <TouchableOpacity style={authStyles.link} onPress={navigateToLogin}>
               <Text style={authStyles.linkText}>
-                Don't have an account? Sign up
+                Already have an account? Log in
               </Text>
             </TouchableOpacity>
           </Animatable.View>

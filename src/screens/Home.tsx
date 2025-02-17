@@ -1,171 +1,170 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
+  Dimensions,
+  Image,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
+import TopCard from "../components/TopCard";
+import { homeStyles } from "../styles/homeStyles";
+import { devices, topCardData, users } from "../utils/data";
+
+const { width } = Dimensions.get("window");
+const currentUser = users[0];
 
 const Home = () => {
-  const devices = [
-    { id: "1", name: "Smart Plug 1", status: "On" },
-    { id: "2", name: "Smart Plug 2", status: "Off" },
-    { id: "3", name: "Smart Plug 3", status: "Off" },
-    { id: "4", name: "Smart Plug 4", status: "Off" },
-    { id: "5", name: "Smart Plug 5", status: "Off" },
-  ];
-
+  const navigation = useNavigation<any>();
   return (
-    <ScrollView style={styles.container}>
-      {/* Greeting */}
-      <Text style={styles.greeting}>Hello, {"User"}!</Text>
-
-      {/* Overview Section */}
-      <Text style={styles.sectionTitle}>Overview</Text>
-      <View style={styles.overview}>
-        <View style={styles.smallCard}>
-          <Ionicons name="hardware-chip" size={28} color="white" />
-          <Text style={styles.cardText}>Devices</Text>
-          <Text style={styles.cardValue}>{devices.length}</Text>
-        </View>
-        <View style={styles.smallCard}>
-          <Ionicons name="flash" size={28} color="white" />
-          <Text style={styles.cardText}>Usage</Text>
-          <Text style={styles.cardValue}>24 kWh</Text>
-        </View>
-        <View style={styles.smallCard}>
-          <Ionicons name="power" size={28} color="white" />
-          <Text style={styles.cardText}>Active</Text>
-          <Text style={styles.cardValue}>1</Text>
-        </View>
-      </View>
-
-      {/* Quick Actions */}
-      <Text style={styles.sectionTitle}>Quick Actions</Text>
-      <View style={styles.quickActions}>
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="add-circle-outline" size={28} color="white" />
-          <Text style={styles.actionText}>Add Device</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="list" size={28} color="white" />
-          <Text style={styles.actionText}>View Devices</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Recent Activity */}
-      <Text style={styles.sectionTitle}>Recent Activity</Text>
-      {devices.map((item) => (
-        <View key={item.id} style={styles.activityCard}>
-          <Ionicons
-            name={item.status === "On" ? "power-outline" : "power-sharp"}
-            size={22}
-            color={item.status === "On" ? "#4CAF50" : "#FF5252"}
-          />
-          <View style={styles.activityDetails}>
-            <Text style={styles.activityText}>
-              {item.name} - {item.status}
+    <LinearGradient
+      colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
+      style={homeStyles.gradientContainer}
+    >
+      {/* Use SafeAreaView for iOS notch spacing */}
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* Header */}
+        <View style={homeStyles.headerContainer}>
+          <View style={homeStyles.headerTextContainer}>
+            <Text style={homeStyles.headerTitle}>
+              Hello, {currentUser.name}!
             </Text>
-            <Text style={styles.activityTime}>Today, 5:30 PM</Text>
+            <Text style={homeStyles.headerSubtitle}>
+              Monitor and control your devices
+            </Text>
+          </View>
+          <View style={homeStyles.headerIcons}>
+            <TouchableOpacity
+              onPress={() => {
+                ToastAndroid.show(
+                  "Notifications coming soon!",
+                  ToastAndroid.SHORT
+                );
+                // Navigate to notifications screen
+              }}
+              style={homeStyles.iconButton}
+            >
+              <Ionicons name="notifications-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                ToastAndroid.show("Settings coming soon!", ToastAndroid.SHORT);
+                // Navigate to settings screen
+              }}
+              style={homeStyles.iconButton}
+            >
+              <Ionicons name="settings-outline" size={24} color="#fff" />
+            </TouchableOpacity>
           </View>
         </View>
-      ))}
-    </ScrollView>
+
+        <ScrollView contentContainerStyle={homeStyles.scrollContent}>
+          {/* Top Card: Total Energy & Cost */}
+          <TopCard data={topCardData} />
+
+          {/* Devices List */}
+          <Text style={homeStyles.sectionTitle}>Your Devices</Text>
+          <View style={homeStyles.devicesContainer}>
+            {devices.map((device, index) => {
+              const row = Math.floor(index / 2);
+              const col = index % 2;
+              const bgColor =
+                row % 2 === 0
+                  ? col === 0
+                    ? "#fff"
+                    : "#E1F0FF"
+                  : col === 0
+                  ? "#E1F0FF"
+                  : "#fff";
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("DeviceDetail", {
+                      device,
+                    });
+                  }}
+                  key={device.id}
+                  style={[
+                    styles.deviceCard,
+                    // Alternate card background color for diagonal cards
+                    { backgroundColor: bgColor },
+                  ]}
+                >
+                  {/* Top row: Plug image and power icon */}
+                  <View style={homeStyles.cardTopRow}>
+                    <Image
+                      source={require("../../assets/plug.png")}
+                      style={homeStyles.deviceImage}
+                    />
+                    <TouchableOpacity style={homeStyles.powerIcon}>
+                      <Ionicons
+                        name={
+                          device.status === "On"
+                            ? "power-outline"
+                            : "power-sharp"
+                        }
+                        size={18}
+                        color={device.status === "On" ? "white" : "#EEEEEE"}
+                        style={{
+                          backgroundColor:
+                            device.status === "On" ? "#578FCA" : "#999",
+                          borderRadius: 50,
+                          padding: 8,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {/* Bottom: Device name and status */}
+                  <View style={homeStyles.cardBottom}>
+                    <Text style={homeStyles.deviceName}>{device.name}</Text>
+                    <Text style={homeStyles.deviceStatus}>
+                      Status: {device.status}
+                    </Text>
+                  </View>
+                  <Text style={homeStyles.applianceName}>
+                    {device.appliance ? device.appliance.name : "No appliance"}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </ScrollView>
+
+        {/* Floating Add Device Button */}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("AddDevice");
+          }}
+          style={homeStyles.floatingButton}
+        >
+          <Ionicons name="add" size={30} color="#fff" />
+        </TouchableOpacity>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
+export default Home;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f9f9f9",
-  },
-  greeting: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: "#333",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginVertical: 10,
-    color: "#333",
-  },
-  overview: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  smallCard: {
-    backgroundColor: "#4CAF50",
-    borderRadius: 10,
-    padding: 15,
-    width: "30%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cardText: {
-    color: "white",
-    fontSize: 14,
-    marginTop: 5,
-  },
-  cardValue: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  quickActions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  actionButton: {
-    backgroundColor: "#03A9F4",
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    alignItems: "center",
-    flexDirection: "row",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.5,
-    elevation: 3,
-  },
-  actionText: {
-    color: "white",
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  activityCard: {
+  deviceCard: {
     backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
+    width: (width - 60) / 2, // 20 padding + 20 padding + 20 gap = 60
+    height: (width - 60) / 2, // square shape
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  activityDetails: {
-    marginLeft: 10,
-  },
-  activityText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  activityTime: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+    justifyContent: "space-between",
   },
 });
-
-export default Home;

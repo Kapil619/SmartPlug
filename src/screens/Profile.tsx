@@ -1,263 +1,157 @@
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   Image,
-  TouchableOpacity,
-  Switch,
+  SafeAreaView,
   ScrollView,
-  TextInput,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { users } from "../utils/data";
+// Example logout function from your existing code
+import { useNavigation } from "@react-navigation/native";
+import { profileStyles } from "../styles/profileStyles";
 import { logOut } from "../utils/firebaseMethods";
 
-const Profile = () => {
-  const [darkMode, setDarkMode] = useState(false);
+export default function Profile() {
+  const currentUser = users[0];
+  const navigation = useNavigation<any>();
+
+  // State to toggle secret key visibility per device
+  const [visibleSecrets, setVisibleSecrets] = useState<{
+    [key: string]: boolean;
+  }>({
+    "1": false,
+    "2": false,
+  });
+
+  const toggleSecret = (id: string) => {
+    setVisibleSecrets((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
-    <ScrollView style={[styles.container, darkMode && styles.darkContainer]}>
-      {/* Profile Picture */}
-      <View style={styles.profileHeader}>
-        <Image
-          source={{
-            uri: "https://via.placeholder.com/150",
-          }}
-          style={styles.profileImage}
-        />
-        <TouchableOpacity style={styles.editIcon}>
-          <Ionicons name="pencil-outline" size={20} color="white" />
-        </TouchableOpacity>
-        <Text style={[styles.profileName, darkMode && styles.darkText]}>
-          Chinmay Rathod
-        </Text>
-        <Text style={[styles.profileEmail, darkMode && styles.darkSubText]}>
-          chinmayrathod2003@gmail.com
-        </Text>
-      </View>
-
-      {/* Personal Information */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>
-          Personal Information
-        </Text>
-
-        <View style={styles.infoItem}>
-          <Ionicons name="person-outline" size={22} color="#03A9F4" />
-          <TextInput
-            style={[styles.infoText, darkMode && styles.darkSubText]}
-            value="Chinmay Rathod"
-            editable={false}
-          />
-        </View>
-
-        <View style={styles.infoItem}>
-          <Ionicons name="mail-outline" size={22} color="#03A9F4" />
-          <TextInput
-            style={[styles.infoText, darkMode && styles.darkSubText]}
-            value="chinmayrathod2003@gmail.com"
-            editable={false}
-          />
-        </View>
-
-        <View style={styles.infoItem}>
-          <Ionicons name="call-outline" size={22} color="#03A9F4" />
-          <TextInput
-            style={[styles.infoText, darkMode && styles.darkSubText]}
-            value="+91 8412 01 4492"
-            editable={false}
-          />
-        </View>
-      </View>
-
-      {/* Account Settings */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>
-          Account Settings
-        </Text>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <Ionicons name="lock-closed-outline" size={22} color="#03A9F4" />
-          <Text style={[styles.settingText, darkMode && styles.darkText]}>
-            Change Password
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <Ionicons name="notifications-outline" size={22} color="#03A9F4" />
-          <Text style={[styles.settingText, darkMode && styles.darkText]}>
-            Notification Settings
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <Ionicons name="globe-outline" size={22} color="#03A9F4" />
-          <Text style={[styles.settingText, darkMode && styles.darkText]}>
-            Language Preferences
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Activity Summary */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>
-          Activity Summary
-        </Text>
-        <View style={styles.summaryCard}>
-          <View style={styles.summaryItem}>
-            <Ionicons name="hardware-chip" size={28} color="#03A9F4" />
-            <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
-              5 Devices
-            </Text>
+    <LinearGradient
+      colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
+      style={profileStyles.gradientContainer}
+    >
+      <SafeAreaView style={profileStyles.container}>
+        <ScrollView contentContainerStyle={profileStyles.scrollContent}>
+          {/* Header / Profile Info */}
+          <View style={profileStyles.headerSection}>
+            <View style={profileStyles.avatarContainer}>
+              <Image
+                source={{
+                  uri: "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
+                }}
+                style={profileStyles.profileImage}
+              />
+              <TouchableOpacity style={profileStyles.editIcon}>
+                <Ionicons name="pencil-outline" size={16} color="white" />
+              </TouchableOpacity>
+            </View>
+            <Text style={profileStyles.profileName}>{currentUser.name}</Text>
+            <Text style={profileStyles.profileEmail}>{currentUser.email}</Text>
           </View>
-          <View style={styles.summaryItem}>
-            <Ionicons name="flash-outline" size={28} color="#03A9F4" />
-            <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
-              30 kWh Used
-            </Text>
+
+          {/* Personal Info Card */}
+          <View style={profileStyles.card}>
+            <Text style={profileStyles.cardTitle}>Personal Information</Text>
+            <View style={profileStyles.infoItem}>
+              <Ionicons name="call-outline" size={20} color="#007aff" />
+              <Text style={profileStyles.infoText}>{currentUser.phone}</Text>
+            </View>
           </View>
-        </View>
-      </View>
 
-      {/* Theme Switch */}
-      <View style={styles.switchRow}>
-        <Text style={[styles.switchLabel, darkMode && styles.darkText]}>
-          Dark Mode
-        </Text>
-        <Switch
-          value={darkMode}
-          onValueChange={() => setDarkMode(!darkMode)}
-          trackColor={{ false: "#767577", true: "#03A9F4" }}
-          thumbColor={darkMode ? "#f4f3f4" : "#f4f3f4"}
-        />
-      </View>
+          {/* Account Settings Card */}
+          <View style={profileStyles.card}>
+            <Text style={profileStyles.cardTitle}>Account Settings</Text>
+            <TouchableOpacity style={profileStyles.settingItem}>
+              <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
+              <Text style={profileStyles.settingText}>Change Password</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={profileStyles.settingItem}>
+              <Ionicons
+                name="notifications-outline"
+                size={20}
+                color="#007aff"
+              />
+              <Text style={profileStyles.settingText}>
+                Notification Settings
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={profileStyles.settingItem}>
+              <Ionicons name="globe-outline" size={20} color="#007aff" />
+              <Text style={profileStyles.settingText}>
+                Language Preferences
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Log Out */}
-      <TouchableOpacity onPress={logOut} style={styles.logoutButton}>
-        <Ionicons name="log-out-outline" size={24} color="white" />
-        <Text style={styles.logoutText}>Log Out</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          {/* Activity Summary Card */}
+          <View style={profileStyles.card}>
+            <Text style={profileStyles.cardTitle}>Your Devices</Text>
+            {currentUser.devices.map((device, index) => (
+              <View key={device.id}>
+                <View key={device.id} style={profileStyles.deviceRow}>
+                  <Text style={profileStyles.deviceName}>{device.name}</Text>
+                  <View style={profileStyles.secretContainer}>
+                    <Text style={profileStyles.secretKey}>
+                      {visibleSecrets[device.id]
+                        ? device.deviceToken
+                        : "••••••••••"}
+                    </Text>
+                    <TouchableOpacity onPress={() => toggleSecret(device.id)}>
+                      <Ionicons
+                        name={
+                          visibleSecrets[device.id]
+                            ? "eye-off-outline"
+                            : "eye-outline"
+                        }
+                        size={20}
+                        color="#007aff"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={profileStyles.statsRow}>
+                  <Text style={profileStyles.stat}>
+                    Energy:{" "}
+                    {device.currentEnergy !== null
+                      ? `${device.currentEnergy} kWh`
+                      : "--"}
+                  </Text>
+                  <Text style={profileStyles.stat}>
+                    Cost:{" "}
+                    {device.currentCost !== null
+                      ? `₹${device.currentCost}`
+                      : "--"}
+                  </Text>
+                </View>
+                {index < currentUser.devices.length - 1 && (
+                  <View style={profileStyles.seperator} />
+                )}
+              </View>
+            ))}
+          </View>
+
+          {/* Log Out Button */}
+          <TouchableOpacity
+            onPress={() => {
+              logOut();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Login" }],
+              });
+            }}
+            style={profileStyles.logoutButton}
+          >
+            <Ionicons name="log-out-outline" size={20} color="#fff" />
+            <Text style={profileStyles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f9f9f9",
-  },
-  darkContainer: {
-    backgroundColor: "#121212",
-  },
-  profileHeader: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#03A9F4",
-  },
-  editIcon: {
-    position: "absolute",
-    bottom: 0,
-    right: 5,
-    backgroundColor: "#03A9F4",
-    borderRadius: 50,
-    padding: 5,
-  },
-  profileName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 10,
-    color: "#333",
-  },
-  profileEmail: {
-    fontSize: 16,
-    color: "#666",
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333",
-  },
-  infoItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  infoText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#333",
-  },
-  darkText: {
-    color: "#fff",
-  },
-  darkSubText: {
-    color: "#ccc",
-  },
-  settingItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-  },
-  settingText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#333",
-  },
-  summaryCard: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  summaryItem: {
-    alignItems: "center",
-  },
-  summaryValue: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 5,
-  },
-  switchRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  switchLabel: {
-    fontSize: 16,
-    color: "#333",
-  },
-  logoutButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF5252",
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 30,
-    marginVertical: 35,
-  },
-  logoutText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "white",
-  },
-});
-
-export default Profile;
+}

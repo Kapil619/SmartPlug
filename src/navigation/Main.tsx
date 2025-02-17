@@ -4,11 +4,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 import React from "react";
+import DeviceDetail from "../screens/DeviceDetail";
 import Devices from "../screens/Devices";
 import Energy from "../screens/Energy";
 import Home from "../screens/Home";
 import Login from "../screens/Login";
 import Profile from "../screens/Profile";
+import Signup from "../screens/Signup";
+import AddDevice from "../screens/AddDevice";
 
 // Navigator Declarations
 const Stack = createNativeStackNavigator();
@@ -74,17 +77,28 @@ const Main = ({ user }: MainProps) => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={user ? "Main" : "Login"}>
-        {user ? (
-          <>
-            <Stack.Screen
-              name="Main"
-              component={TabNavigator}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </>
-        ) : (
+        <>
+          <Stack.Screen
+            name="Main"
+            component={TabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="DeviceDetail"
+            component={DeviceDetail}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="AddDevice"
+            component={AddDevice}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="Login"
             component={Login}
@@ -92,7 +106,12 @@ const Main = ({ user }: MainProps) => {
               headerShown: false,
             }}
           />
-        )}
+          <Stack.Screen
+            name="Signup"
+            component={Signup}
+            options={{ headerShown: false }}
+          />
+        </>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -6,6 +6,8 @@ export const signIn = async (email: string, password: string) => {
         await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
     } catch (error) {
         console.error(error);
+        throw error;
+
     }
 }
 
@@ -14,13 +16,17 @@ export const signUp = async (email: string, password: string) => {
         await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 export const logOut = async () => {
     try {
         await signOut(FIREBASE_AUTH);
+        console.log("Logged out");
     } catch (error) {
         console.error(error);
+        throw error;
+
     }
 }
 
