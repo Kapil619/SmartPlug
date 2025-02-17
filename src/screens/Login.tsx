@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 // Example signIn function from your code
+import Button from "../components/Button";
 import { authStyles } from "../styles/authStyles";
 import { signIn } from "../utils/firebaseMethods";
 import { validateEmail, validatePassword } from "../utils/validator";
@@ -22,6 +23,7 @@ export default function Login() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
   const handleLogin = async () => {
@@ -34,7 +36,7 @@ export default function Login() {
       return;
     }
     setErrorMessage("");
-
+    setIsLoading(true);
     try {
       await signIn(email, password);
       navigation.navigate("Main", { screen: "Home" });
@@ -42,6 +44,8 @@ export default function Login() {
     } catch (error: any) {
       console.log("error", error);
       setErrorMessage(error.message || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -127,9 +131,13 @@ export default function Login() {
             ) : null}
 
             {/* Login Button */}
-            <TouchableOpacity style={authStyles.button} onPress={handleLogin}>
-              <Text style={authStyles.buttonText}>Login</Text>
-            </TouchableOpacity>
+            <Button
+              title="Login"
+              onPress={handleLogin}
+              loading={isLoading}
+              buttonStyle={authStyles.button}
+              textStyle={authStyles.buttonText}
+            />
 
             {/* Navigate to Signup */}
             <TouchableOpacity

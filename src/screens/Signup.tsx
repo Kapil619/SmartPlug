@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import Button from "../components/Button";
 import { authStyles } from "../styles/authStyles";
 import { signUp } from "../utils/firebaseMethods";
 import {
@@ -27,6 +28,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [specialCode, setSpecialCode] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
   const handleInfoPress = () => {
@@ -51,12 +53,15 @@ export default function Signup() {
       return;
     }
     setErrorMessage("");
+    setIsLoading(true);
     try {
       await signUp(email, password);
       navigation.navigate("Main", { screen: "Home" });
     } catch (error: any) {
       console.log("error", error);
       setErrorMessage(error.message || "Signup failed! Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -166,9 +171,13 @@ export default function Signup() {
               </Text>
             ) : null}
             {/* Sign Up Button */}
-            <TouchableOpacity style={authStyles.button} onPress={handleSignup}>
-              <Text style={authStyles.buttonText}>Sign Up</Text>
-            </TouchableOpacity>
+            <Button
+              title="Sign Up"
+              onPress={handleSignup}
+              loading={isLoading}
+              buttonStyle={authStyles.button}
+              textStyle={authStyles.buttonText}
+            />
 
             {/* QR Code Scanner */}
             <TouchableOpacity
