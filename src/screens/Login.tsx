@@ -1,129 +1,148 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Image,
-  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
+// Example signIn function from your code
+import { authStyles } from "../styles/authStyles";
 import { signIn } from "../utils/firebaseMethods";
+import { validateEmail, validatePassword } from "../utils/validator";
 
-const Login = () => {
+export default function Login() {
+  const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigation = useNavigation<any>();
 
-  const navigateToSignup = () => {
-    navigation.navigate("Signup");
-  };
-
+  const [errorMessage, setErrorMessage] = useState("");
   const handleLogin = async () => {
+    if (!validateEmail(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+    if (!validatePassword(password)) {
+      setErrorMessage("Password must be at least 6 characters long.");
+      return;
+    }
+    setErrorMessage("");
+
     try {
       await signIn(email, password);
-      navigation.navigate("Main", {
-        screen: "Home",
-      });
+      navigation.navigate("Main", { screen: "Home" });
       console.log("user logged in");
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
+      setErrorMessage(error.message || "Login failed. Please try again.");
     }
   };
 
+  const navigateToSignup = () => {
+    navigation.replace("Signup");
+  };
+
   return (
-    <View style={styles.container}>
-      <Image
-        source={{
-          uri: "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-avatar-placeholder-png-image_3416697.jpg",
-        }}
-        style={styles.logo}
-      />
-      <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.subtitle}>Sign in to continue</Text>
+    <LinearGradient
+      colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={authStyles.container}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          {/* Header / Logo */}
+          <Animatable.View
+            animation="fadeInDown"
+            delay={200}
+            style={authStyles.headerContainer}
+          >
+            <Image
+              source={require("../../assets/realplug.png")}
+              style={[
+                authStyles.logo,
+                {
+                  width: 170,
+                  height: 170,
+                },
+              ]}
+            />
+            <Text style={authStyles.title}>Welcome</Text>
+            <Text style={authStyles.subtitle}>Sign in to continue</Text>
+          </Animatable.View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        placeholderTextColor="#999"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        placeholderTextColor="#999"
-      />
+          {/* Form Container */}
+          <Animatable.View
+            animation="fadeInUp"
+            delay={400}
+            style={[
+              authStyles.formContainer,
+              {
+                marginTop: 50,
+              },
+            ]}
+          >
+            <View style={authStyles.inputRow}>
+              <Ionicons name="mail-outline" size={20} color="#007aff" />
+              <TextInput
+                style={authStyles.input}
+                placeholder="Email"
+                placeholderTextColor="#999"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
 
-      <TouchableOpacity onPress={handleLogin} style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.link} onPress={navigateToSignup}>
-        <Text style={styles.linkText}>Don't have an account? Sign up</Text>
-      </TouchableOpacity>
-    </View>
+            <View style={authStyles.inputRow}>
+              <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
+              <TextInput
+                style={authStyles.input}
+                placeholder="Password"
+                placeholderTextColor="#999"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+            {errorMessage ? (
+              <Text
+                style={{
+                  color: "red",
+                  textAlign: "center",
+                  marginVertical: 10,
+                }}
+              >
+                {errorMessage}
+              </Text>
+            ) : null}
+
+            {/* Login Button */}
+            <TouchableOpacity style={authStyles.button} onPress={handleLogin}>
+              <Text style={authStyles.buttonText}>Login</Text>
+            </TouchableOpacity>
+
+            {/* Navigate to Signup */}
+            <TouchableOpacity
+              style={authStyles.link}
+              onPress={navigateToSignup}
+            >
+              <Text style={authStyles.linkText}>
+                Don't have an account? Sign up
+              </Text>
+            </TouchableOpacity>
+          </Animatable.View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f7f9fc",
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 15,
-    backgroundColor: "#fff",
-  },
-  button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#007bff",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  link: {
-    marginTop: 10,
-  },
-  linkText: {
-    color: "#007bff",
-    fontSize: 16,
-  },
-});
-
-export default Login;
+}

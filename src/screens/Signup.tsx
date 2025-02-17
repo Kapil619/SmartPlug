@@ -1,144 +1,194 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
-  Button,
   Image,
-  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
+import { authStyles } from "../styles/authStyles";
 import { signUp } from "../utils/firebaseMethods";
+import {
+  validateEmail,
+  validatePassword,
+  validateSpecialCode,
+} from "../utils/validator";
 
-const Signup = () => {
+export default function Signup() {
+  const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [specialCode, setSpecialCode] = useState("");
-  const navigation = useNavigation<any>();
+  const [showPopup, setShowPopup] = useState(false);
 
-  const navigateToLogin = () => {
-    navigation.navigate("Login");
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleInfoPress = () => {
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 4000);
   };
-
   const handleSignup = async () => {
+    // Validate email
+    if (!validateEmail(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+    // Validate password
+    if (!validatePassword(password)) {
+      setErrorMessage("Password must be at least 6 characters long.");
+      return;
+    }
+    // (Optional) Validate special code if necessary
+    // After validating email and password...
+    if (!validateSpecialCode(specialCode)) {
+      setErrorMessage("Device Code must be exactly 10 digits.");
+      return;
+    }
+    setErrorMessage("");
     try {
       await signUp(email, password);
-      navigation.navigate("Main", {
-        screen: "Home",
-      });
-      console.log("user signed up");
-    } catch (error) {
+      navigation.navigate("Main", { screen: "Home" });
+    } catch (error: any) {
       console.log("error", error);
+      setErrorMessage(error.message || "Signup failed! Please try again.");
     }
   };
 
   const handleScanQRCode = () => {
-    // Placeholder for QR code scanning functionality
     console.log("Scan QR Code");
   };
 
+  const navigateToLogin = () => {
+    navigation.replace("Login");
+  };
+
   return (
-    <View style={styles.container}>
-      <Image
-        source={{
-          uri: "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-avatar-placeholder-png-image_3416697.jpg",
-        }}
-        style={styles.logo}
-      />
-      <Text style={styles.title}>Create Account</Text>
-      <Text style={styles.subtitle}>Sign up to get started</Text>
+    <LinearGradient
+      colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={authStyles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1 }}
+        >
+          {/* Header / Logo */}
+          <Animatable.View
+            animation="fadeInDown"
+            delay={200}
+            style={authStyles.headerContainer}
+          >
+            <Image
+              source={require("../../assets/realplug.png")}
+              style={authStyles.logo}
+            />
+            <Text style={authStyles.title}>Create Account</Text>
+            <Text style={authStyles.subtitle}>Sign up to get started</Text>
+          </Animatable.View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        placeholderTextColor="#999"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        placeholderTextColor="#999"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Special Code"
-        value={specialCode}
-        onChangeText={setSpecialCode}
-        placeholderTextColor="#999"
-      />
+          {/* Form Container */}
+          <Animatable.View
+            animation="fadeInUp"
+            delay={400}
+            style={authStyles.formContainer}
+          >
+            {/* Email */}
+            <View style={authStyles.inputRow}>
+              <Ionicons name="mail-outline" size={20} color="#007aff" />
+              <TextInput
+                style={authStyles.input}
+                placeholder="Email"
+                placeholderTextColor="#999"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
 
-      <TouchableOpacity onPress={handleSignup} style={styles.button}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
-      <Button title="Scan QR Code" onPress={handleScanQRCode} />
-      <TouchableOpacity style={styles.link} onPress={navigateToLogin}>
-        <Text style={styles.linkText}>Already have an account? Log in</Text>
-      </TouchableOpacity>
-    </View>
+            {/* Password */}
+            <View style={authStyles.inputRow}>
+              <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
+              <TextInput
+                style={authStyles.input}
+                placeholder="Password"
+                placeholderTextColor="#999"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+
+            {/* Special Code */}
+            <View style={authStyles.inputRow}>
+              <Ionicons name="key-outline" size={20} color="#007aff" />
+              <TextInput
+                style={authStyles.input}
+                placeholder="Device Code"
+                placeholderTextColor="#999"
+                value={specialCode}
+                onChangeText={setSpecialCode}
+              />
+              <Ionicons
+                name="information-circle-outline"
+                size={24}
+                color="green"
+                onPress={handleInfoPress}
+              />
+            </View>
+            {showPopup && (
+              <Animatable.View
+                animation={"fadeInUp"}
+                delay={50}
+                style={authStyles.popup}
+              >
+                <Text style={authStyles.popupText}>
+                  Device code required. Please see the back of your device for
+                  the 10 digit code.
+                </Text>
+              </Animatable.View>
+            )}
+            {errorMessage ? (
+              <Text
+                style={{
+                  color: "red",
+                  textAlign: "center",
+                  marginVertical: 10,
+                }}
+              >
+                {errorMessage}
+              </Text>
+            ) : null}
+            {/* Sign Up Button */}
+            <TouchableOpacity style={authStyles.button} onPress={handleSignup}>
+              <Text style={authStyles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+
+            {/* QR Code Scanner */}
+            <TouchableOpacity
+              style={authStyles.qrButton}
+              onPress={handleScanQRCode}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="qr-code-outline" size={20} color="#fff" />
+              <Text style={authStyles.qrButtonText}>Scan QR Code</Text>
+            </TouchableOpacity>
+
+            {/* Navigate to Login */}
+            <TouchableOpacity style={authStyles.link} onPress={navigateToLogin}>
+              <Text style={authStyles.linkText}>
+                Already have an account? Log in
+              </Text>
+            </TouchableOpacity>
+          </Animatable.View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f7f9fc",
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 15,
-    backgroundColor: "#fff",
-  },
-  button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#28a745",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  link: {
-    marginTop: 10,
-  },
-  linkText: {
-    color: "#007bff",
-    fontSize: 16,
-  },
-});
-
-export default Signup;
+}
