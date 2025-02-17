@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -41,6 +42,10 @@ const Home = () => {
           <View style={homeStyles.headerIcons}>
             <TouchableOpacity
               onPress={() => {
+                ToastAndroid.show(
+                  "Notifications coming soon!",
+                  ToastAndroid.SHORT
+                );
                 // Navigate to notifications screen
               }}
               style={homeStyles.iconButton}
@@ -49,6 +54,7 @@ const Home = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
+                ToastAndroid.show("Settings coming soon!", ToastAndroid.SHORT);
                 // Navigate to settings screen
               }}
               style={homeStyles.iconButton}

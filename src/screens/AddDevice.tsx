@@ -8,6 +8,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -26,6 +27,7 @@ export default function AddDevice() {
   const [applianceType, setApplianceType] = useState(applianceOptions[0]);
   const [errorMessage, setErrorMessage] = useState("");
   const handleScanQR = () => {
+    ToastAndroid.show("Scan QR Code logic here", ToastAndroid.SHORT);
     console.log("Scan QR Code logic here");
   };
 
@@ -164,7 +166,7 @@ export default function AddDevice() {
                 <Ionicons name="pricetag-outline" size={20} color="#007aff" />
                 <TextInput
                   style={addDeviceStyles.input}
-                  placeholder="Device Name (e.g., Living Room Plug)"
+                  placeholder="Device Name (e.g.,Bedroom Plug)"
                   placeholderTextColor="#999"
                   value={deviceName}
                   onChangeText={setDeviceName}

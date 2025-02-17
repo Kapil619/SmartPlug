@@ -104,13 +104,16 @@ export default function SchedulesScreen() {
                     ? schedule.days.join(", ")
                     : "No specific days"}
                 </Text>
-                {(schedule.usageLimit || schedule.costLimit) && (
+                {((schedule.usageLimit ?? 0) > 0 ||
+                  (schedule.costLimit ?? 0) > 0) && (
                   <Text style={deviceStyles.limitInfo}>
-                    {schedule.usageLimit
-                      ? `Usage Limit: ${schedule.usageLimit.toFixed(1)} kWh  `
+                    {(schedule.usageLimit ?? 0) > 0
+                      ? `Usage Limit: ${(schedule.usageLimit ?? 0).toFixed(
+                          1
+                        )} kWh  `
                       : ""}
-                    {schedule.costLimit
-                      ? `Cost Limit: ₹ ${schedule.costLimit.toFixed(2)}`
+                    {(schedule.costLimit ?? 0) > 0
+                      ? `Cost Limit: ₹ ${(schedule.costLimit ?? 0).toFixed(2)}`
                       : ""}
                   </Text>
                 )}
@@ -207,7 +210,7 @@ export default function SchedulesScreen() {
                   maximumValue={23}
                   step={1}
                   value={selectedHour}
-                  onValueChange={(val) => setSelectedHour(val)}
+                  onSlidingComplete={(val) => setSelectedHour(val)}
                   minimumTrackTintColor="#007aff"
                   maximumTrackTintColor="#ccc"
                 />
@@ -218,7 +221,7 @@ export default function SchedulesScreen() {
                   maximumValue={59}
                   step={1}
                   value={selectedMinute}
-                  onValueChange={(val) => setSelectedMinute(val)}
+                  onSlidingComplete={(val) => setSelectedMinute(val)}
                   minimumTrackTintColor="#007aff"
                   maximumTrackTintColor="#ccc"
                 />
@@ -248,7 +251,7 @@ export default function SchedulesScreen() {
                 maximumValue={50}
                 step={0.5}
                 value={usageLimit}
-                onValueChange={(val) => setUsageLimit(val)}
+                onSlidingComplete={(val) => setUsageLimit(val)}
                 minimumTrackTintColor="#007aff"
                 maximumTrackTintColor="#ccc"
               />
@@ -261,7 +264,7 @@ export default function SchedulesScreen() {
                 maximumValue={1000}
                 step={10}
                 value={costLimit}
-                onValueChange={(val) => setCostLimit(val)}
+                onSlidingComplete={(val) => setCostLimit(val)}
                 minimumTrackTintColor="#007aff"
                 maximumTrackTintColor="#ccc"
               />
