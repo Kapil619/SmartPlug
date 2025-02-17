@@ -128,7 +128,12 @@ const Home = () => {
         </ScrollView>
 
         {/* Floating Add Device Button */}
-        <TouchableOpacity style={homeStyles.floatingButton}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("AddDevice");
+          }}
+          style={homeStyles.floatingButton}
+        >
           <Ionicons name="add" size={30} color="#fff" />
         </TouchableOpacity>
       </SafeAreaView>

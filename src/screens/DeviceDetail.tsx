@@ -1,4 +1,4 @@
-import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -16,7 +16,7 @@ import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
-
+import Octicons from "@expo/vector-icons/Octicons";
 const { width } = Dimensions.get("window");
 
 const DeviceDetail: React.FC = () => {
