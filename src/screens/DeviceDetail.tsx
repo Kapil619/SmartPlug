@@ -1,4 +1,5 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import Octicons from "@expo/vector-icons/Octicons";
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -16,7 +17,6 @@ import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
-import Octicons from "@expo/vector-icons/Octicons";
 const { width } = Dimensions.get("window");
 
 const DeviceDetail: React.FC = () => {
@@ -34,9 +34,6 @@ const DeviceDetail: React.FC = () => {
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   // For demonstration, we’ll assume some placeholder data.
   const deviceLocation = device.location || "Unknown Location";
-  const usageToday = 125.1; // in hours or kWh
-  const usage7Days = 67.2;
-  const usage30Days = 67.2;
   const isDeviceOn = device.status === "On";
 
   useEffect(() => {
@@ -149,18 +146,24 @@ const DeviceDetail: React.FC = () => {
           <Text style={deviceDetailstyles.runtimeCardTitle}>Runtime</Text>
           <View style={deviceDetailstyles.runtimeStats}>
             <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>{usageToday}</Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Today</Text>
+              <Text style={deviceDetailstyles.runtimeValue}>
+                {device.currentEnergy !== null ? device.currentEnergy : "--"}
+              </Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>Energy (kWh)</Text>
             </View>
             <View style={deviceDetailstyles.divider} />
             <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>{usage7Days}</Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Past 7 Days</Text>
+              <Text style={deviceDetailstyles.runtimeValue}>
+                {device.currentPower !== null ? device.currentPower : "--"}
+              </Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>Power (Watt)</Text>
             </View>
             <View style={deviceDetailstyles.divider} />
             <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>{usage30Days}</Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Past 30 Days</Text>
+              <Text style={deviceDetailstyles.runtimeValue}>
+                {device.currentCost !== null ? device.currentCost : "--"}
+              </Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>Cost (₹)</Text>
             </View>
           </View>
         </View>

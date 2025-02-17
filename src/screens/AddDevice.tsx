@@ -13,16 +13,17 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { addDeviceStyles } from "../styles/addDeviceStyles";
+import { appliances } from "../utils/data";
+import { Appliance, Device } from "../utils/types";
 import { validateSpecialCode } from "../utils/validator";
 
 // Example list of appliance types
-const APPLIANCES = ["Lamp", "Fan", "TV", "AC", "Heater", "Other"];
-
+const applianceOptions = [...appliances.map((a) => a.name), "Other"];
 export default function AddDevice() {
   const [method, setMethod] = useState<"qr" | "code">("qr"); // toggles between QR or code
   const [specialCode, setSpecialCode] = useState("");
   const [deviceName, setDeviceName] = useState("");
-  const [applianceType, setApplianceType] = useState(APPLIANCES[0]);
+  const [applianceType, setApplianceType] = useState(applianceOptions[0]);
   const [errorMessage, setErrorMessage] = useState("");
   const handleScanQR = () => {
     console.log("Scan QR Code logic here");
@@ -39,8 +40,24 @@ export default function AddDevice() {
       setErrorMessage("Device Code must be exactly 10 digits.");
       return;
     }
+    const selectedAppliance: Appliance | null =
+      applianceType !== "Other"
+        ? appliances.find((a) => a.name === applianceType) || null
+        : null;
+
+    const newDevice: Device = {
+      id: Date.now().toString(),
+      name: deviceName,
+      status: "Off",
+      appliance: selectedAppliance,
+      location: "", // Provide a default or prompt for location if needed
+      deviceToken: method === "code" ? specialCode : "QRCODETOKEN",
+      currentPower: null,
+      currentEnergy: null,
+      currentCost: null,
+    };
     // Proceed with adding device logic
-    console.log("Adding device:", { deviceName, specialCode, applianceType });
+    console.log("Adding device:", newDevice);
     // Possibly call an API or your backend
   };
 
@@ -160,7 +177,7 @@ export default function AddDevice() {
                 horizontal
                 contentContainerStyle={addDeviceStyles.applianceRow}
               >
-                {APPLIANCES.map((appliance) => (
+                {applianceOptions.map((appliance) => (
                   <TouchableOpacity
                     key={appliance}
                     onPress={() => setApplianceType(appliance)}

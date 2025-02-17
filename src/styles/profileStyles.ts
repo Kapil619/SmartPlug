@@ -122,4 +122,19 @@ export const profileStyles = StyleSheet.create({
         marginRight: 5,
         letterSpacing: 2,
     },
+    seperator: {
+        height: 1,
+        backgroundColor: "#D0DDD0",
+        marginVertical: 12,
+    },
+    statsRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 6,
+    },
+    stat: {
+        fontSize: 14,
+        color: "#2E3A45",
+        fontWeight: "500",
+    },
 });

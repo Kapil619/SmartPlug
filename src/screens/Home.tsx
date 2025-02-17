@@ -14,9 +14,10 @@ import {
 } from "react-native";
 import TopCard from "../components/TopCard";
 import { homeStyles } from "../styles/homeStyles";
-import { devices, topCardData } from "../utils/data";
+import { devices, topCardData, users } from "../utils/data";
 
 const { width } = Dimensions.get("window");
+const currentUser = users[0];
 
 const Home = () => {
   const navigation = useNavigation<any>();
@@ -30,7 +31,9 @@ const Home = () => {
         {/* Header */}
         <View style={homeStyles.headerContainer}>
           <View style={homeStyles.headerTextContainer}>
-            <Text style={homeStyles.headerTitle}>Hello, User!</Text>
+            <Text style={homeStyles.headerTitle}>
+              Hello, {currentUser.name}!
+            </Text>
             <Text style={homeStyles.headerSubtitle}>
               Monitor and control your devices
             </Text>
@@ -119,7 +122,7 @@ const Home = () => {
                     </Text>
                   </View>
                   <Text style={homeStyles.applianceName}>
-                    {device.appliance ? device.appliance : "No appliance"}
+                    {device.appliance ? device.appliance.name : "No appliance"}
                   </Text>
                 </TouchableOpacity>
               );

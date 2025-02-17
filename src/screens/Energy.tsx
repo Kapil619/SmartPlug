@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 import EnergyCharts from "../components/EnergyChart";
-import Header from "../components/Header";
 import { energyStyles } from "../styles/energyStyles";
 
 const { width } = Dimensions.get("window");

@@ -8,12 +8,34 @@ export const deviceStyles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
     },
+    headerContainer: {
+        marginBottom: 20,
+    },
     headerTitle: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: "bold",
-        color: "#fff",
+        color: "#2E3A45",
+    },
+    headerSubtitle: {
+        fontSize: 14,
+        color: "white",
+        marginTop: 5,
+    },
+    emptyState: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: "40%",
+        paddingHorizontal: 20,
+
+    },
+    emptyText: {
+        fontSize: 18,
+        color: "black",
+        marginTop: 10,
+        textAlign: "center",
     },
     scrollContent: {
+        paddingTop: 20,
         paddingHorizontal: 20,
         paddingBottom: 80,
     },

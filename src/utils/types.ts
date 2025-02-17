@@ -22,3 +22,32 @@ export interface ScheduleItem {
     usageLimit?: number; // e.g. kWh
     costLimit?: number; // e.g. currency limit
 }
+
+export interface Appliance {
+    id: string;
+    name: string;
+    iconUrl?: string;
+    description?: string;
+}
+
+// Device Schema
+export interface Device {
+    id: string;
+    name: string;
+    status: "On" | "Off";
+    appliance: Appliance | null;
+    location: string;
+    deviceToken: string;
+    currentPower: number | null; // e.g., in Watts
+    currentEnergy: number | null; // e.g., in kWh
+    currentCost: number | null; // e.g., in currency units
+}
+
+// User Schema
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    devices: Device[];
+}

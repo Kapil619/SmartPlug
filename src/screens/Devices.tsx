@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Slider from "@react-native-community/slider";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -12,24 +13,14 @@ import {
   View,
 } from "react-native";
 import { deviceStyles } from "../styles/deviceStyles";
+import { DAYS, devices } from "../utils/data";
 import { ScheduleItem } from "../utils/types";
-
-// Dummy device data
-const DEVICES = [
-  { id: "1", name: "Living Room Plug" },
-  { id: "2", name: "Bedroom Plug" },
-  { id: "3", name: "Kitchen Plug" },
-];
-
-// For day-of-week selection
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
 export default function SchedulesScreen() {
   const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
 
   // Form states
-  const [selectedDevice, setSelectedDevice] = useState(DEVICES[0]);
+  const [selectedDevice, setSelectedDevice] = useState(devices[0]);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedHour, setSelectedHour] = useState(8);
   const [selectedMinute, setSelectedMinute] = useState(30);
@@ -78,45 +69,54 @@ export default function SchedulesScreen() {
       style={{ flex: 1 }}
     >
       <SafeAreaView style={deviceStyles.container}>
-        <View style={deviceStyles.header}>
-          <Text style={deviceStyles.headerTitle}>Schedules & Automations</Text>
-        </View>
-
         <ScrollView contentContainerStyle={deviceStyles.scrollContent}>
-          {schedules.map((schedule) => (
-            <View key={schedule.id} style={deviceStyles.scheduleCard}>
-              <View style={deviceStyles.scheduleHeader}>
-                <View style={{ flex: 1 }}>
-                  <Text style={deviceStyles.scheduleDevice}>
-                    {schedule.deviceName}
-                  </Text>
-                  <Text style={deviceStyles.scheduleTime}>
-                    {schedule.hour.toString().padStart(2, "0")}:
-                    {schedule.minute.toString().padStart(2, "0")}{" "}
-                    {schedule.turnOn ? "ON" : "OFF"}
-                  </Text>
-                </View>
-                <TouchableOpacity onPress={() => deleteSchedule(schedule.id)}>
-                  <Ionicons name="close" size={24} color="#D35400" />
-                </TouchableOpacity>
-              </View>
-              <Text style={deviceStyles.scheduleDays}>
-                {schedule.days.length
-                  ? schedule.days.join(", ")
-                  : "No specific days"}
-              </Text>
-              {(schedule.usageLimit || schedule.costLimit) && (
-                <Text style={deviceStyles.limitInfo}>
-                  {schedule.usageLimit
-                    ? `Usage Limit: ${schedule.usageLimit.toFixed(1)} kWh  `
-                    : ""}
-                  {schedule.costLimit
-                    ? `Cost Limit: ₹ ${schedule.costLimit.toFixed(2)}`
-                    : ""}
-                </Text>
-              )}
+          <View style={deviceStyles.headerContainer}>
+            <Text style={deviceStyles.headerTitle}>Schedules & Automation</Text>
+            <Text style={deviceStyles.headerSubtitle}>
+              Schedule your devices
+            </Text>
+          </View>
+          {schedules.length === 0 ? (
+            <View style={deviceStyles.emptyState}>
+              <AntDesign name="clockcircleo" size={100} color="black" />
+              <Text style={deviceStyles.emptyText}>No schedules created</Text>
             </View>
-          ))}
+          ) : (
+            schedules.map((schedule) => (
+              <View key={schedule.id} style={deviceStyles.scheduleCard}>
+                <View style={deviceStyles.scheduleHeader}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={deviceStyles.scheduleDevice}>
+                      {schedule.deviceName}
+                    </Text>
+                    <Text style={deviceStyles.scheduleTime}>
+                      {schedule.hour.toString().padStart(2, "0")}:
+                      {schedule.minute.toString().padStart(2, "0")}{" "}
+                      {schedule.turnOn ? "ON" : "OFF"}
+                    </Text>
+                  </View>
+                  <TouchableOpacity onPress={() => deleteSchedule(schedule.id)}>
+                    <Ionicons name="close" size={24} color="#D35400" />
+                  </TouchableOpacity>
+                </View>
+                <Text style={deviceStyles.scheduleDays}>
+                  {schedule.days.length
+                    ? schedule.days.join(", ")
+                    : "No specific days"}
+                </Text>
+                {(schedule.usageLimit || schedule.costLimit) && (
+                  <Text style={deviceStyles.limitInfo}>
+                    {schedule.usageLimit
+                      ? `Usage Limit: ${schedule.usageLimit.toFixed(1)} kWh  `
+                      : ""}
+                    {schedule.costLimit
+                      ? `Cost Limit: ₹ ${schedule.costLimit.toFixed(2)}`
+                      : ""}
+                  </Text>
+                )}
+              </View>
+            ))
+          )}
         </ScrollView>
 
         {/* Floating Button */}
@@ -143,7 +143,7 @@ export default function SchedulesScreen() {
                 horizontal
                 contentContainerStyle={{ marginVertical: 10 }}
               >
-                {DEVICES.map((dev) => (
+                {devices.map((dev) => (
                   <TouchableOpacity
                     key={dev.id}
                     onPress={() => setSelectedDevice(dev)}

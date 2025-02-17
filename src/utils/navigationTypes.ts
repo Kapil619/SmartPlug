@@ -1,18 +1,11 @@
 import { RouteProp } from "@react-navigation/native";
+import { Device } from "./types";
 
 export type RootStackParamList = {
     Home: undefined;
     DeviceDetail: {
-        device: {
-            id: string;
-            name: string;
-            status: string;
-            appliance: string | null;
-            current: number | null;
-            energy: number | null;
-            cost: number | null;
-            location: string;
-        };
+        device: Device;
+
     };
     // ... other routes
 };

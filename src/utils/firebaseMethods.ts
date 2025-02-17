@@ -22,6 +22,7 @@ export const signUp = async (email: string, password: string) => {
 export const logOut = async () => {
     try {
         await signOut(FIREBASE_AUTH);
+        console.log("Logged out");
     } catch (error) {
         console.error(error);
         throw error;
