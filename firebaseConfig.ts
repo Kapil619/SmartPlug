@@ -3,6 +3,7 @@ import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/aut
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from "expo-constants";
+import { getDatabase } from "firebase/database";
 
 const extra = Constants.expoConfig?.extra as {
     firebaseApiKey: string;
@@ -11,6 +12,7 @@ const extra = Constants.expoConfig?.extra as {
     firebaseStorageBucket: string;
     firebaseMessagingSenderId: string;
     firebaseAppId: string;
+    firebaseDatabaseURL: string;
 };
 const firebaseConfig = {
     apiKey: extra.firebaseApiKey,
@@ -19,6 +21,7 @@ const firebaseConfig = {
     storageBucket: extra.firebaseStorageBucket,
     messagingSenderId: extra.firebaseMessagingSenderId,
     appId: extra.firebaseAppId,
+    databaseURL: extra.firebaseDatabaseURL,
 };
 
 // Initialize Firebase
@@ -27,3 +30,4 @@ export const FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
     persistence: getReactNativePersistence(AsyncStorage),
 });
 export const FIREBASE_DB = getFirestore();
+export const FIREBASE_RTDB = getDatabase(FIREBASE_APP);

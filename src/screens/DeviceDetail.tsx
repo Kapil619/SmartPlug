@@ -1,6 +1,7 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useRoute } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
@@ -98,6 +99,7 @@ const DeviceDetail: React.FC = () => {
   return (
     <SafeAreaView style={deviceDetailstyles.container}>
       <Header title={"Device Detail"} />
+      <StatusBar style="dark" backgroundColor="#F7F9FC" />
       <ScrollView contentContainerStyle={deviceDetailstyles.scrollContent}>
         {/* Top Section: Device Icon & Name */}
         <View style={deviceDetailstyles.topSection}>

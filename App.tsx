@@ -5,6 +5,7 @@ import Main from "./src/navigation/Main";
 import { AuthChanged } from "./src/utils/firebaseMethods";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { globalStyles } from "./src/styles/globalStyles";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +34,7 @@ export default function App() {
   return (
     <SafeAreaView style={globalStyles.safeArea}>
       <Main user={user} />
+      <StatusBar translucent={false} backgroundColor="#578FCA" />
     </SafeAreaView>
   );
 }
