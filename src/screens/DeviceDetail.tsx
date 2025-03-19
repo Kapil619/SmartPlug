@@ -22,7 +22,7 @@ const { width } = Dimensions.get("window");
 const DeviceDetail: React.FC = () => {
   const route = useRoute<DeviceDetailNavigationProp>();
   const { device } = route.params;
-  const [selectedUsage, setSelectedUsage] = useState(0);
+  const [selectedUsage, setSelectedUsage] = useState(1);
   const [deviceOn, setDeviceOn] = useState(device.status === "On");
   // Timer modal state
   const [timerModalVisible, setTimerModalVisible] = useState(false);
@@ -154,13 +154,6 @@ const DeviceDetail: React.FC = () => {
             <View style={deviceDetailstyles.divider} />
             <View style={styles.runtimeRow}>
               <Text style={deviceDetailstyles.runtimeValue}>
-                {device.currentPower !== null ? device.currentPower : "--"}
-              </Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Power (Watt)</Text>
-            </View>
-            <View style={deviceDetailstyles.divider} />
-            <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>
                 {device.currentCost !== null ? device.currentCost : "--"}
               </Text>
               <Text style={deviceDetailstyles.runtimeLabel}>Cost (₹)</Text>
@@ -170,26 +163,9 @@ const DeviceDetail: React.FC = () => {
 
         <View style={deviceDetailstyles.usageCard}>
           <Text style={deviceDetailstyles.usageCardTitle}>
-            {selectedUsage === 0
-              ? "Current Overview"
-              : selectedUsage === 1
-              ? "Energy Overview"
-              : "Cost Overview"}
+            {selectedUsage === 1 ? "Energy Overview" : "Cost Overview"}
           </Text>
           <View style={deviceDetailstyles.usageIconsContainer}>
-            <TouchableOpacity
-              onPress={() => setSelectedUsage(0)}
-              style={[
-                deviceDetailstyles.usageIconButton,
-                selectedUsage === 0 && deviceDetailstyles.usageIconActive,
-              ]}
-            >
-              <Ionicons
-                name="flash-outline"
-                size={24}
-                color={selectedUsage === 0 ? "#fff" : "#007aff"}
-              />
-            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setSelectedUsage(1)}
               style={[
