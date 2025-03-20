@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import { onValue, ref } from "firebase/database";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -13,15 +14,84 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FIREBASE_RTDB } from "../../firebaseConfig";
 import TopCard from "../components/TopCard";
+import { useDeviceAggregates } from "../hooks/useAggregates";
+import { useDeviceData } from "../hooks/useDeviceData";
+import { useDeviceMetadata } from "../hooks/useMetaData";
 import { homeStyles } from "../styles/homeStyles";
-import { devices, topCardData, users } from "../utils/data";
+import { users } from "../utils/data";
 
 const { width } = Dimensions.get("window");
 const currentUser = users[0];
-
+const deviceID = "1";
 const Home = () => {
   const navigation = useNavigation<any>();
+  const [topCardData, setTopCardData] = useState<any[]>([]);
+  const [deviceList, setDeviceList] = useState<any[]>([]);
+  const { latestData, dailyUsage } = useDeviceData(currentUser.id, deviceID);
+  const metadata = useDeviceMetadata(currentUser.id, deviceID);
+  const aggregations = useDeviceAggregates(currentUser.id, deviceID);
+
+  useEffect(() => {
+    const todayData = {
+      type: "today",
+      usage: latestData?.EnergyConsumed || 0,
+      cost: latestData?.BillingAmount || 0,
+    };
+
+    const currentDate = new Date();
+    const currentMonthKey = currentDate.toISOString().slice(0, 7); // e.g. "2025-03"
+
+    const previousDate = new Date();
+    previousDate.setMonth(previousDate.getMonth() - 1);
+    const previousMonthKey = previousDate.toISOString().slice(0, 7); // e.g. "2025-02"
+
+    let currentAggregate = { EnergyConsumed: 0, BillingAmount: 0 };
+    let previousAggregate = { EnergyConsumed: 0, BillingAmount: 0 };
+
+    if (aggregations && aggregations.monthly) {
+      currentAggregate =
+        aggregations.monthly[currentMonthKey] || currentAggregate;
+      previousAggregate =
+        aggregations.monthly[previousMonthKey] || previousAggregate;
+    }
+
+    setTopCardData([
+      todayData,
+      {
+        type: "month",
+        usage: currentAggregate.EnergyConsumed,
+        cost: currentAggregate.BillingAmount,
+      },
+      {
+        type: "previous",
+        usage: previousAggregate.EnergyConsumed,
+        cost: previousAggregate.BillingAmount,
+      },
+    ]);
+  }, [latestData, aggregations]);
+
+  useEffect(() => {
+    const devicesRef = ref(FIREBASE_RTDB, `users/${currentUser.id}/devices`);
+    const unsubscribeDevices = onValue(devicesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const devicesObj = snapshot.val();
+        // Convert the object to an array
+        const devicesArray = Object.keys(devicesObj).map((key) => ({
+          id: key,
+          ...devicesObj[key],
+        }));
+        setDeviceList(devicesArray);
+      } else {
+        setDeviceList([]);
+      }
+    });
+    return () => {
+      unsubscribeDevices();
+    };
+  }, []);
+
   return (
     <LinearGradient
       colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
@@ -71,7 +141,7 @@ const Home = () => {
           {/* Devices List */}
           <Text style={homeStyles.sectionTitle}>Your Devices</Text>
           <View style={homeStyles.devicesContainer}>
-            {devices.map((device, index) => {
+            {deviceList.map((device, index) => {
               const row = Math.floor(index / 2);
               const col = index % 2;
               const bgColor =
@@ -122,13 +192,15 @@ const Home = () => {
                   </View>
                   {/* Bottom: Device name and status */}
                   <View style={homeStyles.cardBottom}>
-                    <Text style={homeStyles.deviceName}>{device.name}</Text>
+                    <Text style={homeStyles.deviceName}>
+                      {metadata ? metadata.appliance : device.name}
+                    </Text>
                     <Text style={homeStyles.deviceStatus}>
-                      Status: {device.status}
+                      Status: {device.status || "Off"}
                     </Text>
                   </View>
                   <Text style={homeStyles.applianceName}>
-                    {device.appliance ? device.appliance.name : "No appliance"}
+                    {metadata ? metadata.deviceName : device.name}
                   </Text>
                 </TouchableOpacity>
               );

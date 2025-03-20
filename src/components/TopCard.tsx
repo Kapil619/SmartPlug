@@ -47,6 +47,14 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
     year: "numeric",
   });
 
+  //get previous month too
+  const now = new Date();
+  const previousDate = new Date();
+  previousDate.setMonth(now.getMonth() - 1);
+  const previousMonth = previousDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
   // Format Indian currency
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat("en-IN", {
@@ -85,7 +93,7 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
                       : item.type === "month"
                       ? `Current Month (${currentMonth})`
                       : item.type === "previous"
-                      ? item.month || "Previous Month"
+                      ? item.month || `Previous Month (${previousMonth})`
                       : item.title}
                   </Text>
                 </View>

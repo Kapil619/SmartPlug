@@ -16,7 +16,10 @@ import {
 import EnergyTrendsChart from "../components/Chart";
 import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
+import { useDeviceData } from "../hooks/useDeviceData";
+import { useDeviceMetadata } from "../hooks/useMetaData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
+import { users } from "../utils/data";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
 const { width } = Dimensions.get("window");
 
@@ -80,6 +83,10 @@ const DeviceDetail: React.FC = () => {
     const rMinutes = Math.floor((remainingSec % 3600) / 60);
     setTimerCountdown(`${rHours}h ${rMinutes}m`);
   };
+  const currentUser = users[0];
+  const deviceID = "1";
+  const metadata = useDeviceMetadata(currentUser.id, deviceID);
+
   let initHours = 1,
     initMinutes = 0;
   if (timerEndTime) {
@@ -96,6 +103,16 @@ const DeviceDetail: React.FC = () => {
     }
   }
 
+  const [aggregated, setAggregated] = useState({ energy: 0, cost: 0 });
+  const { latestData, dailyUsage } = useDeviceData(currentUser.id, deviceID);
+
+  useEffect(() => {
+    setAggregated({
+      energy: latestData?.EnergyConsumed || 0,
+      cost: latestData?.BillingAmount || 0,
+    });
+  }, [latestData?.EnergyConsumed]);
+
   return (
     <SafeAreaView style={deviceDetailstyles.container}>
       <Header title={"Device Detail"} />
@@ -109,12 +126,12 @@ const DeviceDetail: React.FC = () => {
           />
           <View style={deviceDetailstyles.deviceInfo}>
             <Text style={deviceDetailstyles.deviceName}>
-              {device.name || "Smart Switch"}
+              {metadata?.deviceName || "Smart Switch"}
             </Text>
             <View style={deviceDetailstyles.locationRow}>
               <Ionicons name="location-outline" size={16} color="green" />
               <Text style={deviceDetailstyles.deviceLocation}>
-                {deviceLocation}
+                {metadata?.location || deviceLocation}
               </Text>
             </View>
             {timerCountdown && (
@@ -145,18 +162,20 @@ const DeviceDetail: React.FC = () => {
 
         {/* Runtime / Usage Card */}
         <View style={deviceDetailstyles.runtimeCard}>
-          <Text style={deviceDetailstyles.runtimeCardTitle}>Runtime</Text>
+          <Text style={deviceDetailstyles.runtimeCardTitle}>
+            Device Aggregated Consumption
+          </Text>
           <View style={deviceDetailstyles.runtimeStats}>
             <View style={styles.runtimeRow}>
               <Text style={deviceDetailstyles.runtimeValue}>
-                {device.currentEnergy !== null ? device.currentEnergy : "--"}
+                {aggregated.energy}
               </Text>
               <Text style={deviceDetailstyles.runtimeLabel}>Energy (kWh)</Text>
             </View>
             <View style={deviceDetailstyles.divider} />
             <View style={styles.runtimeRow}>
               <Text style={deviceDetailstyles.runtimeValue}>
-                {device.currentCost !== null ? device.currentCost : "--"}
+                {aggregated.cost.toFixed(3)}
               </Text>
               <Text style={deviceDetailstyles.runtimeLabel}>Cost (₹)</Text>
             </View>
