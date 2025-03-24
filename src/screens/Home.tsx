@@ -5,7 +5,6 @@ import { onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
-  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -14,25 +13,73 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { FIREBASE_RTDB } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_RTDB } from "../../firebaseConfig";
+import DeviceCard from "../components/DeviceCard";
 import TopCard from "../components/TopCard";
 import { useDeviceAggregates } from "../hooks/useAggregates";
 import { useDeviceData } from "../hooks/useDeviceData";
-import { useDeviceMetadata } from "../hooks/useMetaData";
 import { homeStyles } from "../styles/homeStyles";
-import { users } from "../utils/data";
+import { getUserProfile } from "../utils/firebaseMethods";
+import { UserProfile } from "../utils/types";
 
 const { width } = Dimensions.get("window");
-const currentUser = users[0];
-const deviceID = "1";
+
 const Home = () => {
+  const currentUser = FIREBASE_AUTH.currentUser!;
   const navigation = useNavigation<any>();
   const [topCardData, setTopCardData] = useState<any[]>([]);
   const [deviceList, setDeviceList] = useState<any[]>([]);
-  const { latestData, dailyUsage } = useDeviceData(currentUser.id, deviceID);
-  const metadata = useDeviceMetadata(currentUser.id, deviceID);
-  const aggregations = useDeviceAggregates(currentUser.id, deviceID);
+  const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [primaryDeviceId, setPrimaryDeviceId] = useState<string | null>(null);
 
+  const getPrimaryDeviceId = (devices: any[]): string | null => {
+    console.log("Devices", devices[0].id);
+    return devices.length > 0 ? devices[0].id : null;
+  };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profile = await getUserProfile(currentUser.uid);
+        setUserData(profile);
+        console.log("User profile:", profile);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+    fetchProfile();
+  }, [currentUser.uid]);
+
+  useEffect(() => {
+    const devicesRef = ref(FIREBASE_RTDB, `users/${currentUser.uid}/devices`);
+    const unsubscribeDevices = onValue(devicesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const devicesObj = snapshot.val();
+        // Convert the object to an array
+        const devicesArray = Object.keys(devicesObj).map((key) => ({
+          id: key,
+          ...devicesObj[key],
+        }));
+        setDeviceList(devicesArray);
+        const primaryId = getPrimaryDeviceId(devicesArray);
+        setPrimaryDeviceId(primaryId);
+      } else {
+        setDeviceList([]);
+        setPrimaryDeviceId(null);
+      }
+    });
+    return () => {
+      unsubscribeDevices();
+    };
+  }, []);
+  const { latestData, dailyUsage } = useDeviceData(
+    currentUser.uid,
+    primaryDeviceId || ""
+  );
+  const aggregations = useDeviceAggregates(
+    currentUser.uid,
+    primaryDeviceId || ""
+  );
   useEffect(() => {
     const todayData = {
       type: "today",
@@ -70,27 +117,8 @@ const Home = () => {
         cost: previousAggregate.BillingAmount,
       },
     ]);
+    console.log("TopCardData", topCardData);
   }, [latestData, aggregations]);
-
-  useEffect(() => {
-    const devicesRef = ref(FIREBASE_RTDB, `users/${currentUser.id}/devices`);
-    const unsubscribeDevices = onValue(devicesRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const devicesObj = snapshot.val();
-        // Convert the object to an array
-        const devicesArray = Object.keys(devicesObj).map((key) => ({
-          id: key,
-          ...devicesObj[key],
-        }));
-        setDeviceList(devicesArray);
-      } else {
-        setDeviceList([]);
-      }
-    });
-    return () => {
-      unsubscribeDevices();
-    };
-  }, []);
 
   return (
     <LinearGradient
@@ -103,7 +131,7 @@ const Home = () => {
         <View style={homeStyles.headerContainer}>
           <View style={homeStyles.headerTextContainer}>
             <Text style={homeStyles.headerTitle}>
-              Hello, {currentUser.name}!
+              Hello, {userData?.username}!
             </Text>
             <Text style={homeStyles.headerSubtitle}>
               Monitor and control your devices
@@ -125,7 +153,6 @@ const Home = () => {
             <TouchableOpacity
               onPress={() => {
                 ToastAndroid.show("Settings coming soon!", ToastAndroid.SHORT);
-                // Navigate to settings screen
               }}
               style={homeStyles.iconButton}
             >
@@ -153,56 +180,12 @@ const Home = () => {
                   ? "#E1F0FF"
                   : "#fff";
               return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("DeviceDetail", {
-                      device,
-                    });
-                  }}
+                <DeviceCard
                   key={device.id}
-                  style={[
-                    styles.deviceCard,
-                    // Alternate card background color for diagonal cards
-                    { backgroundColor: bgColor },
-                  ]}
-                >
-                  {/* Top row: Plug image and power icon */}
-                  <View style={homeStyles.cardTopRow}>
-                    <Image
-                      source={require("../../assets/plug.png")}
-                      style={homeStyles.deviceImage}
-                    />
-                    <TouchableOpacity style={homeStyles.powerIcon}>
-                      <Ionicons
-                        name={
-                          device.status === "On"
-                            ? "power-outline"
-                            : "power-sharp"
-                        }
-                        size={18}
-                        color={device.status === "On" ? "white" : "#EEEEEE"}
-                        style={{
-                          backgroundColor:
-                            device.status === "On" ? "#578FCA" : "#999",
-                          borderRadius: 50,
-                          padding: 8,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  {/* Bottom: Device name and status */}
-                  <View style={homeStyles.cardBottom}>
-                    <Text style={homeStyles.deviceName}>
-                      {metadata ? metadata.appliance : device.name}
-                    </Text>
-                    <Text style={homeStyles.deviceStatus}>
-                      Status: {device.status || "Off"}
-                    </Text>
-                  </View>
-                  <Text style={homeStyles.applianceName}>
-                    {metadata ? metadata.deviceName : device.name}
-                  </Text>
-                </TouchableOpacity>
+                  device={device}
+                  userId={currentUser.uid}
+                  backgroundColor={bgColor}
+                />
               );
             })}
           </View>

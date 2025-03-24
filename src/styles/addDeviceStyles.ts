@@ -134,4 +134,13 @@ export const addDeviceStyles = StyleSheet.create({
         fontSize: 16,
         marginLeft: 8,
     },
+    picker: {
+        height: 50,
+        width: "100%",
+        backgroundColor: "#F5F8FA",
+        borderWidth: 1,
+        borderRadius: 12,
+        marginVertical: 10,
+        paddingHorizontal: 10,
+    },
 });

@@ -10,7 +10,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 interface LoadingButtonProps {
   title: string;
   onPress: (event: GestureResponderEvent) => void;
@@ -18,6 +18,7 @@ interface LoadingButtonProps {
   disabled?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  iconName?: string;
 }
 
 const Button: React.FC<LoadingButtonProps> = ({
@@ -27,6 +28,7 @@ const Button: React.FC<LoadingButtonProps> = ({
   disabled = false,
   buttonStyle,
   textStyle,
+  iconName,
 }) => {
   return (
     <TouchableOpacity
@@ -42,6 +44,14 @@ const Button: React.FC<LoadingButtonProps> = ({
         }}
       >
         <Text style={textStyle}>{title}</Text>
+        {iconName && !loading && (
+          <Ionicons
+            name={iconName as any}
+            style={{ marginLeft: 8 }}
+            size={22}
+            color="#fff"
+          />
+        )}
         {loading && (
           <ActivityIndicator color="#fff" style={{ marginRight: 8 }} />
         )}

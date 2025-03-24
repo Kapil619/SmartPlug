@@ -13,19 +13,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 import EnergyTrendsChart from "../components/Chart";
 import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
 import { useDeviceData } from "../hooks/useDeviceData";
-import { useDeviceMetadata } from "../hooks/useMetaData";
+import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
-import { users } from "../utils/data";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
 const { width } = Dimensions.get("window");
 
 const DeviceDetail: React.FC = () => {
   const route = useRoute<DeviceDetailNavigationProp>();
   const { device } = route.params;
+  const deviceID = device.id;
+  const currentUser = FIREBASE_AUTH.currentUser!;
   const [selectedUsage, setSelectedUsage] = useState(1);
   const [deviceOn, setDeviceOn] = useState(device.status === "On");
   // Timer modal state
@@ -83,9 +85,6 @@ const DeviceDetail: React.FC = () => {
     const rMinutes = Math.floor((remainingSec % 3600) / 60);
     setTimerCountdown(`${rHours}h ${rMinutes}m`);
   };
-  const currentUser = users[0];
-  const deviceID = "1";
-  const metadata = useDeviceMetadata(currentUser.id, deviceID);
 
   let initHours = 1,
     initMinutes = 0;
@@ -104,7 +103,8 @@ const DeviceDetail: React.FC = () => {
   }
 
   const [aggregated, setAggregated] = useState({ energy: 0, cost: 0 });
-  const { latestData, dailyUsage } = useDeviceData(currentUser.id, deviceID);
+  const { latestData, dailyUsage } = useDeviceData(currentUser.uid, deviceID);
+  const metadata = useUserData(currentUser.uid, device.id);
 
   useEffect(() => {
     setAggregated({

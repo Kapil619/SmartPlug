@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
@@ -6,6 +8,7 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   ToastAndroid,
@@ -13,27 +16,52 @@ import {
   View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
+import Button from "../components/Button";
 import { addDeviceStyles } from "../styles/addDeviceStyles";
-import { appliances } from "../utils/data";
-import { Appliance, Device } from "../utils/types";
+import { addNewDevice } from "../utils/firebaseMethods";
 import { validateSpecialCode } from "../utils/validator";
 
 // Example list of appliance types
-const applianceOptions = [...appliances.map((a) => a.name), "Other"];
+const applianceOptions = [
+  "Lamp",
+  "TV",
+  "AC",
+  "Refrigerator",
+  "Washing Machine",
+  "Iron",
+  "Vacuum Cleaner",
+  "Water Heater",
+  "Dishwasher",
+  "Other",
+];
+const locationOptions = [
+  "Not specified",
+  "Living Room",
+  "Bedroom",
+  "Kitchen",
+  "Basement",
+  "Hallway",
+  "Other",
+];
 export default function AddDevice() {
   const [method, setMethod] = useState<"qr" | "code">("qr"); // toggles between QR or code
   const [specialCode, setSpecialCode] = useState("");
   const [deviceName, setDeviceName] = useState("");
   const [applianceType, setApplianceType] = useState(applianceOptions[0]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [location, setLocation] = useState(locationOptions[0]);
+  const navigation = useNavigation<any>();
+  const [isLoading, setIsLoading] = useState(false);
   const handleScanQR = () => {
     ToastAndroid.show("Scan QR Code logic here", ToastAndroid.SHORT);
     console.log("Scan QR Code logic here");
   };
 
-  const handleAddDevice = () => {
+  const handleAddDevice = async () => {
     // Validate fields
     if (!deviceName) {
+      setErrorMessage("Please enter a device name.");
       console.log("Please enter a device name.");
       return;
     }
@@ -42,25 +70,31 @@ export default function AddDevice() {
       setErrorMessage("Device Code must be exactly 10 digits.");
       return;
     }
-    const selectedAppliance: Appliance | null =
-      applianceType !== "Other"
-        ? appliances.find((a) => a.name === applianceType) || null
-        : null;
-
-    const newDevice: Device = {
-      id: Date.now().toString(),
-      name: deviceName,
-      status: "Off",
-      appliance: selectedAppliance,
-      location: "", // Provide a default or prompt for location if needed
-      deviceToken: method === "code" ? specialCode : "QRCODETOKEN",
-      currentPower: null,
-      currentEnergy: null,
-      currentCost: null,
-    };
-    // Proceed with adding device logic
-    console.log("Adding device:", newDevice);
-    // Possibly call an API or your backend
+    const selectedAppliance =
+      applianceType !== "Other" ? applianceType : "Not specified";
+    const deviceCodeToUse =
+      method === "code" ? specialCode : Date.now().toString();
+    try {
+      setIsLoading(true);
+      setErrorMessage("");
+      const currentUser = FIREBASE_AUTH.currentUser!;
+      await addNewDevice(
+        currentUser.uid,
+        deviceCodeToUse,
+        deviceName,
+        selectedAppliance,
+        location
+      );
+      ToastAndroid.show("Device added successfully!", ToastAndroid.SHORT);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Main", screen: "Home" }],
+      });
+    } catch (error: any) {
+      setErrorMessage(error.message || "Error adding device!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -175,42 +209,39 @@ export default function AddDevice() {
 
               {/* Appliance Type Picker (horizontal or vertical) */}
               <Text style={addDeviceStyles.label}>Appliance Type:</Text>
-              <ScrollView
-                horizontal
-                contentContainerStyle={addDeviceStyles.applianceRow}
+              <Picker
+                selectedValue={applianceType}
+                onValueChange={(itemValue) => setApplianceType(itemValue)}
+                style={addDeviceStyles.picker}
               >
                 {applianceOptions.map((appliance) => (
-                  <TouchableOpacity
+                  <Picker.Item
                     key={appliance}
-                    onPress={() => setApplianceType(appliance)}
-                    style={[
-                      addDeviceStyles.applianceItem,
-                      appliance === applianceType &&
-                        addDeviceStyles.applianceItemActive,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        addDeviceStyles.applianceText,
-                        appliance === applianceType &&
-                          addDeviceStyles.applianceTextActive,
-                      ]}
-                    >
-                      {appliance}
-                    </Text>
-                  </TouchableOpacity>
+                    label={appliance}
+                    value={appliance}
+                  />
                 ))}
-              </ScrollView>
+              </Picker>
 
-              {/* Add Device Button */}
-              {/* Add Device Button */}
-              <TouchableOpacity
-                style={addDeviceStyles.addButton}
-                onPress={handleAddDevice}
+              {/* Location Dropdown */}
+              <Text style={addDeviceStyles.label}>Location:</Text>
+              <Picker
+                selectedValue={location}
+                onValueChange={(itemValue) => setLocation(itemValue)}
+                style={addDeviceStyles.picker}
               >
-                <Ionicons name="checkmark" size={20} color="#fff" />
-                <Text style={addDeviceStyles.addButtonText}>Add Device</Text>
-              </TouchableOpacity>
+                {locationOptions.map((loc) => (
+                  <Picker.Item key={loc} label={loc} value={loc} />
+                ))}
+              </Picker>
+              <Button
+                title="Add Device"
+                iconName="checkmark"
+                onPress={handleAddDevice}
+                loading={isLoading}
+                buttonStyle={addDeviceStyles.addButton}
+                textStyle={addDeviceStyles.addButtonText}
+              />
               {errorMessage ? (
                 <View style={addDeviceStyles.errorContainer}>
                   <Text style={addDeviceStyles.errorMessage}>
@@ -225,3 +256,5 @@ export default function AddDevice() {
     </LinearGradient>
   );
 }
+
+export const styles = StyleSheet.create({});

@@ -204,6 +204,7 @@ export default function Signup() {
                 loading={isLoading}
                 buttonStyle={authStyles.button}
                 textStyle={authStyles.buttonText}
+                iconName="log-in-outline"
               />
 
               {/* QR Code Scanner */}

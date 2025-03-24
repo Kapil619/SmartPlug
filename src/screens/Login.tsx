@@ -137,6 +137,7 @@ export default function Login() {
               loading={isLoading}
               buttonStyle={authStyles.button}
               textStyle={authStyles.buttonText}
+              iconName="log-in-outline"
             />
 
             {/* Navigate to Signup */}

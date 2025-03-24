@@ -68,3 +68,16 @@ export interface DeviceRealtimeStructure {
         monthly: { [month: string]: { EnergyConsumed: number; BillingAmount: number } };
     };
 }
+
+export interface DeviceMetadata {
+    deviceName: string;
+    location: string;
+    appliance: string;
+    createdAt: any;
+}
+export interface UserProfile {
+    username: string;
+    email: string;
+    deviceCode: string;
+    devices: DeviceMetadata[];
+}
