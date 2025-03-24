@@ -81,44 +81,51 @@ const Home = () => {
     primaryDeviceId || ""
   );
   useEffect(() => {
-    const todayData = {
-      type: "today",
-      usage: latestData?.EnergyConsumed || 0,
-      cost: latestData?.BillingAmount || 0,
-    };
+    if (deviceList.length > 0) {
+      let totalTodayEnergy = 0;
+      let totalTodayCost = 0;
+      let totalMonthEnergy = 0;
+      let totalMonthCost = 0;
+      let totalPrevEnergy = 0;
+      let totalPrevCost = 0;
 
-    const currentDate = new Date();
-    const currentMonthKey = currentDate.toISOString().slice(0, 7); // e.g. "2025-03"
+      const now = new Date();
+      const currentMonthKey = now.toISOString().slice(0, 7); // e.g. "2025-03"
+      const previousDate = new Date();
+      previousDate.setMonth(previousDate.getMonth() - 1);
+      const previousMonthKey = previousDate.toISOString().slice(0, 7); // e.g. "2025-02"
 
-    const previousDate = new Date();
-    previousDate.setMonth(previousDate.getMonth() - 1);
-    const previousMonthKey = previousDate.toISOString().slice(0, 7); // e.g. "2025-02"
+      deviceList.forEach((device) => {
+        // Sum today's data from the 'latest' node
+        totalTodayEnergy += device.latest?.EnergyConsumed || 0;
+        totalTodayCost += device.latest?.BillingAmount || 0;
 
-    let currentAggregate = { EnergyConsumed: 0, BillingAmount: 0 };
-    let previousAggregate = { EnergyConsumed: 0, BillingAmount: 0 };
+        // Sum monthly aggregates if available
+        if (device.aggregates && device.aggregates.monthly) {
+          totalMonthEnergy +=
+            device.aggregates.monthly[currentMonthKey]?.EnergyConsumed || 0;
+          totalMonthCost +=
+            device.aggregates.monthly[currentMonthKey]?.BillingAmount || 0;
+          totalPrevEnergy +=
+            device.aggregates.monthly[previousMonthKey]?.EnergyConsumed || 0;
+          totalPrevCost +=
+            device.aggregates.monthly[previousMonthKey]?.BillingAmount || 0;
+        }
+      });
 
-    if (aggregations && aggregations.monthly) {
-      currentAggregate =
-        aggregations.monthly[currentMonthKey] || currentAggregate;
-      previousAggregate =
-        aggregations.monthly[previousMonthKey] || previousAggregate;
+      const todayData = {
+        type: "today",
+        usage: totalTodayEnergy,
+        cost: totalTodayCost,
+      };
+
+      setTopCardData([
+        todayData,
+        { type: "month", usage: totalMonthEnergy, cost: totalMonthCost },
+        { type: "previous", usage: totalPrevEnergy, cost: totalPrevCost },
+      ]);
     }
-
-    setTopCardData([
-      todayData,
-      {
-        type: "month",
-        usage: currentAggregate.EnergyConsumed,
-        cost: currentAggregate.BillingAmount,
-      },
-      {
-        type: "previous",
-        usage: previousAggregate.EnergyConsumed,
-        cost: previousAggregate.BillingAmount,
-      },
-    ]);
-    console.log("TopCardData", topCardData);
-  }, [latestData, aggregations]);
+  }, [deviceList]);
 
   return (
     <LinearGradient
