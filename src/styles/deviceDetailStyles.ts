@@ -1,6 +1,16 @@
 import { StyleSheet } from "react-native";
 
 export const deviceDetailstyles = StyleSheet.create({
+    applianceRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 5,
+    },
+    deviceAppliance: {
+        fontSize: 16,
+        color: "#637381",
+        marginLeft: 5,
+    },
     container: {
         flex: 1,
         backgroundColor: "#F7F9FC",

@@ -134,6 +134,12 @@ const DeviceDetail: React.FC = () => {
                 {metadata?.location || deviceLocation}
               </Text>
             </View>
+            <View style={deviceDetailstyles.applianceRow}>
+              <Ionicons name="construct-outline" size={16} color="#007aff" />
+              <Text style={deviceDetailstyles.deviceAppliance}>
+                {metadata?.appliance || "Unknown Appliance"}
+              </Text>
+            </View>
             {timerCountdown && (
               <View style={deviceDetailstyles.timerInfoContainer}>
                 <Ionicons name="time-outline" size={20} color="blue" />
@@ -178,6 +184,12 @@ const DeviceDetail: React.FC = () => {
                 {aggregated.cost.toFixed(3)}
               </Text>
               <Text style={deviceDetailstyles.runtimeLabel}>Cost (₹)</Text>
+            </View>
+            <View style={deviceDetailstyles.divider} />
+
+            <View style={styles.runtimeRow}>
+              <Text style={deviceDetailstyles.runtimeValue}>{37.5}</Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>Active Time</Text>
             </View>
           </View>
         </View>
