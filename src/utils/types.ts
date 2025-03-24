@@ -51,3 +51,20 @@ export interface User {
     phone: string;
     devices: Device[];
 }
+
+export interface DeviceRealtimeStructure {
+    latest: {
+        BillingAmount: number;
+        Current: number;
+        EnergyConsumed: number;
+        Power: number;
+        Voltage: number;
+        timestamp: string;
+        formatted_timestamp: string;
+    };
+    aggregates: {
+        daily: { [date: string]: { EnergyConsumed: number; BillingAmount: number; ActiveTime?: number } };
+        weekly: { [week: string]: { EnergyConsumed: number; BillingAmount: number } };
+        monthly: { [month: string]: { EnergyConsumed: number; BillingAmount: number } };
+    };
+}

@@ -11,3 +11,7 @@ export const validateSpecialCode = (code: string): boolean => {
     const re = /^\d{10}$/;
     return re.test(code);
 };
+
+export const validateName = (name: string): boolean => {
+    return name.length >= 2;
+};

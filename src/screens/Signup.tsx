@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -18,6 +19,7 @@ import { authStyles } from "../styles/authStyles";
 import { signUp } from "../utils/firebaseMethods";
 import {
   validateEmail,
+  validateName,
   validatePassword,
   validateSpecialCode,
 } from "../utils/validator";
@@ -25,6 +27,7 @@ import {
 export default function Signup() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [specialCode, setSpecialCode] = useState("");
   const [showPopup, setShowPopup] = useState(false);
@@ -37,6 +40,10 @@ export default function Signup() {
   };
   const handleSignup = async () => {
     // Validate email
+    if (!validateName(name)) {
+      setErrorMessage("Please enter a valid Userame.");
+      return;
+    }
     if (!validateEmail(email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
@@ -55,7 +62,7 @@ export default function Signup() {
     setErrorMessage("");
     setIsLoading(true);
     try {
-      await signUp(email, password);
+      await signUp(email, password, name, specialCode);
       navigation.navigate("Main", { screen: "Home" });
     } catch (error: any) {
       console.log("error", error);
@@ -83,119 +90,143 @@ export default function Signup() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={{ flex: 1 }}
         >
-          {/* Header / Logo */}
-          <Animatable.View
-            animation="fadeInDown"
-            delay={200}
-            style={authStyles.headerContainer}
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
           >
-            <Image
-              source={require("../../assets/realplug.png")}
-              style={authStyles.logo}
-            />
-            <Text style={authStyles.title}>Create Account</Text>
-            <Text style={authStyles.subtitle}>Sign up to get started</Text>
-          </Animatable.View>
-
-          {/* Form Container */}
-          <Animatable.View
-            animation="fadeInUp"
-            delay={400}
-            style={authStyles.formContainer}
-          >
-            {/* Email */}
-            <View style={authStyles.inputRow}>
-              <Ionicons name="mail-outline" size={20} color="#007aff" />
-              <TextInput
-                style={authStyles.input}
-                placeholder="Email"
-                placeholderTextColor="#999"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            {/* Password */}
-            <View style={authStyles.inputRow}>
-              <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
-              <TextInput
-                style={authStyles.input}
-                placeholder="Password"
-                placeholderTextColor="#999"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-            </View>
-
-            {/* Special Code */}
-            <View style={authStyles.inputRow}>
-              <Ionicons name="key-outline" size={20} color="#007aff" />
-              <TextInput
-                style={authStyles.input}
-                placeholder="Device Code"
-                placeholderTextColor="#999"
-                value={specialCode}
-                onChangeText={setSpecialCode}
-              />
-              <Ionicons
-                name="information-circle-outline"
-                size={24}
-                color="green"
-                onPress={handleInfoPress}
-              />
-            </View>
-            {showPopup && (
-              <Animatable.View
-                animation={"fadeInUp"}
-                delay={50}
-                style={authStyles.popup}
-              >
-                <Text style={authStyles.popupText}>
-                  Device code required. Please see the back of your device for
-                  the 10 digit code.
-                </Text>
-              </Animatable.View>
-            )}
-            {errorMessage ? (
-              <Text
-                style={{
-                  color: "red",
-                  textAlign: "center",
-                  marginVertical: 10,
-                }}
-              >
-                {errorMessage}
-              </Text>
-            ) : null}
-            {/* Sign Up Button */}
-            <Button
-              title="Sign Up"
-              onPress={handleSignup}
-              loading={isLoading}
-              buttonStyle={authStyles.button}
-              textStyle={authStyles.buttonText}
-            />
-
-            {/* QR Code Scanner */}
-            <TouchableOpacity
-              style={authStyles.qrButton}
-              onPress={handleScanQRCode}
-              activeOpacity={0.8}
+            {/* Header / Logo */}
+            <Animatable.View
+              animation="fadeInDown"
+              delay={200}
+              style={authStyles.headerContainer}
             >
-              <Ionicons name="qr-code-outline" size={20} color="#fff" />
-              <Text style={authStyles.qrButtonText}>Scan QR Code</Text>
-            </TouchableOpacity>
+              <Image
+                source={require("../../assets/realplug.png")}
+                style={authStyles.logo}
+              />
+              <Text style={authStyles.title}>Create Account</Text>
+              <Text style={authStyles.subtitle}>Sign up to get started</Text>
+            </Animatable.View>
 
-            {/* Navigate to Login */}
-            <TouchableOpacity style={authStyles.link} onPress={navigateToLogin}>
-              <Text style={authStyles.linkText}>
-                Already have an account? Log in
-              </Text>
-            </TouchableOpacity>
-          </Animatable.View>
+            {/* Form Container */}
+            <Animatable.View
+              animation="fadeInUp"
+              delay={400}
+              style={authStyles.formContainer}
+            >
+              <View style={authStyles.inputRow}>
+                <Ionicons name="person-outline" size={20} color="#007aff" />
+                <TextInput
+                  style={authStyles.input}
+                  placeholder="Username"
+                  placeholderTextColor="#999"
+                  value={name}
+                  onChangeText={setName}
+                  keyboardType="default"
+                  autoCapitalize="words"
+                />
+              </View>
+              {/* Email */}
+              <View style={authStyles.inputRow}>
+                <Ionicons name="mail-outline" size={20} color="#007aff" />
+                <TextInput
+                  style={authStyles.input}
+                  placeholder="Email"
+                  placeholderTextColor="#999"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+
+              {/* Password */}
+              <View style={authStyles.inputRow}>
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={20}
+                  color="#007aff"
+                />
+                <TextInput
+                  style={authStyles.input}
+                  placeholder="Password"
+                  placeholderTextColor="#999"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </View>
+
+              {/* Special Code */}
+              <View style={authStyles.inputRow}>
+                <Ionicons name="key-outline" size={20} color="#007aff" />
+                <TextInput
+                  style={authStyles.input}
+                  placeholder="Device Code"
+                  placeholderTextColor="#999"
+                  value={specialCode}
+                  onChangeText={setSpecialCode}
+                />
+                <Ionicons
+                  name="information-circle-outline"
+                  size={24}
+                  color="green"
+                  onPress={handleInfoPress}
+                />
+              </View>
+              {showPopup && (
+                <Animatable.View
+                  animation={"fadeInUp"}
+                  delay={50}
+                  style={authStyles.popup}
+                >
+                  <Text style={authStyles.popupText}>
+                    Device code required. Please see the back of your device for
+                    the 10 digit code.
+                  </Text>
+                </Animatable.View>
+              )}
+              {errorMessage ? (
+                <Text
+                  style={{
+                    color: "red",
+                    textAlign: "center",
+                    marginVertical: 10,
+                  }}
+                >
+                  {errorMessage}
+                </Text>
+              ) : null}
+              {/* Sign Up Button */}
+              <Button
+                title="Sign Up"
+                onPress={handleSignup}
+                loading={isLoading}
+                buttonStyle={authStyles.button}
+                textStyle={authStyles.buttonText}
+              />
+
+              {/* QR Code Scanner */}
+              <TouchableOpacity
+                style={authStyles.qrButton}
+                onPress={handleScanQRCode}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="qr-code-outline" size={20} color="#fff" />
+                <Text style={authStyles.qrButtonText}>Scan QR Code</Text>
+              </TouchableOpacity>
+
+              {/* Navigate to Login */}
+              <TouchableOpacity
+                style={authStyles.link}
+                onPress={navigateToLogin}
+              >
+                <Text style={authStyles.linkText}>
+                  Already have an account? Log in
+                </Text>
+              </TouchableOpacity>
+            </Animatable.View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>
