@@ -30,6 +30,7 @@ export const signUp = async (email: string, password: string, name: string, devi
                 appliance: "Not specified",
                 deviceName: "Smartplug 1",
                 location: "Not specified",
+                deviceCode,
             },
             createdAt: serverTimestamp(),
         });
@@ -133,6 +134,7 @@ export const addNewDevice = async (
                 appliance,       // use the provided appliance type
                 deviceName,      // use the name entered by the user
                 location,        // location (or default "Not specified")
+                deviceCode,      // use the device code as a unique identifier
             },
             createdAt: serverTimestamp(),
         });

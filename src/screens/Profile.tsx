@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -12,21 +12,33 @@ import {
 import { users } from "../utils/data";
 // Example logout function from your existing code
 import { useNavigation } from "@react-navigation/native";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { profileStyles } from "../styles/profileStyles";
-import { logOut } from "../utils/firebaseMethods";
+import { getUserProfile, logOut } from "../utils/firebaseMethods";
+import { UserProfile } from "../utils/types";
 
 export default function Profile() {
   const currentUser = users[0];
   const navigation = useNavigation<any>();
+  const [profile, setProfile] = useState<UserProfile>();
 
   // State to toggle secret key visibility per device
   const [visibleSecrets, setVisibleSecrets] = useState<{
     [key: string]: boolean;
-  }>({
-    "1": false,
-    "2": false,
-  });
+  }>({});
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const currentUser = FIREBASE_AUTH.currentUser!;
+        const prof = await getUserProfile(currentUser.uid);
+        setProfile(prof);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
   const toggleSecret = (id: string) => {
     setVisibleSecrets((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -51,8 +63,12 @@ export default function Profile() {
                 <Ionicons name="pencil-outline" size={16} color="white" />
               </TouchableOpacity>
             </View>
-            <Text style={profileStyles.profileName}>{currentUser.name}</Text>
-            <Text style={profileStyles.profileEmail}>{currentUser.email}</Text>
+            <Text style={profileStyles.profileName}>
+              {profile?.username || "User"}
+            </Text>
+            <Text style={profileStyles.profileEmail}>
+              {profile?.email || ""}
+            </Text>
           </View>
 
           {/* Personal Info Card */}
@@ -60,7 +76,7 @@ export default function Profile() {
             <Text style={profileStyles.cardTitle}>Personal Information</Text>
             <View style={profileStyles.infoItem}>
               <Ionicons name="call-outline" size={20} color="#007aff" />
-              <Text style={profileStyles.infoText}>{currentUser.phone}</Text>
+              <Text style={profileStyles.infoText}>{"+91 8412014492"}</Text>
             </View>
           </View>
 
@@ -92,20 +108,24 @@ export default function Profile() {
           {/* Activity Summary Card */}
           <View style={profileStyles.card}>
             <Text style={profileStyles.cardTitle}>Your Devices</Text>
-            {currentUser.devices.map((device, index) => (
-              <View key={device.id}>
-                <View key={device.id} style={profileStyles.deviceRow}>
-                  <Text style={profileStyles.deviceName}>{device.name}</Text>
+            {profile?.devices?.map((device, index) => (
+              <View key={device.deviceCode}>
+                <View style={profileStyles.deviceRow}>
+                  <Text style={profileStyles.deviceName}>
+                    {device.deviceName || "Unnamed Device"}
+                  </Text>
                   <View style={profileStyles.secretContainer}>
                     <Text style={profileStyles.secretKey}>
-                      {visibleSecrets[device.id]
-                        ? device.deviceToken
+                      {visibleSecrets[device.deviceCode]
+                        ? device.deviceCode
                         : "••••••••••"}
                     </Text>
-                    <TouchableOpacity onPress={() => toggleSecret(device.id)}>
+                    <TouchableOpacity
+                      onPress={() => toggleSecret(device.deviceCode)}
+                    >
                       <Ionicons
                         name={
-                          visibleSecrets[device.id]
+                          visibleSecrets[device.deviceCode]
                             ? "eye-off-outline"
                             : "eye-outline"
                         }
@@ -116,20 +136,10 @@ export default function Profile() {
                   </View>
                 </View>
                 <View style={profileStyles.statsRow}>
-                  <Text style={profileStyles.stat}>
-                    Energy:{" "}
-                    {device.currentEnergy !== null
-                      ? `${device.currentEnergy} kWh`
-                      : "--"}
-                  </Text>
-                  <Text style={profileStyles.stat}>
-                    Cost:{" "}
-                    {device.currentCost !== null
-                      ? `₹${device.currentCost}`
-                      : "--"}
-                  </Text>
+                  <Text style={profileStyles.stat}>Energy: {"--"}</Text>
+                  <Text style={profileStyles.stat}>Cost: {"--"}</Text>
                 </View>
-                {index < currentUser.devices.length - 1 && (
+                {index < profile.devices.length - 1 && (
                   <View style={profileStyles.seperator} />
                 )}
               </View>

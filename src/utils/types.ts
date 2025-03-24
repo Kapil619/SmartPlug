@@ -74,6 +74,7 @@ export interface DeviceMetadata {
     location: string;
     appliance: string;
     createdAt: any;
+    deviceCode: string;
 }
 export interface UserProfile {
     username: string;
