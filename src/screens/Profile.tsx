@@ -72,13 +72,6 @@ export default function Profile() {
           </View>
 
           {/* Personal Info Card */}
-          <View style={profileStyles.card}>
-            <Text style={profileStyles.cardTitle}>Personal Information</Text>
-            <View style={profileStyles.infoItem}>
-              <Ionicons name="call-outline" size={20} color="#007aff" />
-              <Text style={profileStyles.infoText}>{"+91 8412014492"}</Text>
-            </View>
-          </View>
 
           {/* Account Settings Card */}
           <View style={profileStyles.card}>

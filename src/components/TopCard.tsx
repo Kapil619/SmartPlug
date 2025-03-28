@@ -102,7 +102,7 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
                     <>
                       <Text style={componentStyles.statLabel}>Usage:</Text>
                       <Text style={componentStyles.statValue}>
-                        {item.usage} kWh
+                        {item.usage.toFixed(2)} kWh
                       </Text>
                     </>
                   ) : (
