@@ -2,6 +2,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useRoute } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import { onValue, ref } from "firebase/database";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
@@ -22,7 +23,6 @@ import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
 import { toggleRelayState } from "../utils/firebaseMethods";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
-import { onValue, ref } from "firebase/database";
 const { width } = Dimensions.get("window");
 
 const DeviceDetail: React.FC = () => {
@@ -59,15 +59,26 @@ const DeviceDetail: React.FC = () => {
   }, [currentUser.uid, deviceID]);
   useEffect(() => {
     return () => {
-      if (timerTimeoutRef.current) clearTimeout(timerTimeoutRef.current);
-      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      if (timerTimeoutRef.current) {
+        clearTimeout(timerTimeoutRef.current);
+        timerTimeoutRef.current = null;
+      }
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
     };
   }, []);
 
   const handleStartTimer = (hours: number, minutes: number) => {
-    // Clear any existing timer intervals
-    if (timerTimeoutRef.current) clearTimeout(timerTimeoutRef.current);
-    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    if (timerTimeoutRef.current) {
+      clearTimeout(timerTimeoutRef.current);
+      timerTimeoutRef.current = null; // Reset the reference
+    }
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null; // Reset the reference
+    }
 
     const ms = (hours * 3600 + minutes * 60) * 1000;
     const endTime = Date.now() + ms;
@@ -78,6 +89,7 @@ const DeviceDetail: React.FC = () => {
       toggleRelayState(currentUser.uid, deviceID);
       setTimerCountdown(null);
       setTimerEndTime(null);
+      timerTimeoutRef.current = null; // Reset the reference
     }, ms);
 
     // Update countdown every minute
@@ -86,7 +98,9 @@ const DeviceDetail: React.FC = () => {
       const remainingMs = endTime - now;
       if (remainingMs <= 0) {
         clearInterval(timerIntervalRef.current!);
-        setTimerCountdown("0h 0m");
+        setTimerCountdown(null);
+        setTimerEndTime(null);
+        timerIntervalRef.current = null; // Reset the reference
       } else {
         const remainingSec = Math.floor(remainingMs / 1000);
         const rHours = Math.floor(remainingSec / 3600);
@@ -128,6 +142,19 @@ const DeviceDetail: React.FC = () => {
     });
   }, [latestData?.EnergyConsumed]);
 
+  const cancelTimer = () => {
+    if (timerTimeoutRef.current) {
+      clearTimeout(timerTimeoutRef.current);
+      timerTimeoutRef.current = null; // Reset the reference
+    }
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null; // Reset the reference
+    }
+    setTimerCountdown(null); // Clear the countdown
+    setTimerEndTime(null); // Clear the end time
+  };
+
   return (
     <SafeAreaView style={deviceDetailstyles.container}>
       <Header title={"Device Detail"} />
@@ -155,15 +182,21 @@ const DeviceDetail: React.FC = () => {
                 {metadata?.appliance || "Unknown Appliance"}
               </Text>
             </View>
+
             {timerCountdown && (
               <View style={deviceDetailstyles.timerInfoContainer}>
-                <Ionicons name="time-outline" size={20} color="blue" />
-                <View style={{ flexDirection: "column" }}>
-                  <Text style={deviceDetailstyles.timerText}>Timer active</Text>
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={deviceDetailstyles.timerText}>Timer Active</Text>
                   <Text style={deviceDetailstyles.timerInfoText}>
                     {timerCountdown} left
                   </Text>
                 </View>
+                <TouchableOpacity
+                  onPress={cancelTimer}
+                  style={deviceDetailstyles.cancelTimerButton}
+                >
+                  <Ionicons name="close-circle" size={24} color="gray" />
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -254,11 +287,11 @@ const DeviceDetail: React.FC = () => {
         <View style={deviceDetailstyles.quickActionsContainer}>
           {timerCountdown ? (
             <TouchableOpacity style={deviceDetailstyles.quickActionItem}>
-              <Ionicons name="time-sharp" size={24} color="#D35400" />
+              <Ionicons name="time-sharp" size={24} color="gray" />
               <Text
                 style={[
                   deviceDetailstyles.quickActionLabel,
-                  { color: "#D35400" },
+                  { color: "#D35400", fontWeight: "800" },
                 ]}
               >
                 Timer Active
@@ -294,8 +327,6 @@ const DeviceDetail: React.FC = () => {
         visible={timerModalVisible}
         onClose={() => setTimerModalVisible(false)}
         onStartTimer={handleStartTimer}
-        initialHours={initHours}
-        initialMinutes={initMinutes}
       />
     </SafeAreaView>
   );

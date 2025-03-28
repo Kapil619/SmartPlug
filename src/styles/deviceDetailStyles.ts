@@ -177,25 +177,31 @@ export const deviceDetailstyles = StyleSheet.create({
     },
     timerInfoContainer: {
         flexDirection: "row",
-        backgroundColor: "#FFF4E5", // light orange background
-        borderRadius: 8,
         alignItems: "center",
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        gap: 10,
-        marginTop: 8,
-        alignSelf: "flex-start",
-    },
-    timerInfoText: {
-        color: "#D35400",
-        fontSize: 14,
-        fontWeight: "600",
-        marginLeft: 4,
+        backgroundColor: "#E1F0FF", // a subtle, theme-based light blue
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 25,
+        marginVertical: 10,
+        // Added a small shadow for elevation effect
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 2,
     },
     timerText: {
-        color: "black",
-        fontSize: 14,
-        fontWeight: "600",
-        marginLeft: 4,
+        fontSize: 16,
+        fontWeight: "500",
+        color: "#2E3A45", // dark text from your theme
     },
+    timerInfoText: {
+        fontSize: 14,
+        fontWeight: "800",
+        color: "red",
+    },
+    cancelTimerButton: {
+        padding: 5,
+    },
+
 });

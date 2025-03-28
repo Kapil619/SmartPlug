@@ -1,101 +1,82 @@
-import React, { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useState } from "react";
 import {
+  Dimensions,
   Modal,
-  ScrollView,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
-type TimerModalProps = {
+const { height } = Dimensions.get("window");
+
+interface TimerModalProps {
   visible: boolean;
   onClose: () => void;
   onStartTimer: (hours: number, minutes: number) => void;
-  initialHours?: number;
-  initialMinutes?: number;
-};
-
-const hoursOptions = Array.from({ length: 13 }, (_, i) => i); // 0 to 12 hours
-const minutesOptions = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+}
 
 const TimerModal: React.FC<TimerModalProps> = ({
   visible,
   onClose,
   onStartTimer,
-  initialHours = 1,
-  initialMinutes = 0,
 }) => {
-  const [selectedHour, setSelectedHour] = useState(initialHours);
-  const [selectedMinute, setSelectedMinute] = useState(initialMinutes);
+  const [time, setTime] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(Platform.OS === "ios");
 
-  // If modal becomes visible, initialize selections from props.
-  useEffect(() => {
-    if (visible) {
-      setSelectedHour(initialHours);
-      setSelectedMinute(initialMinutes);
+  const onChange = (event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      setTime(selectedDate);
     }
-  }, [visible, initialHours, initialMinutes]);
-
-  const handleStart = () => {
-    // we disallow 0 timer duration
-    if (selectedHour === 0 && selectedMinute === 0) return;
-    onStartTimer(selectedHour, selectedMinute);
-    onClose();
+    if (Platform.OS === "android") {
+      setShowPicker(false);
+    }
   };
 
-  const renderOptions = (
-    options: number[],
-    selected: number,
-    onSelect: (val: number) => void
-  ) => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.optionsContainer}
-    >
-      {options.map((value) => (
-        <TouchableOpacity
-          key={value}
-          style={[
-            styles.optionItem,
-            selected === value && styles.optionItemActive,
-          ]}
-          onPress={() => onSelect(value)}
-        >
-          <Text
-            style={[
-              styles.optionText,
-              selected === value && styles.optionTextActive,
-            ]}
-          >
-            {value}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  );
-
   return (
-    <Modal transparent visible={visible} animationType="slide">
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Set Timer</Text>
-
-          <Text style={styles.label}>Hours</Text>
-          {renderOptions(hoursOptions, selectedHour, setSelectedHour)}
-
-          <Text style={[styles.label, { marginTop: 10 }]}>Minutes</Text>
-          {renderOptions(minutesOptions, selectedMinute, setSelectedMinute)}
-
-          <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleStart}>
-              <Text style={styles.buttonText}>Start Timer</Text>
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.modalOverlay}>
+        <View style={styles.bottomSheet}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Set Timer</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Ionicons name="close" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
+          <Text style={styles.description}>
+            Select a time to change your device state automatically.
+          </Text>
+          {Platform.OS === "android" && !showPicker && (
+            <TouchableOpacity
+              style={styles.selectTimeButton}
+              onPress={() => setShowPicker(true)}
+            >
+              <Text style={styles.selectTimeText}>Select Time</Text>
+              <Ionicons name="time-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+          )}
+          {showPicker && (
+            <DateTimePicker
+              value={time}
+              mode="time"
+              is24Hour={true}
+              display="clock"
+              onChange={onChange}
+              style={styles.dateTimePicker}
+            />
+          )}
+          <TouchableOpacity
+            style={[styles.actionButton, styles.startButton]}
+            onPress={() => {
+              onStartTimer(time.getHours(), time.getMinutes());
+              onClose();
+            }}
+          >
+            <Text style={styles.actionButtonText}>Start Timer</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -105,63 +86,65 @@ const TimerModal: React.FC<TimerModalProps> = ({
 export default TimerModal;
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+  },
+  bottomSheet: {
+    backgroundColor: "#578FCA",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    height: height * 0.3,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 5,
-  },
-  optionsContainer: {
-    flexDirection: "row",
-    marginBottom: 10,
-  },
-  optionItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    backgroundColor: "#E1F0FF",
-    marginRight: 10,
-  },
-  optionItemActive: {
-    backgroundColor: "#007aff",
-  },
-  optionText: {
-    fontSize: 14,
-    color: "#007aff",
-  },
-  optionTextActive: {
+  headerText: {
     color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
   },
-  buttonRow: {
+  description: {
+    color: "#fff",
+    marginVertical: 10,
+    fontSize: 16,
+  },
+  selectTimeButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 15,
-  },
-  button: {
-    backgroundColor: "#007aff",
+    backgroundColor: "#57B4BA",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginVertical: 10,
   },
-  buttonText: {
+  selectTimeText: {
     color: "#fff",
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  dateTimePicker: {
+    width: "100%",
+  },
+  actionButton: {
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  startButton: {
+    backgroundColor: "white",
+  },
+  actionButtonText: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
