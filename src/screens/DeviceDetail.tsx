@@ -13,14 +13,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_RTDB } from "../../firebaseConfig";
 import EnergyTrendsChart from "../components/Chart";
 import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
 import { useDeviceData } from "../hooks/useDeviceData";
 import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
+import { toggleRelayState } from "../utils/firebaseMethods";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
+import { onValue, ref } from "firebase/database";
 const { width } = Dimensions.get("window");
 
 const DeviceDetail: React.FC = () => {
@@ -28,9 +30,8 @@ const DeviceDetail: React.FC = () => {
   const { device } = route.params;
   const deviceID = device.id;
   const currentUser = FIREBASE_AUTH.currentUser!;
+  // const currentUser = { uid: "u1" };
   const [selectedUsage, setSelectedUsage] = useState(1);
-  const [deviceOn, setDeviceOn] = useState(device.status === "On");
-  // Timer modal state
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   // Countdown text (in hours, as a string)
   const [timerCountdown, setTimerCountdown] = useState<string | null>(null);
@@ -40,8 +41,22 @@ const DeviceDetail: React.FC = () => {
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   // For demonstration, we’ll assume some placeholder data.
   const deviceLocation = device.location || "Unknown Location";
-  const isDeviceOn = device.status === "On";
+  const [relayState, setRelayState] = useState<string>("OFF");
 
+  useEffect(() => {
+    const relayRef = ref(
+      FIREBASE_RTDB,
+      `users/${currentUser.uid}/devices/${deviceID}/relay/state`
+    );
+    const unsubscribe = onValue(relayRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setRelayState(snapshot.val());
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [currentUser.uid, deviceID]);
   useEffect(() => {
     return () => {
       if (timerTimeoutRef.current) clearTimeout(timerTimeoutRef.current);
@@ -60,7 +75,7 @@ const DeviceDetail: React.FC = () => {
 
     // Set a timeout to turn off the device when time expires
     timerTimeoutRef.current = setTimeout(() => {
-      setDeviceOn(false);
+      toggleRelayState(currentUser.uid, deviceID);
       setTimerCountdown(null);
       setTimerEndTime(null);
     }, ms);
@@ -157,11 +172,16 @@ const DeviceDetail: React.FC = () => {
         {/* Power Toggle */}
         <View style={deviceDetailstyles.powerContainer}>
           <Text style={deviceDetailstyles.powerLabel}>Power</Text>
-          <TouchableOpacity style={deviceDetailstyles.powerButton}>
+          <TouchableOpacity
+            onPress={() => {
+              toggleRelayState(currentUser.uid, deviceID);
+            }}
+            style={deviceDetailstyles.powerButton}
+          >
             <Ionicons
-              name={isDeviceOn ? "power-outline" : "power-sharp"}
+              name={relayState === "ON" ? "power-outline" : "power-sharp"}
               size={28}
-              color={isDeviceOn ? "#4CAF50" : "#999"}
+              color={relayState === "ON" ? "#4CAF50" : "red"}
             />
           </TouchableOpacity>
         </View>

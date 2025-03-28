@@ -2,7 +2,7 @@ import "dotenv/config";
 
 export default {
   expo: {
-    name: "SmartPlug",
+    name: "EnergyIQ",
     slug: "SmartPlug",
     version: "1.0.0",
     orientation: "portrait",

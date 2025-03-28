@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
-import { ref, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB, FIREBASE_RTDB } from "../../firebaseConfig";
 import { getWeekKey } from "./helper";
@@ -143,5 +143,19 @@ export const addNewDevice = async (
     } catch (error) {
         console.error("Error adding new device:", error);
         throw error;
+    }
+};
+
+export const toggleRelayState = async (userId: string, deviceId: string) => {
+    try {
+        const relayRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/relay/state`);
+        const snapshot = await get(relayRef);
+        if (snapshot.exists()) {
+            const currentState = snapshot.val();
+            const newState = currentState === "ON" ? "OFF" : "ON";
+            await set(relayRef, newState);
+        }
+    } catch (error) {
+        console.error("Error toggling relay state:", error);
     }
 };
