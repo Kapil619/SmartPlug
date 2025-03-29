@@ -53,6 +53,9 @@ export default function AddDevice() {
   const [location, setLocation] = useState(locationOptions[0]);
   const navigation = useNavigation<any>();
   const [isLoading, setIsLoading] = useState(false);
+  const [customAppliance, setCustomAppliance] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
+
   const handleScanQR = () => {
     ToastAndroid.show("Scan QR Code logic here", ToastAndroid.SHORT);
     console.log("Scan QR Code logic here");
@@ -71,7 +74,16 @@ export default function AddDevice() {
       return;
     }
     const selectedAppliance =
-      applianceType !== "Other" ? applianceType : "Not specified";
+      applianceType === "Other" ? customAppliance : applianceType;
+    const selectedLocation = location === "Other" ? customLocation : location;
+    if (applianceType === "Other" && !customAppliance) {
+      setErrorMessage("Please enter a custom appliance type.");
+      return;
+    }
+    if (location === "Other" && !customLocation) {
+      setErrorMessage("Please enter a custom location.");
+      return;
+    }
     const deviceCodeToUse =
       method === "code" ? specialCode : Date.now().toString();
     try {
@@ -83,7 +95,7 @@ export default function AddDevice() {
         deviceCodeToUse,
         deviceName,
         selectedAppliance,
-        location
+        selectedLocation
       );
       ToastAndroid.show("Device added successfully!", ToastAndroid.SHORT);
       navigation.reset({
@@ -222,7 +234,18 @@ export default function AddDevice() {
                   />
                 ))}
               </Picker>
-
+              {applianceType === "Other" && (
+                <View style={addDeviceStyles.inputRow}>
+                  <Ionicons name="pricetag-outline" size={20} color="#007aff" />
+                  <TextInput
+                    style={addDeviceStyles.input}
+                    placeholder="Enter custom appliance type"
+                    placeholderTextColor="#999"
+                    value={customAppliance}
+                    onChangeText={setCustomAppliance}
+                  />
+                </View>
+              )}
               {/* Location Dropdown */}
               <Text style={addDeviceStyles.label}>Location:</Text>
               <Picker
@@ -234,6 +257,18 @@ export default function AddDevice() {
                   <Picker.Item key={loc} label={loc} value={loc} />
                 ))}
               </Picker>
+              {location === "Other" && (
+                <View style={addDeviceStyles.inputRow}>
+                  <Ionicons name="location-outline" size={20} color="#007aff" />
+                  <TextInput
+                    style={addDeviceStyles.input}
+                    placeholder="Enter custom location"
+                    placeholderTextColor="#999"
+                    value={customLocation}
+                    onChangeText={setCustomLocation}
+                  />
+                </View>
+              )}
               <Button
                 title="Add Device"
                 iconName="checkmark"

@@ -124,6 +124,8 @@ export default function Login() {
                   color: "red",
                   textAlign: "center",
                   marginVertical: 10,
+                  fontSize: 16,
+                  fontWeight: "800",
                 }}
               >
                 {errorMessage}

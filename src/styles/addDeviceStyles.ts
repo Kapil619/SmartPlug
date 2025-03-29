@@ -8,6 +8,7 @@ export const addDeviceStyles = StyleSheet.create({
         color: "red",
         fontSize: 16,
         textAlign: "center",
+        fontWeight: "800",
     },
     container: {
         flex: 1,
