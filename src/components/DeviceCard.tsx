@@ -1,17 +1,20 @@
-import React from "react";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
+  Dimensions,
   Image,
   StyleSheet,
-  Dimensions,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-import { homeStyles } from "../styles/homeStyles";
 import { useNavigation } from "@react-navigation/native";
+import { onValue, ref } from "firebase/database";
+import { FIREBASE_RTDB } from "../../firebaseConfig";
 import { useUserData } from "../hooks/useUserData";
+import { homeStyles } from "../styles/homeStyles";
+import { toggleRelayState } from "../utils/firebaseMethods";
 
 const { width } = Dimensions.get("window");
 
@@ -28,10 +31,24 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 }) => {
   const navigation = useNavigation<any>();
   const metadata = useUserData(userId, device.id);
-
+  const [relayState, setRelayState] = useState<string>("OFF");
   // Determine background color based on a simple alternating rule
   // (you can customize this logic if needed)
   // Here we assume the parent passes styling, so we use metadata only.
+  useEffect(() => {
+    const relayRef = ref(
+      FIREBASE_RTDB,
+      `users/${userId}/devices/${device.id}/relay/state`
+    );
+    const unsubscribe = onValue(relayRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setRelayState(snapshot.val());
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [userId, device.id]);
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("DeviceDetail", { device })}
@@ -46,13 +63,18 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
           source={require("../../assets/plug.png")}
           style={homeStyles.deviceImage}
         />
-        <TouchableOpacity style={homeStyles.powerIcon}>
+        <TouchableOpacity
+          onPress={() => {
+            toggleRelayState(userId, device.id);
+          }}
+          style={homeStyles.powerIcon}
+        >
           <Ionicons
-            name={device.status === "On" ? "power-outline" : "power-sharp"}
+            name={relayState === "ON" ? "power-outline" : "power-sharp"}
             size={18}
-            color={device.status === "On" ? "white" : "#EEEEEE"}
+            color={relayState === "ON" ? "white" : "#EEEEEE"}
             style={{
-              backgroundColor: device.status === "On" ? "#578FCA" : "#999",
+              backgroundColor: relayState === "ON" ? "#4CAF50" : "#F95454",
               borderRadius: 50,
               padding: 8,
             }}
@@ -65,7 +87,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
           {metadata?.appliance || "Unnamed Device"}
         </Text>
         <Text style={homeStyles.deviceStatus}>
-          Status: {device.status || "Off"}
+          Status: {relayState === "ON" ? "On" : "Off"}
         </Text>
       </View>
       <Text style={homeStyles.applianceName}>
