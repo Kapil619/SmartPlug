@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker"; // Add this for seconds picker
 import React, { useState } from "react";
 import {
   Dimensions,
@@ -16,7 +17,7 @@ const { height } = Dimensions.get("window");
 interface TimerModalProps {
   visible: boolean;
   onClose: () => void;
-  onStartTimer: (hours: number, minutes: number) => void;
+  onStartTimer: (hours: number, minutes: number, seconds: number) => void;
 }
 
 const TimerModal: React.FC<TimerModalProps> = ({
@@ -24,7 +25,12 @@ const TimerModal: React.FC<TimerModalProps> = ({
   onClose,
   onStartTimer,
 }) => {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(() => {
+    const defaultTime = new Date();
+    defaultTime.setHours(0, 0, 0, 0); // Set time to 00:00:00
+    return defaultTime;
+  });
+  const [seconds, setSeconds] = useState(0); // State for seconds
   const [showPicker, setShowPicker] = useState(Platform.OS === "ios");
 
   const onChange = (event: any, selectedDate?: Date) => {
@@ -68,10 +74,30 @@ const TimerModal: React.FC<TimerModalProps> = ({
               style={styles.dateTimePicker}
             />
           )}
+
+          {/* Seconds Picker */}
+          <View style={styles.secondButton}>
+            <Text style={styles.selectTimeText}>Seconds:</Text>
+            <Picker
+              selectedValue={seconds}
+              onValueChange={(itemValue) => setSeconds(itemValue)}
+              style={styles.secondsPicker}
+            >
+              {Array.from({ length: 60 }, (_, i) => (
+                <Picker.Item
+                  style={{ fontWeight: "600" }}
+                  key={i}
+                  label={`${i}`}
+                  value={i}
+                />
+              ))}
+            </Picker>
+          </View>
+
           <TouchableOpacity
             style={[styles.actionButton, styles.startButton]}
             onPress={() => {
-              onStartTimer(time.getHours(), time.getMinutes());
+              onStartTimer(time.getHours(), time.getMinutes(), seconds);
               onClose();
             }}
           >
@@ -96,7 +122,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
-    height: height * 0.3,
+    height: height * 0.4, // Increased height to accommodate seconds picker
   },
   header: {
     flexDirection: "row",
@@ -125,6 +151,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginVertical: 10,
   },
+  secondButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#57B4BA",
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginVertical: 10,
+  },
   selectTimeText: {
     color: "#fff",
     fontSize: 16,
@@ -132,6 +168,11 @@ const styles = StyleSheet.create({
   },
   dateTimePicker: {
     width: "100%",
+  },
+  secondsPicker: {
+    height: 50,
+    width: 100,
+    borderRadius: 5,
   },
   actionButton: {
     paddingVertical: 12,

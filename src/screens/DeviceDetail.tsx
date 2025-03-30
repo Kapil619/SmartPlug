@@ -70,7 +70,11 @@ const DeviceDetail: React.FC = () => {
     };
   }, []);
 
-  const handleStartTimer = (hours: number, minutes: number) => {
+  const handleStartTimer = (
+    hours: number,
+    minutes: number,
+    seconds: number
+  ) => {
     if (timerTimeoutRef.current) {
       clearTimeout(timerTimeoutRef.current);
       timerTimeoutRef.current = null; // Reset the reference
@@ -80,7 +84,7 @@ const DeviceDetail: React.FC = () => {
       timerIntervalRef.current = null; // Reset the reference
     }
 
-    const ms = (hours * 3600 + minutes * 60) * 1000;
+    const ms = (hours * 3600 + minutes * 60 + seconds) * 1000;
     const endTime = Date.now() + ms;
     setTimerEndTime(endTime);
 
