@@ -114,6 +114,7 @@ export const getUserProfile = async (userID: string): Promise<UserProfile> => {
             email: userData.email,
             deviceCode: userData.deviceCode,
             devices,
+            state: userData.state,
         };
     } catch (error) {
         console.error("Error fetching user profile:", error);

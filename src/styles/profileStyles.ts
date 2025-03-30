@@ -5,6 +5,7 @@ export const profileStyles = StyleSheet.create({
     gradientContainer: {
         flex: 1,
     },
+
     container: {
         flex: 1,
     },
@@ -13,16 +14,28 @@ export const profileStyles = StyleSheet.create({
         paddingBottom: 40,
     },
     headerSection: {
+        marginTop: 20,
+        flexDirection: "row",
         alignItems: "center",
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 15,
         marginBottom: 20,
+        elevation: 2,
+    },
+    headerContent: {
+        flexDirection: "row",
+        alignItems: "center",
+        flex: 1,
     },
     avatarContainer: {
         position: "relative",
+        marginRight: 15, // Adds spacing between the image and details
     },
     profileImage: {
-        width: AVATAR_SIZE,
-        height: AVATAR_SIZE,
-        borderRadius: AVATAR_SIZE / 2,
+        width: 80,
+        height: 80,
+        borderRadius: 40,
         backgroundColor: "#ccc",
     },
     editIcon: {
@@ -33,16 +46,24 @@ export const profileStyles = StyleSheet.create({
         borderRadius: 12,
         padding: 5,
     },
+    userDetails: {
+        flex: 1,
+        marginLeft: 10,
+    },
     profileName: {
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: "bold",
-        marginTop: 10,
         color: "#2E3A45",
+        marginBottom: 5,
     },
     profileEmail: {
         fontSize: 14,
         color: "#637381",
-        marginTop: 2,
+        marginBottom: 5,
+    },
+    profileState: {
+        fontSize: 14,
+        color: "#666",
     },
     card: {
         backgroundColor: "#fff",

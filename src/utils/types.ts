@@ -80,5 +80,6 @@ export interface UserProfile {
     username: string;
     email: string;
     deviceCode: string;
+    state: string;
     devices: DeviceMetadata[];
 }

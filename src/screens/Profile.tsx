@@ -52,23 +52,33 @@ export default function Profile() {
         <ScrollView contentContainerStyle={profileStyles.scrollContent}>
           {/* Header / Profile Info */}
           <View style={profileStyles.headerSection}>
-            <View style={profileStyles.avatarContainer}>
-              <Image
-                source={{
-                  uri: "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
-                }}
-                style={profileStyles.profileImage}
-              />
-              <TouchableOpacity style={profileStyles.editIcon}>
-                <Ionicons name="pencil-outline" size={16} color="white" />
-              </TouchableOpacity>
+            <View style={profileStyles.headerContent}>
+              {/* Profile Image */}
+              <View style={profileStyles.avatarContainer}>
+                <Image
+                  source={{
+                    uri: "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
+                  }}
+                  style={profileStyles.profileImage}
+                />
+                <TouchableOpacity style={profileStyles.editIcon}>
+                  <Ionicons name="pencil-outline" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              {/* User Details */}
+              <View style={profileStyles.userDetails}>
+                <Text style={profileStyles.profileName}>
+                  {profile?.username || "User"}
+                </Text>
+                <Text style={profileStyles.profileEmail}>
+                  {profile?.email || "Email not specified"}
+                </Text>
+                <Text style={profileStyles.profileState}>
+                  {profile?.state || "State not specified"}
+                </Text>
+              </View>
             </View>
-            <Text style={profileStyles.profileName}>
-              {profile?.username || "User"}
-            </Text>
-            <Text style={profileStyles.profileEmail}>
-              {profile?.email || ""}
-            </Text>
           </View>
 
           {/* Personal Info Card */}
