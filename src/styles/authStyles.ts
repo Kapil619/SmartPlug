@@ -1,6 +1,23 @@
 import { StyleSheet } from "react-native";
 
 export const authStyles = StyleSheet.create({
+
+    picker: {
+        flex: 1,
+        color: "#333",
+        fontSize: 16,
+        backgroundColor: "#E1F0FF",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+    },
+    inputRow2: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#E1F0FF",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginVertical: 5,
+    },
     container: {
         flex: 1,
     },

@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import Button from "../components/Button";
+import StatePicker from "../components/StatePicker";
 import { authStyles } from "../styles/authStyles";
 import { signUp } from "../utils/firebaseMethods";
 import {
@@ -32,7 +33,7 @@ export default function Signup() {
   const [specialCode, setSpecialCode] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selectedState, setSelectedState] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const handleInfoPress = () => {
     setShowPopup(true);
@@ -59,10 +60,14 @@ export default function Signup() {
       setErrorMessage("Device Code must be exactly 10 digits.");
       return;
     }
+    if (!selectedState) {
+      setErrorMessage("Please select a state.");
+      return;
+    }
     setErrorMessage("");
     setIsLoading(true);
     try {
-      await signUp(email, password, name, specialCode);
+      await signUp(email, password, name, specialCode, selectedState);
       navigation.navigate("Main", { screen: "Home" });
     } catch (error: any) {
       console.log("error", error);
@@ -172,6 +177,13 @@ export default function Signup() {
                   size={24}
                   color="green"
                   onPress={handleInfoPress}
+                />
+              </View>
+
+              <View style={authStyles.inputRow2}>
+                <StatePicker
+                  selectedState={selectedState}
+                  onValueChange={(value) => setSelectedState(value)}
                 />
               </View>
               {showPopup && (

@@ -15,7 +15,7 @@ export const signIn = async (email: string, password: string) => {
     }
 }
 
-export const signUp = async (email: string, password: string, name: string, deviceCode: string) => {
+export const signUp = async (email: string, password: string, name: string, deviceCode: string, state: string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
         const user = userCredential.user;
@@ -23,6 +23,7 @@ export const signUp = async (email: string, password: string, name: string, devi
             username: name,
             email,
             deviceCode,
+            state,
             createdAt: serverTimestamp(),
         });
         await setDoc(doc(FIREBASE_DB, "users", user.uid, "devices", deviceCode), {
