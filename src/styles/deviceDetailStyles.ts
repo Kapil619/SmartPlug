@@ -1,6 +1,17 @@
 import { StyleSheet } from "react-native";
 
 export const deviceDetailstyles = StyleSheet.create({
+    deviceHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+    },
+    editIcon: {
+        marginLeft: 8,
+        padding: 5,
+        backgroundColor: "#E1F0FF",
+        borderRadius: 50,
+    },
     applianceRow: {
         flexDirection: "row",
         alignItems: "center",

@@ -119,3 +119,25 @@ export const users: User[] = [
         devices: [...devices],
     },
 ];
+
+export const applianceOptions = [
+    "Lamp",
+    "TV",
+    "AC",
+    "Refrigerator",
+    "Washing Machine",
+    "Iron",
+    "Vacuum Cleaner",
+    "Water Heater",
+    "Dishwasher",
+    "Other",
+];
+export const locationOptions = [
+    "Not specified",
+    "Living Room",
+    "Bedroom",
+    "Kitchen",
+    "Basement",
+    "Hallway",
+    "Other",
+];

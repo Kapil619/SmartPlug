@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { FIREBASE_AUTH, FIREBASE_RTDB } from "../../firebaseConfig";
 import EnergyTrendsChart from "../components/Chart";
+import EditDeviceModal from "../components/EditDeviceModal";
 import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
 import { useDeviceData } from "../hooks/useDeviceData";
@@ -39,7 +40,6 @@ const DeviceDetail: React.FC = () => {
   // Reference to the timer timeout
   const timerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  // For demonstration, we’ll assume some placeholder data.
   const deviceLocation = device.location || "Unknown Location";
   const [relayState, setRelayState] = useState<string>("OFF");
 
@@ -134,7 +134,7 @@ const DeviceDetail: React.FC = () => {
   const [aggregated, setAggregated] = useState({ energy: 0, cost: 0 });
   const { latestData, dailyUsage } = useDeviceData(currentUser.uid, deviceID);
   const metadata = useUserData(currentUser.uid, device.id);
-
+  const [editModalVisible, setEditModalVisible] = useState(false);
   useEffect(() => {
     setAggregated({
       energy: latestData?.EnergyConsumed || 0,
@@ -167,9 +167,17 @@ const DeviceDetail: React.FC = () => {
             style={deviceDetailstyles.realPlugImage}
           />
           <View style={deviceDetailstyles.deviceInfo}>
-            <Text style={deviceDetailstyles.deviceName}>
-              {metadata?.deviceName || "Smart Switch"}
-            </Text>
+            <View style={deviceDetailstyles.deviceHeader}>
+              <Text style={deviceDetailstyles.deviceName}>
+                {metadata?.deviceName || "Smart Switch"}
+              </Text>
+              <TouchableOpacity
+                onPress={() => setEditModalVisible(true)}
+                style={deviceDetailstyles.editIcon}
+              >
+                <Ionicons name="pencil-outline" size={20} color="#007aff" />
+              </TouchableOpacity>
+            </View>
             <View style={deviceDetailstyles.locationRow}>
               <Ionicons name="location-outline" size={16} color="green" />
               <Text style={deviceDetailstyles.deviceLocation}>
@@ -182,7 +190,6 @@ const DeviceDetail: React.FC = () => {
                 {metadata?.appliance || "Unknown Appliance"}
               </Text>
             </View>
-
             {timerCountdown && (
               <View style={deviceDetailstyles.timerInfoContainer}>
                 <View style={{ flex: 1, marginLeft: 10 }}>
@@ -201,6 +208,12 @@ const DeviceDetail: React.FC = () => {
             )}
           </View>
         </View>
+        <EditDeviceModal
+          visible={editModalVisible}
+          onClose={() => setEditModalVisible(false)}
+          metadata={metadata}
+          currentUser={currentUser}
+        />
 
         {/* Power Toggle */}
         <View style={deviceDetailstyles.powerContainer}>

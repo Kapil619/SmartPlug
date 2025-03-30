@@ -20,31 +20,12 @@ import AppliancePicker from "../components/AppliancePicker";
 import Button from "../components/Button";
 import LocationPicker from "../components/LocationPicker";
 import { addDeviceStyles } from "../styles/addDeviceStyles";
+import { applianceOptions, locationOptions } from "../utils/data";
 import { addNewDevice } from "../utils/firebaseMethods";
 import { validateSpecialCode } from "../utils/validator";
 
 // Example list of appliance types
-const applianceOptions = [
-  "Lamp",
-  "TV",
-  "AC",
-  "Refrigerator",
-  "Washing Machine",
-  "Iron",
-  "Vacuum Cleaner",
-  "Water Heater",
-  "Dishwasher",
-  "Other",
-];
-const locationOptions = [
-  "Not specified",
-  "Living Room",
-  "Bedroom",
-  "Kitchen",
-  "Basement",
-  "Hallway",
-  "Other",
-];
+
 export default function AddDevice() {
   const [method, setMethod] = useState<"qr" | "code">("qr"); // toggles between QR or code
   const [specialCode, setSpecialCode] = useState("");
