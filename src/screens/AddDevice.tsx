@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -17,7 +16,9 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import AppliancePicker from "../components/AppliancePicker";
 import Button from "../components/Button";
+import LocationPicker from "../components/LocationPicker";
 import { addDeviceStyles } from "../styles/addDeviceStyles";
 import { addNewDevice } from "../utils/firebaseMethods";
 import { validateSpecialCode } from "../utils/validator";
@@ -219,56 +220,21 @@ export default function AddDevice() {
                 />
               </View>
 
-              {/* Appliance Type Picker (horizontal or vertical) */}
-              <Text style={addDeviceStyles.label}>Appliance Type:</Text>
-              <Picker
-                selectedValue={applianceType}
-                onValueChange={(itemValue) => setApplianceType(itemValue)}
-                style={addDeviceStyles.picker}
-              >
-                {applianceOptions.map((appliance) => (
-                  <Picker.Item
-                    key={appliance}
-                    label={appliance}
-                    value={appliance}
-                  />
-                ))}
-              </Picker>
-              {applianceType === "Other" && (
-                <View style={addDeviceStyles.inputRow}>
-                  <Ionicons name="pricetag-outline" size={20} color="#007aff" />
-                  <TextInput
-                    style={addDeviceStyles.input}
-                    placeholder="Enter custom appliance type"
-                    placeholderTextColor="#999"
-                    value={customAppliance}
-                    onChangeText={setCustomAppliance}
-                  />
-                </View>
-              )}
-              {/* Location Dropdown */}
-              <Text style={addDeviceStyles.label}>Location:</Text>
-              <Picker
-                selectedValue={location}
-                onValueChange={(itemValue) => setLocation(itemValue)}
-                style={addDeviceStyles.picker}
-              >
-                {locationOptions.map((loc) => (
-                  <Picker.Item key={loc} label={loc} value={loc} />
-                ))}
-              </Picker>
-              {location === "Other" && (
-                <View style={addDeviceStyles.inputRow}>
-                  <Ionicons name="location-outline" size={20} color="#007aff" />
-                  <TextInput
-                    style={addDeviceStyles.input}
-                    placeholder="Enter custom location"
-                    placeholderTextColor="#999"
-                    value={customLocation}
-                    onChangeText={setCustomLocation}
-                  />
-                </View>
-              )}
+              <AppliancePicker
+                selectedAppliance={applianceType}
+                onValueChange={(value) => setApplianceType(value)}
+                applianceOptions={applianceOptions}
+                customAppliance={customAppliance}
+                setCustomAppliance={setCustomAppliance}
+              />
+
+              <LocationPicker
+                selectedLocation={location}
+                onValueChange={(value) => setLocation(value)}
+                locationOptions={locationOptions}
+                customLocation={customLocation}
+                setCustomLocation={setCustomLocation}
+              />
               <Button
                 title="Add Device"
                 iconName="checkmark"
