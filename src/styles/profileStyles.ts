@@ -2,6 +2,28 @@ import { StyleSheet } from "react-native";
 const AVATAR_SIZE = 100;
 
 export const profileStyles = StyleSheet.create({
+    updateButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#007aff",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    updateButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "600",
+        marginLeft: 10,
+    },
+    updateStatus: {
+        marginTop: 10,
+        fontSize: 14,
+        color: "#333",
+        textAlign: "center",
+    },
     gradientContainer: {
         flex: 1,
     },

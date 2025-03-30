@@ -1,5 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import {
   Image,
@@ -9,18 +11,34 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { users } from "../utils/data";
-// Example logout function from your existing code
-import { useNavigation } from "@react-navigation/native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { profileStyles } from "../styles/profileStyles";
+import { users } from "../utils/data";
 import { getUserProfile, logOut } from "../utils/firebaseMethods";
 import { UserProfile } from "../utils/types";
-
 export default function Profile() {
   const currentUser = users[0];
   const navigation = useNavigation<any>();
   const [profile, setProfile] = useState<UserProfile>();
+  const [updateStatus, setUpdateStatus] = useState<string | null>(null); // State to track update status
+
+  const checkForUpdates = async () => {
+    try {
+      setUpdateStatus("Checking for updates...");
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        setUpdateStatus("Downloading update...");
+        await Updates.fetchUpdateAsync();
+        setUpdateStatus("Update downloaded. Restarting app...");
+        Updates.reloadAsync(); // Reload the app to apply the update
+      } else {
+        setUpdateStatus("App is up to date.");
+      }
+    } catch (error) {
+      console.error("Error checking for updates:", error);
+      setUpdateStatus("Failed to check for updates.");
+    }
+  };
 
   // State to toggle secret key visibility per device
   const [visibleSecrets, setVisibleSecrets] = useState<{
@@ -81,7 +99,21 @@ export default function Profile() {
             </View>
           </View>
 
-          {/* Personal Info Card */}
+          <View style={profileStyles.card}>
+            <Text style={profileStyles.cardTitle}>App Updates</Text>
+            <TouchableOpacity
+              style={profileStyles.updateButton}
+              onPress={checkForUpdates}
+            >
+              <Ionicons name="cloud-download-outline" size={20} color="#fff" />
+              <Text style={profileStyles.updateButtonText}>
+                Check for Updates
+              </Text>
+            </TouchableOpacity>
+            {updateStatus && (
+              <Text style={profileStyles.updateStatus}>{updateStatus}</Text>
+            )}
+          </View>
 
           {/* Account Settings Card */}
           <View style={profileStyles.card}>
