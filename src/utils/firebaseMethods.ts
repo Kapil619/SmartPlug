@@ -156,8 +156,30 @@ export const toggleRelayState = async (userId: string, deviceId: string) => {
             const currentState = snapshot.val();
             const newState = currentState === "ON" ? "OFF" : "ON";
             await set(relayRef, newState);
+            console.log(`Relay state toggled to: ${newState}`);
         }
     } catch (error) {
         console.error("Error toggling relay state:", error);
+    }
+};
+
+export const fetchDevices = async () => {
+    try {
+        const currentUser = FIREBASE_AUTH.currentUser!;
+        const devicesCollectionRef = collection(
+            FIREBASE_DB,
+            "users",
+            currentUser.uid,
+            "devices"
+        );
+        const devicesSnapshot = await getDocs(devicesCollectionRef);
+        const devicesList = devicesSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data().metadata,
+        }));
+        return devicesList;
+    } catch (error) {
+        console.error("Error fetching devices:", error);
+        throw error; // Re-throw the error to handle it in the calling function
     }
 };

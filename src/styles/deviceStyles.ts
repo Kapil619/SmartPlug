@@ -127,22 +127,35 @@ export const deviceStyles = StyleSheet.create({
         flexWrap: "wrap",
         marginVertical: 5,
     },
+    timePickerButton: {
+        backgroundColor: "#E1F0FF",
+        padding: 10,
+        borderRadius: 8,
+        alignItems: "center",
+        marginVertical: 10,
+    },
+    timePickerText: {
+        fontSize: 16,
+        color: "#007aff",
+        fontWeight: "600",
+    },
     dayItem: {
         backgroundColor: "#E1F0FF",
+        padding: 10,
         borderRadius: 8,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        marginRight: 8,
-        marginBottom: 8,
+        marginHorizontal: 5,
+        marginVertical: 5,
     },
     dayItemSelected: {
         backgroundColor: "#007aff",
     },
     dayItemText: {
-        color: "#007aff",
+        fontSize: 14,
+        color: "#333",
     },
     dayItemTextSelected: {
         color: "#fff",
+        fontWeight: "600",
     },
     timeText: {
         fontSize: 18,

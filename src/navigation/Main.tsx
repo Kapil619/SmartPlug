@@ -4,14 +4,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 import React from "react";
+import AddDevice from "../screens/AddDevice";
 import DeviceDetail from "../screens/DeviceDetail";
-import Devices from "../screens/Devices";
 import Energy from "../screens/Energy";
 import Home from "../screens/Home";
 import Login from "../screens/Login";
 import Profile from "../screens/Profile";
+import Devices from "../screens/Schedules";
 import Signup from "../screens/Signup";
-import AddDevice from "../screens/AddDevice";
 
 // Navigator Declarations
 const Stack = createNativeStackNavigator();
@@ -38,7 +38,7 @@ const TabNavigator = () => {
           let iconName: keyof typeof Ionicons.glyphMap = "home";
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Devices") {
+          } else if (route.name === "Schedules") {
             iconName = focused ? "hardware-chip" : "hardware-chip-outline";
           } else if (route.name === "Energy") {
             iconName = focused ? "flash" : "flash-outline";
@@ -55,7 +55,7 @@ const TabNavigator = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Devices"
+        name="Schedules"
         component={Devices}
         options={{ headerShown: false }}
       />
