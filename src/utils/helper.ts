@@ -1,4 +1,3 @@
-//// filepath: /d:/Codes/SmartPlug/src/utils/aggregators.ts
 import { Device } from "./types";
 
 export const aggregateEnergyAndCost = (devices: Device[]) => {
@@ -32,3 +31,40 @@ export function getWeekKey(date: Date): string {
     const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
     return `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
 }
+
+export const calculateAggregates = (deviceList: any[]) => {
+    let totalTodayEnergy = 0;
+    let totalTodayCost = 0;
+    let totalMonthEnergy = 0;
+    let totalMonthCost = 0;
+    let totalPrevEnergy = 0;
+    let totalPrevCost = 0;
+
+    const now = new Date();
+    const currentMonthKey = now.toISOString().slice(0, 7); // e.g. "2025-03"
+    const previousDate = new Date();
+    previousDate.setMonth(previousDate.getMonth() - 1);
+    const previousMonthKey = previousDate.toISOString().slice(0, 7); // e.g. "2025-02"
+
+    deviceList.forEach((device) => {
+        totalTodayEnergy += device.latest?.EnergyConsumed || 0;
+        totalTodayCost += device.latest?.BillingAmount || 0;
+
+        if (device.aggregates && device.aggregates.monthly) {
+            totalMonthEnergy +=
+                device.aggregates.monthly[currentMonthKey]?.EnergyConsumed || 0;
+            totalMonthCost +=
+                device.aggregates.monthly[currentMonthKey]?.BillingAmount || 0;
+            totalPrevEnergy +=
+                device.aggregates.monthly[previousMonthKey]?.EnergyConsumed || 0;
+            totalPrevCost +=
+                device.aggregates.monthly[previousMonthKey]?.BillingAmount || 0;
+        }
+    });
+
+    return [
+        { type: "today", usage: totalTodayEnergy, cost: totalTodayCost },
+        { type: "month", usage: totalMonthEnergy, cost: totalMonthCost },
+        { type: "previous", usage: totalPrevEnergy, cost: totalPrevCost },
+    ];
+};

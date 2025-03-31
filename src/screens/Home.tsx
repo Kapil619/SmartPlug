@@ -1,25 +1,23 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   Text,
   ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
-import { FIREBASE_AUTH, FIREBASE_RTDB } from "../../firebaseConfig";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 import DeviceCard from "../components/DeviceCard";
 import TopCard from "../components/TopCard";
-import { useDeviceAggregates } from "../hooks/useAggregates";
-import { useDeviceData } from "../hooks/useDeviceData";
+import useDevices from "../hooks/useDevices";
 import { homeStyles } from "../styles/homeStyles";
 import { getUserProfile } from "../utils/firebaseMethods";
+import { calculateAggregates } from "../utils/helper";
 import { UserProfile } from "../utils/types";
 
 const { width } = Dimensions.get("window");
@@ -28,21 +26,13 @@ const Home = () => {
   const currentUser = FIREBASE_AUTH.currentUser!;
   const navigation = useNavigation<any>();
   const [topCardData, setTopCardData] = useState<any[]>([]);
-  const [deviceList, setDeviceList] = useState<any[]>([]);
   const [userData, setUserData] = useState<UserProfile | null>(null);
-  const [primaryDeviceId, setPrimaryDeviceId] = useState<string | null>(null);
-
-  const getPrimaryDeviceId = (devices: any[]): string | null => {
-    console.log("Devices", devices[0].id);
-    return devices.length > 0 ? devices[0].id : null;
-  };
-
+  const { deviceList } = useDevices(currentUser.uid);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profile = await getUserProfile(currentUser.uid);
         setUserData(profile);
-        console.log("User profile:", profile);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
@@ -51,79 +41,9 @@ const Home = () => {
   }, [currentUser.uid]);
 
   useEffect(() => {
-    const devicesRef = ref(FIREBASE_RTDB, `users/${currentUser.uid}/devices`);
-    const unsubscribeDevices = onValue(devicesRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const devicesObj = snapshot.val();
-        // Convert the object to an array
-        const devicesArray = Object.keys(devicesObj).map((key) => ({
-          id: key,
-          ...devicesObj[key],
-        }));
-        setDeviceList(devicesArray);
-        const primaryId = getPrimaryDeviceId(devicesArray);
-        setPrimaryDeviceId(primaryId);
-      } else {
-        setDeviceList([]);
-        setPrimaryDeviceId(null);
-      }
-    });
-    return () => {
-      unsubscribeDevices();
-    };
-  }, []);
-  const { latestData, dailyUsage } = useDeviceData(
-    currentUser.uid,
-    primaryDeviceId || ""
-  );
-  const aggregations = useDeviceAggregates(
-    currentUser.uid,
-    primaryDeviceId || ""
-  );
-  useEffect(() => {
     if (deviceList.length > 0) {
-      let totalTodayEnergy = 0;
-      let totalTodayCost = 0;
-      let totalMonthEnergy = 0;
-      let totalMonthCost = 0;
-      let totalPrevEnergy = 0;
-      let totalPrevCost = 0;
-
-      const now = new Date();
-      const currentMonthKey = now.toISOString().slice(0, 7); // e.g. "2025-03"
-      const previousDate = new Date();
-      previousDate.setMonth(previousDate.getMonth() - 1);
-      const previousMonthKey = previousDate.toISOString().slice(0, 7); // e.g. "2025-02"
-
-      deviceList.forEach((device) => {
-        // Sum today's data from the 'latest' node
-        totalTodayEnergy += device.latest?.EnergyConsumed || 0;
-        totalTodayCost += device.latest?.BillingAmount || 0;
-
-        // Sum monthly aggregates if available
-        if (device.aggregates && device.aggregates.monthly) {
-          totalMonthEnergy +=
-            device.aggregates.monthly[currentMonthKey]?.EnergyConsumed || 0;
-          totalMonthCost +=
-            device.aggregates.monthly[currentMonthKey]?.BillingAmount || 0;
-          totalPrevEnergy +=
-            device.aggregates.monthly[previousMonthKey]?.EnergyConsumed || 0;
-          totalPrevCost +=
-            device.aggregates.monthly[previousMonthKey]?.BillingAmount || 0;
-        }
-      });
-
-      const todayData = {
-        type: "today",
-        usage: totalTodayEnergy,
-        cost: totalTodayCost,
-      };
-
-      setTopCardData([
-        todayData,
-        { type: "month", usage: totalMonthEnergy, cost: totalMonthCost },
-        { type: "previous", usage: totalPrevEnergy, cost: totalPrevCost },
-      ]);
+      const aggregates = calculateAggregates(deviceList);
+      setTopCardData(aggregates);
     }
   }, [deviceList]);
 
@@ -151,7 +71,6 @@ const Home = () => {
                   "Notifications coming soon!",
                   ToastAndroid.SHORT
                 );
-                // Navigate to notifications screen
               }}
               style={homeStyles.iconButton}
             >
@@ -213,20 +132,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  deviceCard: {
-    backgroundColor: "#fff",
-    width: (width - 60) / 2, // 20 padding + 20 padding + 20 gap = 60
-    height: (width - 60) / 2, // square shape
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-    justifyContent: "space-between",
-  },
-});
