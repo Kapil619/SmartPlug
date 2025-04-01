@@ -1,44 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { BarChart, LineChart } from "react-native-gifted-charts";
+import { fetchDailyAggregates } from "../utils/firebaseMethods";
 
 type EnergyTrendsChartProps = {
   selectedUsage: number;
+  userId: string;
+  deviceId: string;
 };
 
 const EnergyTrendsChart: React.FC<EnergyTrendsChartProps> = ({
   selectedUsage,
+  userId,
+  deviceId,
 }) => {
   const screenWidth = Dimensions.get("window").width - 130;
 
-  // Sample data for each chart type:
-  const lineChartData =
-    selectedUsage === 0
-      ? [
-          { value: 10, label: "1" },
-          { value: 20, label: "2" },
-          { value: 15, label: "3" },
-          { value: 30, label: "4" },
-          { value: 25, label: "5" },
-        ]
-      : [
-          { value: 2, label: "Jan" },
-          { value: 4, label: "Feb" },
-          { value: 3, label: "Mar" },
-          { value: 5, label: "Apr" },
-          { value: 4, label: "May" },
-        ];
+  const [barChartData, setBarChartData] = useState<any[]>([]);
+  const [lineChartData, setLineChartData] = useState<any[]>([]);
 
-  const barChartData = [
-    { value: 5, label: "Mon" },
-    { value: 15, label: "Tue" },
-    { value: 10, label: "Wed" },
-    { value: 20, label: "Thu" },
-    { value: 15, label: "Fri" },
-  ];
+  useEffect(() => {
+    const fetchChartData = async () => {
+      const { barData, lineData } = await fetchDailyAggregates(
+        userId,
+        deviceId
+      );
+      setBarChartData(barData);
+      setLineChartData(lineData);
+    };
+
+    fetchChartData();
+  }, [userId, deviceId]);
 
   return selectedUsage === 1 ? (
     <BarChart
+      yAxisLabelSuffix="kWh"
+      yAxisTextStyle={{
+        fontWeight: "500",
+        color: "#637381",
+      }}
       data={barChartData}
       width={screenWidth}
       height={200}
@@ -47,14 +47,27 @@ const EnergyTrendsChart: React.FC<EnergyTrendsChartProps> = ({
       yAxisColor="#637381"
       initialSpacing={20}
       barStyle={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
-      frontColor="skyblue"
+      frontColor="#57B4BA"
+      sideColor={"#015551"}
+      topColor={"#143D60"}
+      capColor={"green"}
+      backgroundColor={"#F2F2F2"}
       noOfSections={5}
+      isAnimated={true}
+      isThreeD={true}
     />
   ) : (
     <LineChart
+      yAxisLabelSuffix="₹"
+      areaChart
       data={lineChartData}
       width={screenWidth}
       height={200}
+      startOpacity={0.8}
+      backgroundColor={"#F2F2F2"}
+      startFillColor="rgb(117, 176, 160)"
+      endFillColor="rgb(46, 217, 255)"
+      endOpacity={0.3}
       yAxisColor="#637381"
       xAxisColor="#637381"
       initialSpacing={20}
@@ -63,6 +76,9 @@ const EnergyTrendsChart: React.FC<EnergyTrendsChartProps> = ({
       showArrows={true}
       thickness={2}
       noOfSections={5}
+      animateTogether={true}
+      isAnimated={true}
+      animateOnDataChange={true}
     />
   );
 };

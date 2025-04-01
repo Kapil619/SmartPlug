@@ -32,6 +32,12 @@ export function getWeekKey(date: Date): string {
     return `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
 }
 
+export const getDayOfWeek = (dateString: string): string => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const date = new Date(dateString);
+    return days[date.getDay()];
+};
+
 export const calculateAggregates = (deviceList: any[]) => {
     let totalTodayEnergy = 0;
     let totalTodayCost = 0;

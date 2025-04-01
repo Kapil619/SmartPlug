@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   SafeAreaView,
@@ -16,7 +16,7 @@ import DeviceCard from "../components/DeviceCard";
 import TopCard from "../components/TopCard";
 import useDevices from "../hooks/useDevices";
 import { homeStyles } from "../styles/homeStyles";
-import { getUserProfile } from "../utils/firebaseMethods";
+import { getUserProfile, updateAggregates } from "../utils/firebaseMethods";
 import { calculateAggregates } from "../utils/helper";
 import { UserProfile } from "../utils/types";
 
@@ -45,6 +45,21 @@ const Home = () => {
       const aggregates = calculateAggregates(deviceList);
       setTopCardData(aggregates);
     }
+  }, [deviceList]);
+
+  const hasUpdatedAggregates = useRef(false);
+
+  useEffect(() => {
+    const updateAllDeviceAggregates = async () => {
+      if (deviceList.length === 0 || hasUpdatedAggregates.current) return;
+      console.log("Updating aggregates for all devices...");
+      for (const device of deviceList) {
+        await updateAggregates(currentUser.uid, device.id);
+      }
+      hasUpdatedAggregates.current = true;
+    };
+
+    updateAllDeviceAggregates();
   }, [deviceList]);
 
   return (

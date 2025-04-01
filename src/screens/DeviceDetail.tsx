@@ -297,7 +297,11 @@ const DeviceDetail: React.FC = () => {
             </TouchableOpacity>
           </View>
           {/* Energy Trends Chart Component */}
-          <EnergyTrendsChart selectedUsage={selectedUsage} />
+          <EnergyTrendsChart
+            deviceId={deviceID}
+            userId={currentUser.uid}
+            selectedUsage={selectedUsage}
+          />
         </View>
 
         {/* Quick Actions: Schedule, Timer, Away */}

@@ -2,7 +2,7 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndP
 import { get, ref, set } from "firebase/database";
 import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB, FIREBASE_RTDB } from "../../firebaseConfig";
-import { getWeekKey } from "./helper";
+import { getDayOfWeek, getWeekKey } from "./helper";
 import { DeviceRealtimeStructure, UserProfile } from "./types";
 
 export const signIn = async (email: string, password: string) => {
@@ -181,5 +181,93 @@ export const fetchDevices = async () => {
     } catch (error) {
         console.error("Error fetching devices:", error);
         throw error; // Re-throw the error to handle it in the calling function
+    }
+};
+export const updateAggregates = async (userId: string, deviceId: string) => {
+    try {
+        console.log("Started for device:", deviceId);
+        const latestRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/latest`);
+        const aggregatesRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/aggregates`);
+
+        // Fetch the latest data
+        const latestSnapshot = await get(latestRef);
+        if (!latestSnapshot.exists()) return;
+
+        const latestData = latestSnapshot.val();
+        const { EnergyConsumed, BillingAmount, formatted_timestamp } = latestData;
+        if (!formatted_timestamp || isNaN(Date.parse(formatted_timestamp.replace(" ", "T")))) {
+            console.error("Invalid timestamp:", formatted_timestamp);
+            return;
+        }
+        // Parse the timestamp
+        const date = new Date(formatted_timestamp.replace(" ", "T"));
+        const dayKey = date.toISOString().slice(0, 10); // e.g., "2025-04-01"
+        const monthKey = date.toISOString().slice(0, 7); // e.g., "2025-04"
+        const weekKey = getWeekKey(date); // e.g., "2025-W14"
+        const aggregatesSnapshot = await get(aggregatesRef);
+        const aggregates = aggregatesSnapshot.exists() ? aggregatesSnapshot.val() : {};
+
+        const updatedAggregates = {
+            daily: {
+                ...aggregates.daily,
+                [dayKey]: {
+                    EnergyConsumed: (aggregates.daily?.[dayKey]?.EnergyConsumed || 0) + EnergyConsumed,
+                    BillingAmount: (aggregates.daily?.[dayKey]?.BillingAmount || 0) + BillingAmount,
+                },
+            },
+            weekly: {
+                ...aggregates.weekly,
+                [weekKey]: {
+                    EnergyConsumed: (aggregates.weekly?.[weekKey]?.EnergyConsumed || 0) + EnergyConsumed,
+                    BillingAmount: (aggregates.weekly?.[weekKey]?.BillingAmount || 0) + BillingAmount,
+                },
+            },
+            monthly: {
+                ...aggregates.monthly,
+                [monthKey]: {
+                    EnergyConsumed: (aggregates.monthly?.[monthKey]?.EnergyConsumed || 0) + EnergyConsumed,
+                    BillingAmount: (aggregates.monthly?.[monthKey]?.BillingAmount || 0) + BillingAmount,
+                },
+            },
+        };
+        console.log("Updated aggregates:", updatedAggregates);
+        // await update(aggregatesRef, updatedAggregates);
+    } catch (error) {
+        console.error("Error updating aggregates:", error);
+    }
+};
+
+export const fetchDailyAggregates = async (userId: string, deviceId: string) => {
+    try {
+        const dailyRef = ref(
+            FIREBASE_RTDB,
+            `users/${userId}/devices/${deviceId}/aggregates/daily`
+        );
+        const snapshot = await get(dailyRef);
+
+        if (snapshot.exists()) {
+            const dailyData = snapshot.val();
+            const barData: any[] = [];
+            const lineData: any[] = [];
+
+            // Iterate over the daily data
+            Object.keys(dailyData).forEach((dateKey) => {
+                const day = getDayOfWeek(dateKey); // Get the day of the week
+                const { EnergyConsumed, BillingAmount } = dailyData[dateKey];
+
+                // Push data for Bar Chart (EnergyConsumed)
+                barData.push({ value: EnergyConsumed || 0, label: day });
+
+                // Push data for Line Chart (BillingAmount)
+                lineData.push({ value: BillingAmount || 0, label: day });
+            });
+
+            return { barData, lineData };
+        }
+
+        return { barData: [], lineData: [] };
+    } catch (error) {
+        console.error("Error fetching daily aggregates:", error);
+        return { barData: [], lineData: [] };
     }
 };
