@@ -11,43 +11,44 @@ import {
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import ScheduleList from "../components/ScheduleList";
 import ScheduleModal from "../components/ScheduleModal";
+import { useSchedules } from "../context/ScheduleContext";
 import { deviceStyles } from "../styles/deviceStyles";
-import { fetchDevices, toggleRelayState } from "../utils/firebaseMethods";
+import { fetchDevices } from "../utils/firebaseMethods";
 import { ScheduleItem } from "../utils/types";
 export default function SchedulesScreen() {
   const [devices, setDevices] = useState<any[]>([]);
-  const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
+  // const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState(devices[0]);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const { schedules, addSchedule, deleteSchedule } = useSchedules();
+  // const deleteSchedule = (id: string) => {
+  //   setSchedules(schedules.filter((schedule) => schedule.id !== id));
+  // };
 
-  const deleteSchedule = (id: string) => {
-    setSchedules(schedules.filter((schedule) => schedule.id !== id));
-  };
+  // const addSchedule = (schedule: ScheduleItem) => {
+  //   setSchedules([...schedules, schedule]);
+  //   executeSchedule(schedule);
+  // };
 
-  const addSchedule = (schedule: ScheduleItem) => {
-    setSchedules([...schedules, schedule]);
-    executeSchedule(schedule);
-  };
+  // const executeSchedule = (schedule: ScheduleItem) => {
+  //   const now = new Date();
+  //   const scheduleTime = new Date();
+  //   console.log("schedule time", scheduleTime);
+  //   scheduleTime.setHours(schedule.hour, schedule.minute, 0, 0);
 
-  const executeSchedule = (schedule: ScheduleItem) => {
-    const now = new Date();
-    const scheduleTime = new Date();
-    console.log("schedule time", scheduleTime);
-    scheduleTime.setHours(schedule.hour, schedule.minute, 0, 0);
-
-    if (scheduleTime <= now) {
-      scheduleTime.setDate(scheduleTime.getDate() + 1);
-    }
-    const delay = scheduleTime.getTime() - now.getTime();
-    console.log(
-      `Schedule for ${schedule.deviceName} will execute in ${delay}ms`
-    );
-    setTimeout(() => {
-      toggleRelayState(FIREBASE_AUTH.currentUser!.uid, schedule.deviceId);
-      console.log(`Executed schedule for ${schedule.deviceName}`);
-    }, delay);
-  };
+  //   if (scheduleTime <= now) {
+  //     scheduleTime.setDate(scheduleTime.getDate() + 1);
+  //   }
+  //   const delay = scheduleTime.getTime() - now.getTime();
+  //   console.log(
+  //     `Schedule for ${schedule.deviceName} will execute in ${delay}ms`
+  //   );
+  //   setTimeout(() => {
+  //     toggleRelayState(FIREBASE_AUTH.currentUser!.uid, schedule.deviceId);
+  //     console.log(`Executed schedule for ${schedule.deviceName}`);
+  //   }, delay);
+  // };
 
   useEffect(() => {
     const loadDevices = async () => {
@@ -62,6 +63,15 @@ export default function SchedulesScreen() {
 
     loadDevices();
   }, []);
+
+  const handleAddSchedule = (schedule: ScheduleItem) => {
+    const scheduleWithUser = {
+      ...schedule,
+      userId: FIREBASE_AUTH.currentUser!.uid,
+    };
+    addSchedule(scheduleWithUser);
+    setModalVisible(false);
+  };
 
   return (
     <LinearGradient
@@ -94,7 +104,7 @@ export default function SchedulesScreen() {
           setSelectedDevice={setSelectedDevice}
           selectedDays={selectedDays}
           setSelectedDays={setSelectedDays}
-          onSave={addSchedule}
+          onSave={handleAddSchedule}
         />
       </SafeAreaView>
     </LinearGradient>

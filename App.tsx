@@ -3,6 +3,7 @@ import { User } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ScheduleProvider } from "./src/context/ScheduleContext";
 import { TimerProvider } from "./src/context/TimerContext";
 import Main from "./src/navigation/Main";
 import { globalStyles } from "./src/styles/globalStyles";
@@ -35,8 +36,10 @@ export default function App() {
   return (
     <SafeAreaView style={globalStyles.safeArea}>
       <TimerProvider>
-        <Main user={user} />
-        <StatusBar translucent={false} backgroundColor="#578FCA" />
+        <ScheduleProvider>
+          <Main user={user} />
+          <StatusBar translucent={false} backgroundColor="#578FCA" />
+        </ScheduleProvider>
       </TimerProvider>
     </SafeAreaView>
   );
