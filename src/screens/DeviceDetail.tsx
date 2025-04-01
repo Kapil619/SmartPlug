@@ -3,7 +3,7 @@ import Octicons from "@expo/vector-icons/Octicons";
 import { useRoute } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { onValue, ref } from "firebase/database";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -19,11 +19,13 @@ import EnergyTrendsChart from "../components/Chart";
 import EditDeviceModal from "../components/EditDeviceModal";
 import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
+import { useTimer } from "../context/TimerContext";
 import { useDeviceData } from "../hooks/useDeviceData";
 import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
 import { toggleRelayState } from "../utils/firebaseMethods";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
+
 const { width } = Dimensions.get("window");
 
 const DeviceDetail: React.FC = () => {
@@ -31,17 +33,15 @@ const DeviceDetail: React.FC = () => {
   const { device } = route.params;
   const deviceID = device.id;
   const currentUser = FIREBASE_AUTH.currentUser!;
-  // const currentUser = { uid: "u1" };
+  const { startTimer, cancelTimer, activeTimers } = useTimer();
   const [selectedUsage, setSelectedUsage] = useState(1);
   const [timerModalVisible, setTimerModalVisible] = useState(false);
-  // Countdown text (in hours, as a string)
-  const [timerCountdown, setTimerCountdown] = useState<string | null>(null);
-  const [timerEndTime, setTimerEndTime] = useState<number | null>(null);
-  // Reference to the timer timeout
-  const timerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const deviceLocation = device.location || "Unknown Location";
   const [relayState, setRelayState] = useState<string>("OFF");
+  const [aggregated, setAggregated] = useState({ energy: 0, cost: 0 });
+  const { latestData, dailyUsage } = useDeviceData(currentUser.uid, deviceID);
+  const metadata = useUserData(currentUser.uid, device.id);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   useEffect(() => {
     const relayRef = ref(
@@ -57,107 +57,22 @@ const DeviceDetail: React.FC = () => {
       unsubscribe();
     };
   }, [currentUser.uid, deviceID]);
-  useEffect(() => {
-    return () => {
-      if (timerTimeoutRef.current) {
-        clearTimeout(timerTimeoutRef.current);
-        timerTimeoutRef.current = null;
-      }
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-        timerIntervalRef.current = null;
-      }
-    };
-  }, []);
 
-  const handleStartTimer = (
+  const handleStartTimer = async (
     hours: number,
     minutes: number,
     seconds: number
   ) => {
-    if (timerTimeoutRef.current) {
-      clearTimeout(timerTimeoutRef.current);
-      timerTimeoutRef.current = null; // Reset the reference
-    }
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null; // Reset the reference
-    }
-
-    const ms = (hours * 3600 + minutes * 60 + seconds) * 1000;
-    const endTime = Date.now() + ms;
-    setTimerEndTime(endTime);
-
-    // Set a timeout to turn off the device when time expires
-    timerTimeoutRef.current = setTimeout(() => {
-      toggleRelayState(currentUser.uid, deviceID);
-      setTimerCountdown(null);
-      setTimerEndTime(null);
-      timerTimeoutRef.current = null; // Reset the reference
-    }, ms);
-
-    // Update countdown every minute
-    timerIntervalRef.current = setInterval(() => {
-      const now = Date.now();
-      const remainingMs = endTime - now;
-      if (remainingMs <= 0) {
-        clearInterval(timerIntervalRef.current!);
-        setTimerCountdown(null);
-        setTimerEndTime(null);
-        timerIntervalRef.current = null; // Reset the reference
-      } else {
-        const remainingSec = Math.floor(remainingMs / 1000);
-        const rHours = Math.floor(remainingSec / 3600);
-        const rMinutes = Math.floor((remainingSec % 3600) / 60);
-        setTimerCountdown(`${rHours}h ${rMinutes}m`);
-      }
-    }, 60000);
-
-    const remainingSec = Math.floor(ms / 1000);
-    const rHours = Math.floor(remainingSec / 3600);
-    const rMinutes = Math.floor((remainingSec % 3600) / 60);
-    setTimerCountdown(`${rHours}h ${rMinutes}m`);
+    const durationMs = (hours * 3600 + minutes * 60 + seconds) * 1000;
+    startTimer(currentUser.uid, deviceID, durationMs);
   };
 
-  let initHours = 1,
-    initMinutes = 0;
-  if (timerEndTime) {
-    const remainingSec = Math.max(
-      0,
-      Math.floor((timerEndTime - Date.now()) / 1000)
-    );
-    initHours = Math.floor(remainingSec / 3600);
-    initMinutes = Math.floor((remainingSec % 3600) / 60);
-    // Default to 1h 0m if expired
-    if (initHours === 0 && initMinutes === 0) {
-      initHours = 1;
-      initMinutes = 0;
-    }
-  }
-
-  const [aggregated, setAggregated] = useState({ energy: 0, cost: 0 });
-  const { latestData, dailyUsage } = useDeviceData(currentUser.uid, deviceID);
-  const metadata = useUserData(currentUser.uid, device.id);
-  const [editModalVisible, setEditModalVisible] = useState(false);
   useEffect(() => {
     setAggregated({
       energy: latestData?.EnergyConsumed || 0,
       cost: latestData?.BillingAmount || 0,
     });
   }, [latestData?.EnergyConsumed]);
-
-  const cancelTimer = () => {
-    if (timerTimeoutRef.current) {
-      clearTimeout(timerTimeoutRef.current);
-      timerTimeoutRef.current = null; // Reset the reference
-    }
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null; // Reset the reference
-    }
-    setTimerCountdown(null); // Clear the countdown
-    setTimerEndTime(null); // Clear the end time
-  };
 
   return (
     <SafeAreaView style={deviceDetailstyles.container}>
@@ -194,16 +109,16 @@ const DeviceDetail: React.FC = () => {
                 {metadata?.appliance || "Unknown Appliance"}
               </Text>
             </View>
-            {timerCountdown && (
+            {activeTimers[deviceID] && (
               <View style={deviceDetailstyles.timerInfoContainer}>
                 <View style={{ flex: 1, marginLeft: 10 }}>
                   <Text style={deviceDetailstyles.timerText}>Timer Active</Text>
                   <Text style={deviceDetailstyles.timerInfoText}>
-                    {timerCountdown} left
+                    {activeTimers[deviceID]} left
                   </Text>
                 </View>
                 <TouchableOpacity
-                  onPress={cancelTimer}
+                  onPress={() => cancelTimer(deviceID)}
                   style={deviceDetailstyles.cancelTimerButton}
                 >
                   <Ionicons name="close-circle" size={24} color="gray" />
@@ -306,7 +221,7 @@ const DeviceDetail: React.FC = () => {
 
         {/* Quick Actions: Schedule, Timer, Away */}
         <View style={deviceDetailstyles.quickActionsContainer}>
-          {timerCountdown ? (
+          {activeTimers[deviceID] ? (
             <TouchableOpacity style={deviceDetailstyles.quickActionItem}>
               <Ionicons name="time-sharp" size={24} color="gray" />
               <Text
