@@ -73,7 +73,7 @@ const Home = () => {
         <View style={homeStyles.headerContainer}>
           <View style={homeStyles.headerTextContainer}>
             <Text style={homeStyles.headerTitle}>
-              Hello, {userData?.username}!
+              Hello {userData?.username}!
             </Text>
             <Text style={homeStyles.headerSubtitle}>
               Monitor and control your devices
