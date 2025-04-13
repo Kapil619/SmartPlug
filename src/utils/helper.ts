@@ -38,6 +38,25 @@ export const getDayOfWeek = (dateString: string): string => {
     return days[date.getDay()];
 };
 
+export const getMonthName = (monthKey: string): string => {
+    const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    const [year, month] = monthKey.split("-");
+    return months[parseInt(month, 10) - 1];
+};
+
 export const calculateAggregates = (deviceList: any[]) => {
     let totalTodayEnergy = 0;
     let totalTodayCost = 0;
