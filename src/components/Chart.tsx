@@ -3,13 +3,13 @@ import { Dimensions } from "react-native";
 import { BarChart, LineChart } from "react-native-gifted-charts";
 import { fetchDailyAggregates } from "../utils/firebaseMethods";
 
-type EnergyTrendsChartProps = {
+type DailyChartProps = {
   selectedUsage: number;
   userId: string;
   deviceId: string;
 };
 
-const EnergyTrendsChart: React.FC<EnergyTrendsChartProps> = ({
+const DailyChart: React.FC<DailyChartProps> = ({
   selectedUsage,
   userId,
   deviceId,
@@ -83,4 +83,4 @@ const EnergyTrendsChart: React.FC<EnergyTrendsChartProps> = ({
   );
 };
 
-export default EnergyTrendsChart;
+export default DailyChart;

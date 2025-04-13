@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import { FIREBASE_AUTH, FIREBASE_RTDB } from "../../firebaseConfig";
-import EnergyTrendsChart from "../components/Chart";
+import DailyChart from "../components/Chart";
 import EditDeviceModal from "../components/EditDeviceModal";
 import Header from "../components/Header";
 import TimerModal from "../components/TimerModal";
@@ -212,7 +212,7 @@ const DeviceDetail: React.FC = () => {
             </TouchableOpacity>
           </View>
           {/* Energy Trends Chart Component */}
-          <EnergyTrendsChart
+          <DailyChart
             deviceId={deviceID}
             userId={currentUser.uid}
             selectedUsage={selectedUsage}
