@@ -173,7 +173,7 @@ const DeviceDetail: React.FC = () => {
             <View style={deviceDetailstyles.divider} />
 
             <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>{37.5}</Text>
+              <Text style={deviceDetailstyles.runtimeValue}>--</Text>
               <Text style={deviceDetailstyles.runtimeLabel}>Active Time</Text>
             </View>
           </View>
