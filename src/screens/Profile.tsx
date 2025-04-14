@@ -32,19 +32,19 @@ export default function Profile() {
 
   const checkForUpdates = async () => {
     try {
-      setUpdateStatus("Checking for updates...");
+      setUpdateStatus(t("screens.profile.updateStatus.checking"));
       const update = await Updates.checkForUpdateAsync();
       if (update.isAvailable) {
-        setUpdateStatus("Downloading update...");
+        setUpdateStatus(t("screens.profile.updateStatus.downloading"));
         await Updates.fetchUpdateAsync();
-        setUpdateStatus("Update downloaded. Restarting app...");
+        setUpdateStatus(t("screens.profile.updateStatus.downloaded"));
         Updates.reloadAsync();
       } else {
-        setUpdateStatus("App is up to date.");
+        setUpdateStatus(t("screens.profile.updateStatus.upToDate"));
       }
     } catch (error) {
       console.error("Error checking for updates:", error);
-      setUpdateStatus("Failed to check for updates.");
+      setUpdateStatus(t("screens.profile.updateStatus.failed"));
     }
   };
 
@@ -197,7 +197,7 @@ export default function Profile() {
                   { marginLeft: 36, marginTop: 4 },
                 ]}
               >
-                {t(`screens.profile.updateStatus.${updateStatus}`)}
+                {updateStatus}
               </Text>
             )}
 
