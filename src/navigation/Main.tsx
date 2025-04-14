@@ -12,6 +12,7 @@ import Login from "../screens/Login";
 import Profile from "../screens/Profile";
 import Devices from "../screens/Schedules";
 import Signup from "../screens/Signup";
+import Onboarding from "../screens/Onboarding";
 
 // Navigator Declarations
 const Stack = createNativeStackNavigator();
@@ -109,6 +110,11 @@ const Main = ({ user }: MainProps) => {
           <Stack.Screen
             name="Signup"
             component={Signup}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="About"
+            component={Onboarding}
             options={{ headerShown: false }}
           />
         </>

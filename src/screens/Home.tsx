@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -82,22 +81,15 @@ const Home = () => {
           <View style={homeStyles.headerIcons}>
             <TouchableOpacity
               onPress={() => {
-                ToastAndroid.show(
-                  "Notifications coming soon!",
-                  ToastAndroid.SHORT
-                );
+                navigation.navigate("About");
               }}
               style={homeStyles.iconButton}
             >
-              <Ionicons name="notifications-outline" size={24} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                ToastAndroid.show("Settings coming soon!", ToastAndroid.SHORT);
-              }}
-              style={homeStyles.iconButton}
-            >
-              <Ionicons name="settings-outline" size={24} color="#fff" />
+              <Ionicons
+                name="information-circle-outline"
+                size={28}
+                color="#fff"
+              />
             </TouchableOpacity>
           </View>
         </View>
