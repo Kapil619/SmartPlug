@@ -12,6 +12,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -84,6 +85,10 @@ export default function Signup() {
   };
 
   const handleScanQRCode = () => {
+    ToastAndroid.show(
+      "Scanning QR Code is not implemented yet.",
+      ToastAndroid.SHORT
+    );
     console.log("Scan QR Code");
   };
 
@@ -208,7 +213,11 @@ export default function Signup() {
                   size={24}
                   color="green"
                   onPress={handleInfoPress}
+                  style={{ marginRight: 10 }}
                 />
+                <TouchableOpacity onPress={handleScanQRCode}>
+                  <Ionicons name="qr-code-outline" size={24} color="#007aff" />
+                </TouchableOpacity>
               </View>
 
               <View style={authStyles.inputRow2}>
@@ -251,18 +260,6 @@ export default function Signup() {
                 textStyle={authStyles.buttonText}
                 iconName="log-in-outline"
               />
-
-              {/* QR Code Scanner */}
-              <TouchableOpacity
-                style={authStyles.qrButton}
-                onPress={handleScanQRCode}
-                activeOpacity={0.8}
-              >
-                <Ionicons name="qr-code-outline" size={20} color="#fff" />
-                <Text style={authStyles.qrButtonText}>
-                  {t("screens.signup.scanQRCode")}
-                </Text>
-              </TouchableOpacity>
 
               {/* Navigate to Login */}
               <TouchableOpacity
