@@ -117,7 +117,7 @@ const Main = ({ user }: MainProps) => {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="About"
+            name="Onboarding"
             component={Onboarding}
             options={{ headerShown: false }}
           />

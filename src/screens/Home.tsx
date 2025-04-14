@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dimensions,
   SafeAreaView,
@@ -18,7 +19,6 @@ import { homeStyles } from "../styles/homeStyles";
 import { getUserProfile, updateAggregates } from "../utils/firebaseMethods";
 import { calculateAggregates } from "../utils/helper";
 import { UserProfile } from "../utils/types";
-import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
 
@@ -83,7 +83,7 @@ const Home = () => {
           <View style={homeStyles.headerIcons}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("About");
+                navigation.navigate("Onboarding");
               }}
               style={homeStyles.iconButton}
             >

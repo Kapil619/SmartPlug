@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -110,6 +111,16 @@ export default function Signup() {
               delay={200}
               style={authStyles.headerContainer}
             >
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Onboarding")}
+                style={{
+                  position: "absolute",
+                  right: 15,
+                  padding: 5,
+                }}
+              >
+                <Feather name="help-circle" size={24} color="#fff" />
+              </TouchableOpacity>
               <Image
                 source={require("../../assets/realplug.png")}
                 style={authStyles.logo}
