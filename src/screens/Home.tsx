@@ -18,10 +18,12 @@ import { homeStyles } from "../styles/homeStyles";
 import { getUserProfile, updateAggregates } from "../utils/firebaseMethods";
 import { calculateAggregates } from "../utils/helper";
 import { UserProfile } from "../utils/types";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
 
 const Home = () => {
+  const { t } = useTranslation();
   const currentUser = FIREBASE_AUTH.currentUser!;
   const navigation = useNavigation<any>();
   const [topCardData, setTopCardData] = useState<any[]>([]);
@@ -72,10 +74,10 @@ const Home = () => {
         <View style={homeStyles.headerContainer}>
           <View style={homeStyles.headerTextContainer}>
             <Text style={homeStyles.headerTitle}>
-              Hello {userData?.username}!
+              {t("screens.home.welcome")} {userData?.username}!
             </Text>
             <Text style={homeStyles.headerSubtitle}>
-              Monitor and control your devices
+              {t("screens.home.subtitle")}
             </Text>
           </View>
           <View style={homeStyles.headerIcons}>
@@ -99,7 +101,9 @@ const Home = () => {
           <TopCard data={topCardData} />
 
           {/* Devices List */}
-          <Text style={homeStyles.sectionTitle}>Your Devices</Text>
+          <Text style={homeStyles.sectionTitle}>
+            {t("screens.home.devices")}
+          </Text>
           <View style={homeStyles.devicesContainer}>
             {deviceList.map((device, index) => {
               const row = Math.floor(index / 2);

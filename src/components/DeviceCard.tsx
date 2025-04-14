@@ -15,6 +15,7 @@ import { FIREBASE_RTDB } from "../../firebaseConfig";
 import { useUserData } from "../hooks/useUserData";
 import { homeStyles } from "../styles/homeStyles";
 import { toggleRelayState } from "../utils/firebaseMethods";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
 
@@ -29,6 +30,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
   userId,
   backgroundColor,
 }) => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const metadata = useUserData(userId, device.id);
   const [relayState, setRelayState] = useState<string>("OFF");
@@ -87,7 +89,10 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
           {metadata?.appliance || "Unnamed Device"}
         </Text>
         <Text style={homeStyles.deviceStatus}>
-          Status: {relayState === "ON" ? "On" : "Off"}
+          {t("screens.deviceCard.status")}
+          {relayState === "ON"
+            ? t("screens.deviceCard.on")
+            : t("screens.deviceCard.off")}
         </Text>
       </View>
       <Text style={homeStyles.applianceName}>

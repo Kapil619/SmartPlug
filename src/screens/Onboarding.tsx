@@ -12,41 +12,25 @@ import {
   View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
-const slides = [
-  {
-    title: "Welcome to SmartPlug",
-    description: "Control your devices from anywhere!",
-    image: require("../../assets/realplug.png"),
-  },
-  {
-    title: "Track Usage",
-    description: "Monitor power consumption with real-time values.",
-    image: require("../../assets/onboard_1.png"),
-  },
-  {
-    title: "Automate",
-    description: "Set schedules and timers for full automation.",
-    image: require("../../assets/onboard_2.png"),
-  },
-  {
-    title: "Cut Costs",
-    description: "Save money with energy-efficient settings.",
-    image: require("../../assets/onboard_3.png"),
-  },
-  {
-    title: "Unlock Premium",
-    description:
-      "Enjoy advanced features and enhanced control with our premium subscription.",
-    image: require("../../assets/realplug.png"), // Replace with your premium image
-  },
+const slideImages = [
+  require("../../assets/realplug.png"),
+  require("../../assets/onboard_1.png"),
+  require("../../assets/onboard_2.png"),
+  require("../../assets/onboard_3.png"),
+  require("../../assets/onboard_4.png"), // Replace with your premium image
 ];
 
 export default function Onboarding() {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const scrollRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  //add any types you need to the slides array
+  const slides: any = t("screens.onboarding.slides", { returnObjects: true });
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = e.nativeEvent.contentOffset.x;
@@ -71,11 +55,11 @@ export default function Onboarding() {
       {/* Skip Button */}
       <TouchableOpacity
         style={styles.skipButton}
-        onPress={() => {
-          navigation.goBack();
-        }}
+        onPress={() => navigation.goBack()}
       >
-        <Text style={styles.skipButtonText}>Skip</Text>
+        <Text style={styles.skipButtonText}>
+          {t("screens.onboarding.skip")}
+        </Text>
       </TouchableOpacity>
       <StatusBar style="dark" backgroundColor="#E1F0FF" />
 
@@ -86,10 +70,10 @@ export default function Onboarding() {
         onMomentumScrollEnd={onScrollEnd}
         showsHorizontalScrollIndicator={false}
       >
-        {slides.map((item, index) => (
+        {slides.map((item: any, index: number) => (
           <View key={index} style={styles.slide}>
             <Animatable.Image
-              source={item.image}
+              source={slideImages[index]} // Corresponding image array
               style={styles.image}
               animation="bounceIn"
               delay={100 * index}
@@ -106,7 +90,7 @@ export default function Onboarding() {
 
       {/* Pagination Dots */}
       <View style={styles.paginationContainer}>
-        {slides.map((_, i) => (
+        {slides.map((_: any, i: number) => (
           <View
             key={i}
             style={[styles.dot, activeIndex === i ? styles.activeDot : null]}
@@ -117,7 +101,9 @@ export default function Onboarding() {
       {/* Next Button */}
       <TouchableOpacity style={styles.nextButton} onPress={handleNextSlide}>
         <Text style={styles.nextButtonText}>
-          {activeIndex < slides.length - 1 ? "Next" : "Done"}
+          {activeIndex < slides.length - 1
+            ? t("screens.onboarding.next")
+            : t("screens.onboarding.done")}
         </Text>
       </TouchableOpacity>
     </View>

@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import { useTranslation } from "react-i18next"; // Import translation hook
 // Example signIn function from your code
 import Button from "../components/Button";
 import { authStyles } from "../styles/authStyles";
@@ -24,15 +25,16 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation(); // Initialize translation hook
 
   const [errorMessage, setErrorMessage] = useState("");
   const handleLogin = async () => {
     if (!validateEmail(email)) {
-      setErrorMessage("Please enter a valid email address.");
+      setErrorMessage(t("screens.login.errorInvalidEmail"));
       return;
     }
     if (!validatePassword(password)) {
-      setErrorMessage("Password must be at least 6 characters long.");
+      setErrorMessage(t("screens.login.errorShortPassword"));
       return;
     }
     setErrorMessage("");
@@ -79,8 +81,12 @@ export default function Login() {
                 },
               ]}
             />
-            <Text style={authStyles.title}>Welcome</Text>
-            <Text style={authStyles.subtitle}>Sign in to continue</Text>
+            <Text style={authStyles.title}>
+              {t("screens.login.headerTitle")}
+            </Text>
+            <Text style={authStyles.subtitle}>
+              {t("screens.login.headerSubtitle")}
+            </Text>
           </Animatable.View>
 
           {/* Form Container */}
@@ -98,7 +104,7 @@ export default function Login() {
               <Ionicons name="mail-outline" size={20} color="#007aff" />
               <TextInput
                 style={authStyles.input}
-                placeholder="Email"
+                placeholder={t("screens.login.emailPlaceholder")}
                 placeholderTextColor="#999"
                 value={email}
                 onChangeText={setEmail}
@@ -111,7 +117,7 @@ export default function Login() {
               <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
               <TextInput
                 style={authStyles.input}
-                placeholder="Password"
+                placeholder={t("screens.login.passwordPlaceholder")}
                 placeholderTextColor="#999"
                 secureTextEntry
                 value={password}
@@ -134,7 +140,7 @@ export default function Login() {
 
             {/* Login Button */}
             <Button
-              title="Login"
+              title={t("screens.login.loginButton")}
               onPress={handleLogin}
               loading={isLoading}
               buttonStyle={authStyles.button}
@@ -148,7 +154,7 @@ export default function Login() {
               onPress={navigateToSignup}
             >
               <Text style={authStyles.linkText}>
-                Don't have an account? Sign up
+                {t("screens.login.signupLink")}
               </Text>
             </TouchableOpacity>
           </Animatable.View>

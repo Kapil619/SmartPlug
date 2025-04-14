@@ -1,0 +1,195 @@
+{
+  "screens": {
+    "tabs": {
+      "home": "Home",
+      "schedules": "Schedules",
+      "energy": "Energy",
+      "profile": "Profile"
+    },
+    "home": {
+      "welcome": "Welcome",
+      "subtitle": "Monitor and control your devices",
+      "devices": "Your Devices"
+    },
+    "topCard": {
+      "today": "Today",
+      "currentMonth": "Current Month",
+      "previousMonth": "Previous Month",
+      "usage": "Usage:",
+      "usageNoData": "Usage: No data",
+      "cost": "Cost:",
+      "costNoData": "Cost: No data"
+    },
+    "deviceCard": {
+      "status": "Status:",
+      "on": "On",
+      "off": "Off"
+    },
+    "schedules": {
+      "title": "Schedules & Automation",
+      "subtitle": "Schedule your devices",
+      "addButton": "Add Schedule"
+    },
+    "scheduleList": {
+      "noSchedules": "No schedules created yet",
+      "createSchedule": "Tap the + button below to create a new schedule",
+      "oneTimeSchedule": "One-time schedule",
+      "executed": "Executed",
+      "usageLimit": "limit",
+      "costLimit": "limit"
+    },
+    "scheduleModal": {
+      "title": "Create Schedule",
+      "devicePicker": "Unnamed Device",
+      "daysOfWeek": "Days of Week:",
+      "timeToExecute": "Time to Execute:",
+      "usageLimit": "Usage Limit",
+      "costLimit": "Cost Limit",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "energy": {
+      "title": "Energy Insights",
+      "subtitle": "Monitor your energy usage and cost",
+      "filter": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
+      "chartTitle": "Usage",
+      "totalCost": "Total Cost",
+      "costSubtitle": "This is the total cost for the selected time range.",
+      "loading": "Loading Energy Data...",
+      "error": "Something went wrong."
+    },
+    "profile": {
+      "accountSettings": "Account Settings",
+      "notificationSettings": "Notification Settings",
+      "languagePreferences": "Language Preferences",
+      "checkForUpdates": "Check for Updates",
+      "updateStatus": {
+        "checking": "Checking for updates...",
+        "downloading": "Downloading update...",
+        "downloaded": "Update downloaded. Restarting app...",
+        "upToDate": "App is up to date.",
+        "failed": "Failed to check for updates."
+      },
+      "goPremium": "Go Premium",
+      "yourDevices": "Your Devices",
+      "unnamedDevice": "Unnamed Device",
+      "energy": "Energy",
+      "cost": "Cost",
+      "logOut": "Log Out"
+    },
+    "premiumModal": {
+      "title": "Premium Benefits",
+      "features": {
+        "realTimeAnalytics": "Real-Time Analytics",
+        "smartScheduling": "Smart Scheduling",
+        "chatSupport": "24/7 Chat Support",
+        "notifications": "Notifications Support",
+        "customAlerts": "Customizable Alerts"
+      },
+      "free": "Free",
+      "premium": "Premium",
+      "subscribeNow": "Subscribe Now"
+    },
+    "deviceDetail": {
+      "header": "Device Detail",
+      "power": "Power",
+      "aggregatedConsumption": "Device Aggregated Consumption",
+      "energy": "Energy (kWh)",
+      "cost": "Cost (₹)",
+      "activeTime": "Active Time",
+      "energyOverview": "Energy Overview",
+      "costOverview": "Cost Overview",
+      "timerActive": "Timer Active",
+      "timer": "Timer",
+      "away": "Away",
+      "helpFeedback": "Help & Feedback",
+      "supportSubtitle": "Get support or submit your feedback",
+      "support": "Support"
+    },
+    "addDevice": {
+      "headerTitle": "Add a New Device",
+      "headerSubtitle": "Connect a device via QR or a special code",
+      "qrCode": "QR Code",
+      "specialCode": "Special Code",
+      "scanQRCode": "Scan QR Code",
+      "enterCodePlaceholder": "Enter 10-digit code",
+      "deviceNamePlaceholder": "Device Name (e.g., Bedroom Plug)",
+      "addDeviceButton": "Add Device",
+      "error": {
+        "deviceNameRequired": "Please enter a device name.",
+        "invalidCode": "Device Code must be exactly 10 digits.",
+        "customApplianceRequired": "Please enter a custom appliance type.",
+        "customLocationRequired": "Please enter a custom location.",
+        "addDeviceFailed": "Error adding device!"
+      },
+      "success": "Device added successfully!"
+    },
+    "login": {
+      "headerTitle": "Welcome",
+      "headerSubtitle": "Sign in to continue",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "errorInvalidEmail": "Please enter a valid email address.",
+      "errorShortPassword": "Password must be at least 6 characters long.",
+      "loginButton": "Login",
+      "signupLink": "Don't have an account? Sign up"
+    },
+    "signup": {
+      "headerTitle": "Create Account",
+      "headerSubtitle": "Sign up to get started",
+      "namePlaceholder": "Username",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "deviceCodePlaceholder": "Device Code",
+      "invalidUsername": "Please enter a valid Username.",
+      "invalidEmail": "Please enter a valid email address.",
+      "errorShortPassword": "Password must be at least 6 characters long.",
+      "invalidCode": "Device Code must be exactly 10 digits.",
+      "selectState": "Please select a state.",
+      "signupButton": "Sign Up",
+      "success": "Account created successfully!",
+      "scanQRCode": "Scan QR Code",
+      "haveAccount": "Already have an account? Log in"
+    },
+    "onboarding": {
+      "skip": "Skip",
+      "next": "Next",
+      "done": "Done",
+      "slides": [
+        {
+          "title": "Welcome to EnergyIQ",
+          "description": "Control your devices from anywhere!"
+        },
+        {
+          "title": "Track Usage",
+          "description": "Monitor power consumption with real-time values."
+        },
+        {
+          "title": "Automate",
+          "description": "Set schedules and timers for full automation."
+        },
+        {
+          "title": "Cut Costs",
+          "description": "Save money with energy-efficient settings."
+        },
+        {
+          "title": "Unlock Premium",
+          "description": "Enjoy advanced features and enhanced control with our premium subscription."
+        }
+      ]
+    }
+  }
+}

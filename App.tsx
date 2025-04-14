@@ -6,7 +6,7 @@ import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScheduleProvider } from "./src/context/ScheduleContext";
 import { TimerProvider } from "./src/context/TimerContext";
-import i18n from "./src/localization/translations/i18n";
+import i18n from "./src/localization/i18n";
 import Main from "./src/navigation/Main";
 import { globalStyles } from "./src/styles/globalStyles";
 import { AuthChanged } from "./src/utils/firebaseMethods";

@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { User } from "firebase/auth";
 import React from "react";
+import { useTranslation } from "react-i18next"; // Import translation hook
 import AddDevice from "../screens/AddDevice";
 import DeviceDetail from "../screens/DeviceDetail";
 import Energy from "../screens/Energy";
@@ -23,6 +24,8 @@ type MainProps = {
 };
 
 const TabNavigator = () => {
+  const { t } = useTranslation(); // Initialize translation hook
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -48,6 +51,7 @@ const TabNavigator = () => {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
+        tabBarLabel: t(`screens.tabs.${route.name.toLowerCase()}`), // Use translation for tab labels
       })}
     >
       <Tab.Screen

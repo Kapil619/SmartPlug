@@ -23,10 +23,12 @@ import { addDeviceStyles } from "../styles/addDeviceStyles";
 import { applianceOptions, locationOptions } from "../utils/data";
 import { addNewDevice } from "../utils/firebaseMethods";
 import { validateSpecialCode } from "../utils/validator";
+import { useTranslation } from "react-i18next"; // Import translation hook
 
 // Example list of appliance types
 
 export default function AddDevice() {
+  const { t } = useTranslation(); // Initialize translation hook
   const [method, setMethod] = useState<"qr" | "code">("qr"); // toggles between QR or code
   const [specialCode, setSpecialCode] = useState("");
   const [deviceName, setDeviceName] = useState("");
@@ -46,24 +48,22 @@ export default function AddDevice() {
   const handleAddDevice = async () => {
     // Validate fields
     if (!deviceName) {
-      setErrorMessage("Please enter a device name.");
-      console.log("Please enter a device name.");
+      setErrorMessage(t("screens.addDevice.error.deviceNameRequired"));
       return;
     }
     if (method === "code" && !validateSpecialCode(specialCode)) {
-      console.log("Please enter a valid 10-digit code.");
-      setErrorMessage("Device Code must be exactly 10 digits.");
+      setErrorMessage(t("screens.addDevice.error.invalidCode"));
       return;
     }
     const selectedAppliance =
       applianceType === "Other" ? customAppliance : applianceType;
     const selectedLocation = location === "Other" ? customLocation : location;
     if (applianceType === "Other" && !customAppliance) {
-      setErrorMessage("Please enter a custom appliance type.");
+      setErrorMessage(t("screens.addDevice.error.customApplianceRequired"));
       return;
     }
     if (location === "Other" && !customLocation) {
-      setErrorMessage("Please enter a custom location.");
+      setErrorMessage(t("screens.addDevice.error.customLocationRequired"));
       return;
     }
     const deviceCodeToUse =
@@ -79,13 +79,15 @@ export default function AddDevice() {
         selectedAppliance,
         selectedLocation
       );
-      ToastAndroid.show("Device added successfully!", ToastAndroid.SHORT);
+      ToastAndroid.show(t("screens.addDevice.success"), ToastAndroid.SHORT);
       navigation.reset({
         index: 0,
         routes: [{ name: "Main", screen: "Home" }],
       });
     } catch (error: any) {
-      setErrorMessage(error.message || "Error adding device!");
+      setErrorMessage(
+        error.message || t("screens.addDevice.error.addDeviceFailed")
+      );
     } finally {
       setIsLoading(false);
     }
@@ -104,9 +106,11 @@ export default function AddDevice() {
           <ScrollView contentContainerStyle={addDeviceStyles.scrollContent}>
             {/* Header */}
             <Animatable.View animation="fadeInDown" delay={200}>
-              <Text style={addDeviceStyles.headerTitle}>Add a New Device</Text>
+              <Text style={addDeviceStyles.headerTitle}>
+                {t("screens.addDevice.headerTitle")}
+              </Text>
               <Text style={addDeviceStyles.headerSubtitle}>
-                Connect a device via QR or a special code
+                {t("screens.addDevice.headerSubtitle")}
               </Text>
             </Animatable.View>
 
@@ -136,7 +140,7 @@ export default function AddDevice() {
                       method === "qr" && addDeviceStyles.methodButtonTextActive,
                     ]}
                   >
-                    QR Code
+                    {t("screens.addDevice.qrCode")}
                   </Text>
                 </TouchableOpacity>
 
@@ -159,7 +163,7 @@ export default function AddDevice() {
                         addDeviceStyles.methodButtonTextActive,
                     ]}
                   >
-                    Special Code
+                    {t("screens.addDevice.specialCode")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -172,14 +176,16 @@ export default function AddDevice() {
                   activeOpacity={0.8}
                 >
                   <Ionicons name="qr-code-outline" size={24} color="#fff" />
-                  <Text style={addDeviceStyles.qrButtonText}>Scan QR Code</Text>
+                  <Text style={addDeviceStyles.qrButtonText}>
+                    {t("screens.addDevice.scanQRCode")}
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <View style={addDeviceStyles.inputRow}>
                   <Ionicons name="key-outline" size={20} color="#007aff" />
                   <TextInput
                     style={addDeviceStyles.input}
-                    placeholder="Enter 10-digit code"
+                    placeholder={t("screens.addDevice.enterCodePlaceholder")}
                     placeholderTextColor="#999"
                     value={specialCode}
                     onChangeText={setSpecialCode}
@@ -194,7 +200,7 @@ export default function AddDevice() {
                 <Ionicons name="pricetag-outline" size={20} color="#007aff" />
                 <TextInput
                   style={addDeviceStyles.input}
-                  placeholder="Device Name (e.g.,Bedroom Plug)"
+                  placeholder={t("screens.addDevice.deviceNamePlaceholder")}
                   placeholderTextColor="#999"
                   value={deviceName}
                   onChangeText={setDeviceName}
@@ -217,7 +223,7 @@ export default function AddDevice() {
                 setCustomLocation={setCustomLocation}
               />
               <Button
-                title="Add Device"
+                title={t("screens.addDevice.addDeviceButton")}
                 iconName="checkmark"
                 onPress={handleAddDevice}
                 loading={isLoading}

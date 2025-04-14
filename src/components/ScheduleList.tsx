@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { deviceStyles } from "../styles/deviceStyles";
 import { ScheduleItem } from "../utils/types";
+import { useTranslation } from "react-i18next";
 
 interface ScheduleListProps {
   schedules: ScheduleItem[];
@@ -10,13 +11,16 @@ interface ScheduleListProps {
 }
 
 const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, onDelete }) => {
+  const { t } = useTranslation();
   if (!schedules.length) {
     return (
       <View style={deviceStyles.emptyState}>
         <AntDesign name="clockcircleo" size={100} color="#578FCA" />
-        <Text style={deviceStyles.emptyText}>No schedules created yet</Text>
+        <Text style={deviceStyles.emptyText}>
+          {t("screens.scheduleList.noSchedules")}
+        </Text>
         <Text style={styles.emptySubText}>
-          Tap the + button below to create a new schedule
+          {t("screens.scheduleList.createSchedule")}
         </Text>
       </View>
     );
@@ -44,7 +48,11 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, onDelete }) => {
                   {schedule.hour.toString().padStart(2, "0")}:
                   {schedule.minute.toString().padStart(2, "0")}
                 </Text>
-                {expired && <Text style={styles.expiredBadge}>Executed</Text>}
+                {expired && (
+                  <Text style={styles.expiredBadge}>
+                    {t("screens.scheduleList.executed")}
+                  </Text>
+                )}
               </View>
 
               <View style={styles.detailsContainer}>
@@ -78,14 +86,16 @@ const ScheduleList: React.FC<ScheduleListProps> = ({ schedules, onDelete }) => {
                     {(schedule.usageLimit ?? 0) > 0 && (
                       <View style={styles.limitBadge}>
                         <Text style={styles.limitText}>
-                          {schedule.usageLimit}kWh limit
+                          {schedule.usageLimit}kWh{" "}
+                          {t("screens.scheduleList.usageLimit")}
                         </Text>
                       </View>
                     )}
                     {(schedule.costLimit ?? 0) > 0 && (
                       <View style={[styles.limitBadge, styles.costBadge]}>
                         <Text style={styles.limitText}>
-                          ₹{schedule.costLimit} limit
+                          ₹{schedule.costLimit}{" "}
+                          {t("screens.scheduleList.costLimit")}
                         </Text>
                       </View>
                     )}

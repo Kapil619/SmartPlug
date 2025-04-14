@@ -1,4 +1,7 @@
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
+import { useTranslation } from "react-i18next"; // Import translation hook
 import {
   Dimensions,
   Image,
@@ -8,8 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import premiumModalStyles from "../styles/componentStyles";
 
 const { height } = Dimensions.get("window");
@@ -20,6 +21,8 @@ interface PremiumModalProps {
 }
 
 const PremiumModal: React.FC<PremiumModalProps> = ({ visible, onClose }) => {
+  const { t } = useTranslation(); // Initialize translation hook
+
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={premiumModalStyles.bottomSheetContainer}>
@@ -31,7 +34,9 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ visible, onClose }) => {
         >
           {/* Header Row with Title and Close Button */}
           <View style={premiumModalStyles.modalHeaderRow}>
-            <Text style={premiumModalStyles.modalTitle}>Premium Benefits</Text>
+            <Text style={premiumModalStyles.modalTitle}>
+              {t("screens.premiumModal.title")}
+            </Text>
             <TouchableOpacity
               style={premiumModalStyles.closeButton}
               onPress={onClose}
@@ -55,103 +60,47 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ visible, onClose }) => {
             {/* Table Header */}
             <View style={premiumModalStyles.tableHeaderRow}>
               <Text style={[premiumModalStyles.tableHeader, { flex: 2 }]}>
-                Feature
+                {t("screens.premiumModal.title")}
               </Text>
               <Text style={[premiumModalStyles.tableHeader, { flex: 1 }]}>
-                Free
+                {t("screens.premiumModal.free")}
               </Text>
               <Text style={[premiumModalStyles.tableHeader, { flex: 1 }]}>
-                Premium
+                {t("screens.premiumModal.premium")}
               </Text>
             </View>
 
             {/* Feature Table */}
             <View style={premiumModalStyles.featureTable}>
-              <View style={premiumModalStyles.featureRow}>
-                <View style={premiumModalStyles.featureNameColumn}>
-                  <Text style={premiumModalStyles.featureItem}>
-                    Real-Time Analytics
-                  </Text>
+              {[
+                "realTimeAnalytics",
+                "smartScheduling",
+                "chatSupport",
+                "notifications",
+                "customAlerts",
+              ].map((featureKey) => (
+                <View key={featureKey} style={premiumModalStyles.featureRow}>
+                  <View style={premiumModalStyles.featureNameColumn}>
+                    <Text style={premiumModalStyles.featureItem}>
+                      {t(`screens.premiumModal.features.${featureKey}`)}
+                    </Text>
+                  </View>
+                  <View style={premiumModalStyles.iconColumn}>
+                    <Ionicons
+                      name="close-circle-outline"
+                      size={20}
+                      color="red"
+                    />
+                  </View>
+                  <View style={premiumModalStyles.iconColumn}>
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={20}
+                      color="green"
+                    />
+                  </View>
                 </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons name="close-circle-outline" size={20} color="red" />
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={20}
-                    color="green"
-                  />
-                </View>
-              </View>
-              <View style={premiumModalStyles.featureRow}>
-                <View style={premiumModalStyles.featureNameColumn}>
-                  <Text style={premiumModalStyles.featureItem}>
-                    Smart Scheduling
-                  </Text>
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons name="close-circle-outline" size={20} color="red" />
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={20}
-                    color="green"
-                  />
-                </View>
-              </View>
-              <View style={premiumModalStyles.featureRow}>
-                <View style={premiumModalStyles.featureNameColumn}>
-                  <Text style={premiumModalStyles.featureItem}>
-                    24/7 Chat Support
-                  </Text>
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons name="close-circle-outline" size={20} color="red" />
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={20}
-                    color="green"
-                  />
-                </View>
-              </View>
-              <View style={premiumModalStyles.featureRow}>
-                <View style={premiumModalStyles.featureNameColumn}>
-                  <Text style={premiumModalStyles.featureItem}>
-                    Notifications support
-                  </Text>
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons name="close-circle-outline" size={20} color="red" />
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={20}
-                    color="green"
-                  />
-                </View>
-              </View>
-              <View style={premiumModalStyles.featureRow}>
-                <View style={premiumModalStyles.featureNameColumn}>
-                  <Text style={premiumModalStyles.featureItem}>
-                    Customizable Alerts
-                  </Text>
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons name="close-circle-outline" size={20} color="red" />
-                </View>
-                <View style={premiumModalStyles.iconColumn}>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={20}
-                    color="green"
-                  />
-                </View>
-              </View>
+              ))}
             </View>
 
             {/* Subscribe Now Button */}
@@ -161,7 +110,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ visible, onClose }) => {
                 style={premiumModalStyles.subscribeButtonGradient}
               >
                 <Text style={premiumModalStyles.subscribeButtonText}>
-                  Subscribe Now
+                  {t("screens.premiumModal.subscribeNow")}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { componentStyles } from "../styles/componentStyles";
 import { TopCardProps } from "../utils/types";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
 const cardWidth = width - 40;
@@ -18,7 +19,7 @@ const cardWidth = width - 40;
 const TopCard: React.FC<TopCardProps> = ({ data }) => {
   const scrollRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const { t } = useTranslation();
   useEffect(() => {
     const timer = setInterval(() => {
       const nextIndex = (activeIndex + 1) % data.length;
@@ -89,31 +90,38 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
                   />
                   <Text style={componentStyles.title}>
                     {item.type === "today"
-                      ? `Today (${currentTime})`
+                      ? `${t("screens.topCard.today")} (${currentTime})`
                       : item.type === "month"
-                      ? `Current Month (${currentMonth})`
+                      ? `${t("screens.topCard.currentMonth")} (${currentMonth})`
                       : item.type === "previous"
-                      ? item.month || `Previous Month (${previousMonth})`
+                      ? item.month ||
+                        `${t(
+                          "screens.topCard.previousMonth"
+                        )} (${previousMonth})`
                       : item.title}
                   </Text>
                 </View>
                 <View style={componentStyles.statsRow}>
                   {item.usage != null ? (
                     <>
-                      <Text style={componentStyles.statLabel}>Usage:</Text>
+                      <Text style={componentStyles.statLabel}>
+                        {t("screens.topCard.usage")}
+                      </Text>
                       <Text style={componentStyles.statValue}>
                         {item.usage.toFixed(2)} kWh
                       </Text>
                     </>
                   ) : (
                     <Text style={componentStyles.statValue}>
-                      Usage: No data
+                      {t("screens.topCard.usageNoData")}
                     </Text>
                   )}
                 </View>
                 {item.cost != null ? (
                   <View style={componentStyles.statsRow}>
-                    <Text style={componentStyles.statLabel}>Cost: </Text>
+                    <Text style={componentStyles.statLabel}>
+                      {t("screens.topCard.cost")}
+                    </Text>
                     <Text
                       style={[
                         componentStyles.statValue,
@@ -126,7 +134,9 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
                     </Text>
                   </View>
                 ) : (
-                  <Text style={componentStyles.subtitle}>Cost: No data</Text>
+                  <Text style={componentStyles.subtitle}>
+                    {t("screens.topCard.costNoData")}
+                  </Text>
                 )}
               </View>
             </View>

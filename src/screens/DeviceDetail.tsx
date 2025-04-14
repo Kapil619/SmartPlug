@@ -25,6 +25,7 @@ import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
 import { toggleRelayState } from "../utils/firebaseMethods";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
+import { useTranslation } from "react-i18next"; // Import translation hook
 
 const { width } = Dimensions.get("window");
 
@@ -42,6 +43,7 @@ const DeviceDetail: React.FC = () => {
   const { latestData, dailyUsage } = useDeviceData(currentUser.uid, deviceID);
   const metadata = useUserData(currentUser.uid, device.id);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const { t } = useTranslation(); // Initialize translation hook
 
   useEffect(() => {
     const relayRef = ref(
@@ -76,7 +78,7 @@ const DeviceDetail: React.FC = () => {
 
   return (
     <SafeAreaView style={deviceDetailstyles.container}>
-      <Header title={"Device Detail"} />
+      <Header title={t("screens.deviceDetail.header")} />
       <StatusBar style="dark" backgroundColor="#F7F9FC" />
       <ScrollView contentContainerStyle={deviceDetailstyles.scrollContent}>
         {/* Top Section: Device Icon & Name */}
@@ -136,7 +138,9 @@ const DeviceDetail: React.FC = () => {
 
         {/* Power Toggle */}
         <View style={deviceDetailstyles.powerContainer}>
-          <Text style={deviceDetailstyles.powerLabel}>Power</Text>
+          <Text style={deviceDetailstyles.powerLabel}>
+            {t("screens.deviceDetail.power")}
+          </Text>
           <TouchableOpacity
             onPress={() => {
               toggleRelayState(currentUser.uid, deviceID);
@@ -154,34 +158,42 @@ const DeviceDetail: React.FC = () => {
         {/* Runtime / Usage Card */}
         <View style={deviceDetailstyles.runtimeCard}>
           <Text style={deviceDetailstyles.runtimeCardTitle}>
-            Device Aggregated Consumption
+            {t("screens.deviceDetail.aggregatedConsumption")}
           </Text>
           <View style={deviceDetailstyles.runtimeStats}>
             <View style={styles.runtimeRow}>
               <Text style={deviceDetailstyles.runtimeValue}>
                 {aggregated.energy}
               </Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Energy (kWh)</Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>
+                {t("screens.deviceDetail.energy")}
+              </Text>
             </View>
             <View style={deviceDetailstyles.divider} />
             <View style={styles.runtimeRow}>
               <Text style={deviceDetailstyles.runtimeValue}>
                 {aggregated.cost.toFixed(3)}
               </Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Cost (₹)</Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>
+                {t("screens.deviceDetail.cost")}
+              </Text>
             </View>
             <View style={deviceDetailstyles.divider} />
 
             <View style={styles.runtimeRow}>
               <Text style={deviceDetailstyles.runtimeValue}>--</Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>Active Time</Text>
+              <Text style={deviceDetailstyles.runtimeLabel}>
+                {t("screens.deviceDetail.activeTime")}
+              </Text>
             </View>
           </View>
         </View>
 
         <View style={deviceDetailstyles.usageCard}>
           <Text style={deviceDetailstyles.usageCardTitle}>
-            {selectedUsage === 1 ? "Energy Overview" : "Cost Overview"}
+            {selectedUsage === 1
+              ? t("screens.deviceDetail.energyOverview")
+              : t("screens.deviceDetail.costOverview")}
           </Text>
           <View style={deviceDetailstyles.usageIconsContainer}>
             <TouchableOpacity
@@ -230,7 +242,7 @@ const DeviceDetail: React.FC = () => {
                   { color: "#D35400", fontWeight: "800" },
                 ]}
               >
-                Timer Active
+                {t("screens.deviceDetail.timerActive")}
               </Text>
             </TouchableOpacity>
           ) : (
@@ -239,23 +251,31 @@ const DeviceDetail: React.FC = () => {
               style={deviceDetailstyles.quickActionItem}
             >
               <Ionicons name="time-outline" size={24} color="#007aff" />
-              <Text style={deviceDetailstyles.quickActionLabel}>Timer</Text>
+              <Text style={deviceDetailstyles.quickActionLabel}>
+                {t("screens.deviceDetail.timer")}
+              </Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity style={deviceDetailstyles.quickActionItem}>
             <Ionicons name="airplane-outline" size={24} color="#007aff" />
-            <Text style={deviceDetailstyles.quickActionLabel}>Away</Text>
+            <Text style={deviceDetailstyles.quickActionLabel}>
+              {t("screens.deviceDetail.away")}
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* Help & Feedback */}
         <View style={deviceDetailstyles.settingsCard}>
-          <Text style={deviceDetailstyles.settingsTitle}>Help & Feedback</Text>
+          <Text style={deviceDetailstyles.settingsTitle}>
+            {t("screens.deviceDetail.helpFeedback")}
+          </Text>
           <Text style={deviceDetailstyles.settingsSubtitle}>
-            Get support or submit your feedback
+            {t("screens.deviceDetail.supportSubtitle")}
           </Text>
           <TouchableOpacity style={deviceDetailstyles.settingsButton}>
-            <Text style={deviceDetailstyles.settingsButtonText}>Support</Text>
+            <Text style={deviceDetailstyles.settingsButtonText}>
+              {t("screens.deviceDetail.support")}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

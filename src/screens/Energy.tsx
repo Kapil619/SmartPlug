@@ -15,10 +15,12 @@ import { BarChart } from "react-native-gifted-charts";
 import useAggregatedEnergyData from "../hooks/useAggregatedData";
 import { energyStyles } from "../styles/energyStyles";
 import { getMonthName } from "../utils/helper";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
 
 const Energy: React.FC = () => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState<"daily" | "weekly" | "monthly">(
     "daily"
   );
@@ -28,7 +30,7 @@ const Energy: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#578FCA" />
-        <Text style={styles.loadingText}>Loading Energy Data...</Text>
+        <Text style={styles.loadingText}>{t("screens.energy.loading")}</Text>
       </View>
     );
   }
@@ -36,7 +38,9 @@ const Energy: React.FC = () => {
   if (error || !aggregatedData) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error || "Something went wrong."}</Text>
+        <Text style={styles.errorText}>
+          {error || t("screens.energy.error")}
+        </Text>
       </View>
     );
   }
@@ -73,9 +77,11 @@ const Energy: React.FC = () => {
         <ScrollView contentContainerStyle={energyStyles.scrollContent}>
           {/* Header */}
           <View style={energyStyles.headerContainer}>
-            <Text style={energyStyles.headerTitle}>Energy Insights</Text>
+            <Text style={energyStyles.headerTitle}>
+              {t("screens.energy.title")}
+            </Text>
             <Text style={energyStyles.headerSubtitle}>
-              Monitor your energy usage and cost
+              {t("screens.energy.subtitle")}
             </Text>
           </View>
           {/* Filter Buttons */}
@@ -95,7 +101,7 @@ const Energy: React.FC = () => {
                     timeRange === range && energyStyles.filterButtonTextActive,
                   ]}
                 >
-                  {range.charAt(0).toUpperCase() + range.slice(1)}
+                  {t(`screens.energy.filter.${range}`)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -104,7 +110,8 @@ const Energy: React.FC = () => {
           {/* Energy Chart */}
           <View style={styles.chartContainer}>
             <Text style={styles.chartTitle}>
-              {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)} Usage
+              {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)}{" "}
+              {t("screens.energy.chartTitle")}
               (kWh)
             </Text>
             <BarChart
@@ -138,10 +145,12 @@ const Energy: React.FC = () => {
           {/* Cost Breakdown */}
           <View style={styles.costCard}>
             <Ionicons name="wallet" size={30} color="#578FCA" />
-            <Text style={styles.costTitle}>Total Cost</Text>
+            <Text style={styles.costTitle}>
+              {t("screens.energy.totalCost")}
+            </Text>
             <Text style={styles.costValue}>₹ {totalCost}</Text>
             <Text style={styles.costSubtitle}>
-              This is the total cost for the selected time range.
+              {t("screens.energy.costSubtitle")}
             </Text>
           </View>
         </ScrollView>

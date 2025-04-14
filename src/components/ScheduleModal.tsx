@@ -1,6 +1,7 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Slider from "@react-native-community/slider";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { deviceStyles } from "../styles/deviceStyles";
 import { DAYS } from "../utils/data";
@@ -26,6 +27,17 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   setSelectedDays,
   onSave,
 }) => {
+  const { t } = useTranslation();
+  const translatedDays = [
+    t("screens.days.mon"),
+    t("screens.days.tue"),
+    t("screens.days.wed"),
+    t("screens.days.thu"),
+    t("screens.days.fri"),
+    t("screens.days.sat"),
+    t("screens.days.sun"),
+  ];
+
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [usageLimit, setUsageLimit] = useState<number>(0);
@@ -65,7 +77,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     <Modal visible={visible} animationType="slide" transparent>
       <View style={deviceStyles.modalOverlay}>
         <View style={deviceStyles.modalContainer}>
-          <Text style={deviceStyles.modalTitle}>Create Schedule</Text>
+          <Text style={deviceStyles.modalTitle}>
+            {t("screens.scheduleModal.title")}
+          </Text>
 
           {/* Device Picker */}
           <ScrollView horizontal contentContainerStyle={{ marginVertical: 10 }}>
@@ -93,10 +107,12 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
           </ScrollView>
 
           {/* Day of Week Selection */}
-          <Text style={deviceStyles.label}>Days of Week:</Text>
+          <Text style={deviceStyles.label}>
+            {t("screens.scheduleModal.daysOfWeek")}
+          </Text>
           <View style={deviceStyles.daysRow}>
-            {DAYS.map((day) => {
-              const isSelected = selectedDays.includes(day);
+            {translatedDays.map((day, index) => {
+              const isSelected = selectedDays.includes(DAYS[index]);
               return (
                 <TouchableOpacity
                   key={day}
@@ -104,7 +120,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     deviceStyles.dayItem,
                     isSelected && deviceStyles.dayItemSelected,
                   ]}
-                  onPress={() => toggleDay(day)}
+                  onPress={() => toggleDay(DAYS[index])}
                 >
                   <Text
                     style={[
@@ -112,7 +128,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                       isSelected && deviceStyles.dayItemTextSelected,
                     ]}
                   >
-                    {day.slice(0, 3)}
+                    {day}
                   </Text>
                 </TouchableOpacity>
               );
@@ -120,7 +136,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
           </View>
 
           {/* Time Picker */}
-          <Text style={deviceStyles.label}>Time to Execute:</Text>
+          <Text style={deviceStyles.label}>
+            {t("screens.scheduleModal.timeToExecute")}
+          </Text>
           <TouchableOpacity
             style={deviceStyles.timePickerButton}
             onPress={() => setShowTimePicker(true)}
@@ -142,7 +160,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
           {/* Usage/Cost Limits */}
           <Text style={deviceStyles.label}>
-            Usage Limit (kWh): {usageLimit.toFixed(1)}
+            {t("screens.scheduleModal.usageLimit")} (kWh):{" "}
+            {usageLimit.toFixed(1)}
           </Text>
           <Slider
             style={{ width: "100%" }}
@@ -155,7 +174,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             maximumTrackTintColor="#ccc"
           />
           <Text style={deviceStyles.label}>
-            Cost Limit (₹): {costLimit.toFixed(2)}
+            {t("screens.scheduleModal.costLimit")} (₹): {costLimit.toFixed(2)}
           </Text>
           <Slider
             style={{ width: "100%" }}
@@ -174,14 +193,16 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               style={[deviceStyles.modalButton, { backgroundColor: "#ccc" }]}
               onPress={onClose}
             >
-              <Text style={deviceStyles.modalButtonText}>Cancel</Text>
+              <Text style={deviceStyles.modalButtonText}>
+                {t("screens.scheduleModal.cancel")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[deviceStyles.modalButton, { backgroundColor: "#007aff" }]}
               onPress={handleSave}
             >
               <Text style={[deviceStyles.modalButtonText, { color: "#fff" }]}>
-                Save
+                {t("screens.scheduleModal.save")}
               </Text>
             </TouchableOpacity>
           </View>

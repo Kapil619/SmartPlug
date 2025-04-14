@@ -1,0 +1,195 @@
+{
+  "screens": {
+    "tabs": {
+      "home": "होमस्क्रीन",
+      "schedules": "वेळापत्रक",
+      "energy": "ऊर्जा",
+      "profile": "प्रोफाइल"
+    },
+    "home": {
+      "welcome": "स्वागत आहे",
+      "subtitle": "तुमची साधने नियंत्रित करा आणि पाहा",
+      "devices": "तुमची साधने"
+    },
+    "topCard": {
+      "today": "आज ",
+      "currentMonth": "चालू महिना",
+      "previousMonth": "मागील महिना",
+      "usage": "वापर:",
+      "usageNoData": "वापर: डेटा नाही",
+      "cost": "खर्च:",
+      "costNoData": "खर्च: डेटा नाही"
+    },
+    "deviceCard": {
+      "status": "स्थिती:",
+      "on": "चालू",
+      "off": "बंद"
+    },
+    "schedules": {
+      "title": "वेळापत्रक आणि स्वयंचलन",
+      "subtitle": "तुमच्या साधनांचे वेळापत्रक ठरवा",
+      "addButton": "वेळापत्रक जोडा"
+    },
+    "scheduleList": {
+      "noSchedules": "अजून कोणतेही वेळापत्रक तयार केलेले नाही",
+      "createSchedule": "नवीन वेळापत्रक तयार करण्यासाठी खालील + बटणावर टॅप करा",
+      "oneTimeSchedule": "एकदाच वेळापत्रक",
+      "executed": "पूर्ण झाले",
+      "usageLimit": "मर्यादा",
+      "costLimit": " मर्यादा"
+    },
+    "scheduleModal": {
+      "title": "वेळापत्रक तयार करा",
+      "devicePicker": "नाव नसलेले उपकरण",
+      "daysOfWeek": "आठवड्याचे दिवस:",
+      "timeToExecute": "अमलात आणण्याची वेळ:",
+      "usageLimit": "वापर मर्यादा ",
+      "costLimit": "खर्च मर्यादा",
+      "cancel": "रद्द करा",
+      "save": "जतन करा"
+    },
+    "days": {
+      "mon": "सोम",
+      "tue": "मंगळ",
+      "wed": "बुध",
+      "thu": "गुरु",
+      "fri": "शुक्र",
+      "sat": "शनि",
+      "sun": "रवि"
+    },
+    "energy": {
+      "title": "ऊर्जा अंतर्दृष्टी",
+      "subtitle": "तुमच्या ऊर्जेचा वापर आणि खर्च पाहा",
+      "filter": {
+        "daily": "दैनिक",
+        "weekly": "साप्ताहिक",
+        "monthly": "मासिक"
+      },
+      "chartTitle": "वापर",
+      "totalCost": "एकूण खर्च",
+      "costSubtitle": "निवडलेल्या कालावधीसाठी हा एकूण खर्च आहे.",
+      "loading": "ऊर्जा डेटा लोड करत आहे...",
+      "error": "काहीतरी चूक झाली."
+    },
+    "profile": {
+      "accountSettings": "खाते सेटिंग्ज",
+      "notificationSettings": "सूचना सेटिंग्ज",
+      "languagePreferences": "भाषा प्राधान्ये",
+      "checkForUpdates": "अद्यतन तपासा",
+      "updateStatus": {
+        "checking": "अद्यतन तपासत आहे...",
+        "downloading": "अद्यतन डाउनलोड करत आहे...",
+        "downloaded": "अद्यतन डाउनलोड झाले. अॅप पुन्हा सुरू करत आहे...",
+        "upToDate": "अॅप अद्ययावत आहे.",
+        "failed": "अद्यतन तपासण्यात अयशस्वी."
+      },
+      "goPremium": "प्रीमियम घ्या",
+      "yourDevices": "तुमची साधने",
+      "unnamedDevice": "नाव नसलेले उपकरण",
+      "energy": "ऊर्जा",
+      "cost": "खर्च",
+      "logOut": "बाहेर पडा"
+    },
+    "premiumModal": {
+      "title": "प्रीमियम फायदे",
+      "features": {
+        "realTimeAnalytics": "रिअल-टाइम विश्लेषण",
+        "smartScheduling": "स्मार्ट वेळापत्रक",
+        "chatSupport": "२४/७ चॅट समर्थन",
+        "notifications": "सूचना समर्थन",
+        "customAlerts": "सानुकूलित अलर्ट"
+      },
+      "free": "फ्री",
+      "premium": "प्रीमियम",
+      "subscribeNow": "सदस्यता घ्या"
+    },
+    "deviceDetail": {
+      "header": "उपकरण तपशील",
+      "power": "टॉगल पॉवर",
+      "aggregatedConsumption": "उपकरण एकत्रित वापर",
+      "energy": "ऊर्जा (kWh)",
+      "cost": "खर्च (₹)",
+      "activeTime": "सक्रिय वेळ",
+      "energyOverview": "ऊर्जा आढावा ",
+      "costOverview": "खर्च आढावा ",
+      "timerActive": "टायमर सक्रिय",
+      "timer": "टायमर",
+      "away": "दूर",
+      "helpFeedback": "मदत आणि अभिप्राय",
+      "supportSubtitle": "मदत मिळवा किंवा तुमचा अभिप्राय सबमिट करा",
+      "support": "मदत"
+    },
+    "addDevice": {
+      "headerTitle": "नवीन उपकरण जोडा",
+      "headerSubtitle": "QR किंवा विशेष कोडद्वारे उपकरण कनेक्ट करा",
+      "qrCode": "QR कोड",
+      "specialCode": "विशेष कोड",
+      "scanQRCode": "QR कोड स्कॅन करा",
+      "enterCodePlaceholder": "10-अंकी कोड प्रविष्ट करा",
+      "deviceNamePlaceholder": "साधनाचे नाव (उदा., बेडरूम प्लग)",
+      "addDeviceButton": "साधन जोडा",
+      "error": {
+        "deviceNameRequired": "कृपया साधनाचे नाव प्रविष्ट करा.",
+        "invalidCode": "साधन कोड नेमके 10 अंकांचे असणे आवश्यक आहे.",
+        "customApplianceRequired": "कृपया सानुकूल साधन प्रकार प्रविष्ट करा.",
+        "customLocationRequired": "कृपया सानुकूल स्थान प्रविष्ट करा.",
+        "addDeviceFailed": "साधन जोडण्यात त्रुटी!"
+      },
+      "success": "साधन यशस्वीरित्या जोडले गेले!"
+    },
+    "login": {
+      "headerTitle": "स्वागत आहे",
+      "headerSubtitle": "सुरू ठेवण्यासाठी साइन इन करा",
+      "emailPlaceholder": "ईमेल",
+      "passwordPlaceholder": "पासवर्ड",
+      "errorInvalidEmail": "कृपया वैध ईमेल पत्ता प्रविष्ट करा.",
+      "errorShortPassword": "पासवर्ड किमान ६ अक्षरे असणे आवश्यक आहे.",
+      "loginButton": "लॉग इन",
+      "signupLink": "खाते नाही? साइन अप करा"
+    },
+    "signup": {
+      "headerTitle": "खाते तयार करा",
+      "headerSubtitle": "प्रारंभ करण्यासाठी साइन अप करा",
+      "namePlaceholder": "वापरकर्ता नाव",
+      "emailPlaceholder": "ईमेल",
+      "passwordPlaceholder": "पासवर्ड",
+      "deviceCodePlaceholder": "डिव्हाइस कोड",
+      "invalidUsername": "कृपया वैध वापरकर्तानाव प्रविष्ट करा.",
+      "invalidEmail": "कृपया वैध ईमेल पत्ता प्रविष्ट करा.",
+      "errorShortPassword": "पासवर्ड किमान ६ अक्षरे असणे आवश्यक आहे.",
+      "invalidCode": "डिव्हाइस कोड नेमके १० अंकांचे असणे गरजेचे आहे.",
+      "selectState": "कृपया स्थानिक राज्य निवडा.",
+      "signupButton": "साइन अप करा",
+      "success": "खाते यशस्वीरित्या तयार झाले!",
+      "scanQRCode": "QR कोड स्कॅन करा",
+      "haveAccount": "खाते आहे? लॉग इन करा"
+    },
+    "onboarding": {
+      "skip": "वगळा",
+      "next": "पुढे",
+      "done": "पूर्ण",
+      "slides": [
+        {
+          "title": "EnergyIQ मध्ये आपले स्वागत आहे",
+          "description": "कोठूनही आपली उपकरणे नियंत्रित करा!"
+        },
+        {
+          "title": "वापरावर लक्ष ठेवा",
+          "description": "रिअल-टाईम मूल्यांसह ऊर्जा वापर मॉनिटर करा."
+        },
+        {
+          "title": "स्वयंचलित करा",
+          "description": "पूर्ण स्वयंचलिततेसाठी वेळापत्रके व टायमर लावा."
+        },
+        {
+          "title": "खर्च कमी करा",
+          "description": "ऊर्जा कार्यक्षम सेटिंग्ज सह पैसे वाचवा."
+        },
+        {
+          "title": "प्रीमियम अनलॉक करा",
+          "description": "वाढीव वैशिष्ट्ये आणि अधिक नियंत्रणाचा आनंद घ्या."
+        }
+      ]
+    }
+  }
+}

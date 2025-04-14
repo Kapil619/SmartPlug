@@ -33,7 +33,7 @@ export const authStyles = StyleSheet.create({
     },
     popup: {
         position: "absolute",
-        bottom: 30,
+        top: 0,
         left: 20,
         right: 20,
         backgroundColor: "#A4B465",

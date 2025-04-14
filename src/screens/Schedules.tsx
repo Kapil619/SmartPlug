@@ -15,6 +15,7 @@ import { useSchedules } from "../context/ScheduleContext";
 import { deviceStyles } from "../styles/deviceStyles";
 import { fetchDevices } from "../utils/firebaseMethods";
 import { ScheduleItem } from "../utils/types";
+import { useTranslation } from "react-i18next";
 export default function SchedulesScreen() {
   const [devices, setDevices] = useState<any[]>([]);
   // const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
@@ -22,6 +23,7 @@ export default function SchedulesScreen() {
   const [selectedDevice, setSelectedDevice] = useState(devices[0]);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { schedules, addSchedule, deleteSchedule } = useSchedules();
+  const { t } = useTranslation();
   // const deleteSchedule = (id: string) => {
   //   setSchedules(schedules.filter((schedule) => schedule.id !== id));
   // };
@@ -81,9 +83,11 @@ export default function SchedulesScreen() {
       <SafeAreaView style={deviceStyles.container}>
         <ScrollView contentContainerStyle={deviceStyles.scrollContent}>
           <View style={deviceStyles.headerContainer}>
-            <Text style={deviceStyles.headerTitle}>Schedules & Automation</Text>
+            <Text style={deviceStyles.headerTitle}>
+              {t("screens.schedules.title")}
+            </Text>
             <Text style={deviceStyles.headerSubtitle}>
-              Schedule your devices
+              {t("screens.schedules.subtitle")}
             </Text>
           </View>
           <ScheduleList schedules={schedules} onDelete={deleteSchedule} />

@@ -26,7 +26,7 @@ export default function Profile() {
     [key: string]: boolean;
   }>({});
   const [premiumModalVisible, setPremiumModalVisible] = useState(false);
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
 
   const checkForUpdates = async () => {
@@ -108,7 +108,7 @@ export default function Profile() {
 
           {/* Account Settings Card */}
           <View style={profileStyles.card}>
-            <Text style={profileStyles.cardTitle}>Account Settings</Text>
+            <Text style={profileStyles.cardTitle}>{t("screens.profile.accountSettings")}</Text>
 
             <TouchableOpacity style={profileStyles.settingItem}>
               <Ionicons
@@ -117,7 +117,7 @@ export default function Profile() {
                 color="#007aff"
               />
               <Text style={profileStyles.settingText}>
-                Notification Settings
+                {t("screens.profile.notificationSettings")}
               </Text>
             </TouchableOpacity>
 
@@ -125,7 +125,7 @@ export default function Profile() {
             <View style={profileStyles.settingItem}>
               <Ionicons name="globe-outline" size={20} color="#007aff" />
               <Text style={profileStyles.settingText}>
-                Language Preferences
+                {t("screens.profile.languagePreferences")}
               </Text>
               <View style={profileStyles.languageToggleContainer}>
                 <TouchableOpacity
@@ -177,7 +177,9 @@ export default function Profile() {
                 size={20}
                 color="#007aff"
               />
-              <Text style={profileStyles.settingText}>Check for Updates</Text>
+              <Text style={profileStyles.settingText}>
+                {t("screens.profile.checkForUpdates")}
+              </Text>
             </TouchableOpacity>
 
             {/* Update Status Text */}
@@ -188,7 +190,7 @@ export default function Profile() {
                   { marginLeft: 36, marginTop: 4 },
                 ]}
               >
-                {updateStatus}
+                {t(`screens.profile.updateStatus.${updateStatus}`)}
               </Text>
             )}
 
@@ -203,19 +205,21 @@ export default function Profile() {
                   size={24}
                   color="#000"
                 />
-                <Text style={profileStyles.premiumButtonText}>Go Premium</Text>
+                <Text style={profileStyles.premiumButtonText}>
+                  {t("screens.profile.goPremium")}
+                </Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>
 
           {/* Activity Summary Card */}
           <View style={profileStyles.card}>
-            <Text style={profileStyles.cardTitle}>Your Devices</Text>
+            <Text style={profileStyles.cardTitle}>{t("screens.profile.yourDevices")}</Text>
             {profile?.devices?.map((device, index) => (
               <View key={device.deviceCode}>
                 <View style={profileStyles.deviceRow}>
                   <Text style={profileStyles.deviceName}>
-                    {device.deviceName || "Unnamed Device"}
+                    {device.deviceName || t("screens.profile.unnamedDevice")}
                   </Text>
                   <View style={profileStyles.secretContainer}>
                     <Text style={profileStyles.secretKey}>
@@ -239,8 +243,12 @@ export default function Profile() {
                   </View>
                 </View>
                 <View style={profileStyles.statsRow}>
-                  <Text style={profileStyles.stat}>Energy: {"--"}</Text>
-                  <Text style={profileStyles.stat}>Cost: {"--"}</Text>
+                  <Text style={profileStyles.stat}>
+                    {t("screens.profile.energy")}: {"--"}
+                  </Text>
+                  <Text style={profileStyles.stat}>
+                    {t("screens.profile.cost")}: {"--"}
+                  </Text>
                 </View>
                 {index < profile.devices.length - 1 && (
                   <View style={profileStyles.seperator} />
@@ -258,7 +266,7 @@ export default function Profile() {
             style={profileStyles.logoutButton}
           >
             <Ionicons name="log-out-outline" size={20} color="#fff" />
-            <Text style={profileStyles.logoutText}>Log Out</Text>
+            <Text style={profileStyles.logoutText}>{t("screens.profile.logOut")}</Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>

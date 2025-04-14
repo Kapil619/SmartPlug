@@ -24,6 +24,7 @@ import {
   validatePassword,
   validateSpecialCode,
 } from "../utils/validator";
+import { useTranslation } from "react-i18next"; // Import translation hook
 
 export default function Signup() {
   const navigation = useNavigation<any>();
@@ -35,33 +36,36 @@ export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const { t } = useTranslation(); // Initialize translation hook
+
   const handleInfoPress = () => {
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 4000);
   };
   const handleSignup = async () => {
-    // Validate email
+    // Validate name
     if (!validateName(name)) {
-      setErrorMessage("Please enter a valid Userame.");
+      setErrorMessage(t("screens.signup.invalidUsername"));
       return;
     }
+    // Validate email
     if (!validateEmail(email)) {
-      setErrorMessage("Please enter a valid email address.");
+      setErrorMessage(t("screens.signup.invalidEmail"));
       return;
     }
     // Validate password
     if (!validatePassword(password)) {
-      setErrorMessage("Password must be at least 6 characters long.");
+      setErrorMessage(t("screens.signup.errorShortPassword"));
       return;
     }
-    // (Optional) Validate special code if necessary
-    // After validating email and password...
+    // Validate special code
     if (!validateSpecialCode(specialCode)) {
-      setErrorMessage("Device Code must be exactly 10 digits.");
+      setErrorMessage(t("screens.signup.invalidCode"));
       return;
     }
+    // Validate state
     if (!selectedState) {
-      setErrorMessage("Please select a state.");
+      setErrorMessage(t("screens.signup.selectState"));
       return;
     }
     setErrorMessage("");
@@ -109,8 +113,12 @@ export default function Signup() {
                 source={require("../../assets/realplug.png")}
                 style={authStyles.logo}
               />
-              <Text style={authStyles.title}>Create Account</Text>
-              <Text style={authStyles.subtitle}>Sign up to get started</Text>
+              <Text style={authStyles.title}>
+                {t("screens.signup.headerTitle")}
+              </Text>
+              <Text style={authStyles.subtitle}>
+                {t("screens.signup.headerSubtitle")}
+              </Text>
             </Animatable.View>
 
             {/* Form Container */}
@@ -123,7 +131,7 @@ export default function Signup() {
                 <Ionicons name="person-outline" size={20} color="#007aff" />
                 <TextInput
                   style={authStyles.input}
-                  placeholder="Username"
+                  placeholder={t("screens.signup.namePlaceholder")}
                   placeholderTextColor="#999"
                   value={name}
                   onChangeText={setName}
@@ -136,7 +144,7 @@ export default function Signup() {
                 <Ionicons name="mail-outline" size={20} color="#007aff" />
                 <TextInput
                   style={authStyles.input}
-                  placeholder="Email"
+                  placeholder={t("screens.signup.emailPlaceholder")}
                   placeholderTextColor="#999"
                   value={email}
                   onChangeText={setEmail}
@@ -154,7 +162,7 @@ export default function Signup() {
                 />
                 <TextInput
                   style={authStyles.input}
-                  placeholder="Password"
+                  placeholder={t("screens.signup.passwordPlaceholder")}
                   placeholderTextColor="#999"
                   secureTextEntry
                   value={password}
@@ -167,7 +175,7 @@ export default function Signup() {
                 <Ionicons name="key-outline" size={20} color="#007aff" />
                 <TextInput
                   style={authStyles.input}
-                  placeholder="Device Code"
+                  placeholder={t("screens.signup.deviceCodePlaceholder")}
                   placeholderTextColor="#999"
                   value={specialCode}
                   onChangeText={setSpecialCode}
@@ -188,7 +196,7 @@ export default function Signup() {
               </View>
               {showPopup && (
                 <Animatable.View
-                  animation={"fadeInUp"}
+                  animation={"fadeInDown"}
                   delay={50}
                   style={authStyles.popup}
                 >
@@ -213,7 +221,7 @@ export default function Signup() {
               ) : null}
               {/* Sign Up Button */}
               <Button
-                title="Sign Up"
+                title={t("screens.signup.signupButton")}
                 onPress={handleSignup}
                 loading={isLoading}
                 buttonStyle={authStyles.button}
@@ -228,7 +236,9 @@ export default function Signup() {
                 activeOpacity={0.8}
               >
                 <Ionicons name="qr-code-outline" size={20} color="#fff" />
-                <Text style={authStyles.qrButtonText}>Scan QR Code</Text>
+                <Text style={authStyles.qrButtonText}>
+                  {t("screens.signup.scanQRCode")}
+                </Text>
               </TouchableOpacity>
 
               {/* Navigate to Login */}
@@ -237,7 +247,7 @@ export default function Signup() {
                 onPress={navigateToLogin}
               >
                 <Text style={authStyles.linkText}>
-                  Already have an account? Log in
+                  {t("screens.signup.haveAccount")}
                 </Text>
               </TouchableOpacity>
             </Animatable.View>

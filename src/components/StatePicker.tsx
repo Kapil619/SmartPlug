@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 
 interface StatePickerProps {
@@ -42,6 +43,7 @@ const StatePicker: React.FC<StatePickerProps> = ({
     "Uttarakhand",
     "West Bengal",
   ];
+  const { t } = useTranslation();
 
   return (
     <>
@@ -51,7 +53,7 @@ const StatePicker: React.FC<StatePickerProps> = ({
         onValueChange={onValueChange}
         style={styles.picker}
       >
-        <Picker.Item label="Select State" value={null} />
+        <Picker.Item label={t("screens.signup.selectState")} value={null} />
         {states.map((state) => (
           <Picker.Item key={state} label={state} value={state} />
         ))}
