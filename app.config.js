@@ -8,6 +8,7 @@ export default {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
+    plugins: ["expo-localization"],
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",

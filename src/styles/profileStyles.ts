@@ -201,4 +201,35 @@ export const profileStyles = StyleSheet.create({
         marginLeft: 10,
         fontWeight: "600",
     },
+    languageText: {
+        marginLeft: 20,
+        fontSize: 15,
+        color: "#007aff",
+        fontWeight: "500",
+    },
+    languageToggleContainer: {
+        flexDirection: "row",
+        marginLeft: "auto",
+        backgroundColor: "#E1F0FF",
+        borderRadius: 20,
+        overflow: "hidden",
+        borderWidth: 1,
+        borderColor: "#007aff",
+    },
+    languageButton: {
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        backgroundColor: "transparent",
+    },
+    languageButtonActive: {
+        backgroundColor: "#007aff",
+    },
+    languageButtonText: {
+        fontSize: 14,
+        color: "#007aff",
+        fontWeight: "500",
+    },
+    languageButtonTextActive: {
+        color: "#fff",
+    },
 });

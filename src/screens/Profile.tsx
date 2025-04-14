@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Image,
   SafeAreaView,
@@ -25,6 +26,8 @@ export default function Profile() {
     [key: string]: boolean;
   }>({});
   const [premiumModalVisible, setPremiumModalVisible] = useState(false);
+  const { i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
 
   const checkForUpdates = async () => {
     try {
@@ -59,6 +62,11 @@ export default function Profile() {
 
   const toggleSecret = (id: string) => {
     setVisibleSecrets((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setSelectedLanguage(lang);
   };
 
   return (
@@ -112,12 +120,52 @@ export default function Profile() {
                 Notification Settings
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={profileStyles.settingItem}>
+
+            {/* Language Preferences */}
+            <View style={profileStyles.settingItem}>
               <Ionicons name="globe-outline" size={20} color="#007aff" />
               <Text style={profileStyles.settingText}>
                 Language Preferences
               </Text>
-            </TouchableOpacity>
+              <View style={profileStyles.languageToggleContainer}>
+                <TouchableOpacity
+                  style={[
+                    profileStyles.languageButton,
+                    selectedLanguage === "en" &&
+                      profileStyles.languageButtonActive,
+                  ]}
+                  onPress={() => changeLanguage("en")}
+                >
+                  <Text
+                    style={[
+                      profileStyles.languageButtonText,
+                      selectedLanguage === "en" &&
+                        profileStyles.languageButtonTextActive,
+                    ]}
+                  >
+                    English
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    profileStyles.languageButton,
+                    selectedLanguage === "mr" &&
+                      profileStyles.languageButtonActive,
+                  ]}
+                  onPress={() => changeLanguage("mr")}
+                >
+                  <Text
+                    style={[
+                      profileStyles.languageButtonText,
+                      selectedLanguage === "mr" &&
+                        profileStyles.languageButtonTextActive,
+                    ]}
+                  >
+                    मराठी
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             {/* Smaller Check for Updates Button */}
             <TouchableOpacity

@@ -1,0 +1,9 @@
+{
+  "screens": {
+    "home": {
+      "welcome": "Welcome",
+      "subtitle": "Monitor and control your devices",
+      "devices": "Your Devices"
+    }
+  }
+}
