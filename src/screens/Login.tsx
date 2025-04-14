@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -66,121 +67,130 @@ export default function Login() {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          {/* Header / Logo */}
-          <Animatable.View
-            animation="fadeInDown"
-            delay={200}
-            style={authStyles.headerContainer}
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
           >
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Onboarding")}
-              style={{
-                position: "absolute",
-                right: 15,
-                padding: 5,
-              }}
+            {/* Header / Logo */}
+            <Animatable.View
+              animation="fadeInDown"
+              delay={200}
+              style={authStyles.headerContainer}
             >
-              <Feather name="help-circle" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Image
-              source={require("../../assets/realplug.png")}
-              style={[
-                authStyles.logo,
-                {
-                  width: 170,
-                  height: 170,
-                },
-              ]}
-            />
-
-            <Text style={authStyles.title}>
-              {t("screens.login.headerTitle")}
-            </Text>
-            <Text style={authStyles.subtitle}>
-              {t("screens.login.headerSubtitle")}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                const newLang = i18n.language === "en" ? "mr" : "en";
-                setAppLanguage(newLang);
-              }}
-              style={authStyles.languageBtn}
-            >
-              <Text style={authStyles.languageBtnText}>
-                {i18n.language === "en" ? "मराठीत बदला" : "Switch to English"}
-              </Text>
-            </TouchableOpacity>
-          </Animatable.View>
-
-          {/* Form Container */}
-          <Animatable.View
-            animation="fadeInUp"
-            delay={400}
-            style={[
-              authStyles.formContainer,
-              {
-                marginTop: 50,
-              },
-            ]}
-          >
-            <View style={authStyles.inputRow}>
-              <Ionicons name="mail-outline" size={20} color="#007aff" />
-              <TextInput
-                style={authStyles.input}
-                placeholder={t("screens.login.emailPlaceholder")}
-                placeholderTextColor="#999"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
-            </View>
-
-            <View style={authStyles.inputRow}>
-              <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
-              <TextInput
-                style={authStyles.input}
-                placeholder={t("screens.login.passwordPlaceholder")}
-                placeholderTextColor="#999"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-              />
-            </View>
-            {errorMessage ? (
-              <Text
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Onboarding")}
                 style={{
-                  color: "red",
-                  textAlign: "center",
-                  marginVertical: 10,
-                  fontSize: 16,
-                  fontWeight: "800",
+                  position: "absolute",
+                  right: 15,
+                  padding: 5,
                 }}
               >
-                {errorMessage}
+                <Feather name="help-circle" size={24} color="#fff" />
+              </TouchableOpacity>
+              <Image
+                source={require("../../assets/realplug.png")}
+                style={[
+                  authStyles.logo,
+                  {
+                    width: 170,
+                    height: 170,
+                  },
+                ]}
+              />
+
+              <Text style={authStyles.title}>
+                {t("screens.login.headerTitle")}
               </Text>
-            ) : null}
+              <Text style={authStyles.subtitle}>
+                {t("screens.login.headerSubtitle")}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  const newLang = i18n.language === "en" ? "mr" : "en";
+                  setAppLanguage(newLang);
+                }}
+                style={authStyles.languageBtn}
+              >
+                <Text style={authStyles.languageBtnText}>
+                  {i18n.language === "en" ? "मराठीत बदला" : "Switch to English"}
+                </Text>
+              </TouchableOpacity>
+            </Animatable.View>
 
-            {/* Login Button */}
-            <Button
-              title={t("screens.login.loginButton")}
-              onPress={handleLogin}
-              loading={isLoading}
-              buttonStyle={authStyles.button}
-              textStyle={authStyles.buttonText}
-              iconName="log-in-outline"
-            />
-
-            {/* Navigate to Signup */}
-            <TouchableOpacity
-              style={authStyles.link}
-              onPress={navigateToSignup}
+            {/* Form Container */}
+            <Animatable.View
+              animation="fadeInUp"
+              delay={400}
+              style={[
+                authStyles.formContainer,
+                {
+                  marginTop: 50,
+                },
+              ]}
             >
-              <Text style={authStyles.linkText}>
-                {t("screens.login.signupLink")}
-              </Text>
-            </TouchableOpacity>
-          </Animatable.View>
+              <View style={authStyles.inputRow}>
+                <Ionicons name="mail-outline" size={20} color="#007aff" />
+                <TextInput
+                  style={authStyles.input}
+                  placeholder={t("screens.login.emailPlaceholder")}
+                  placeholderTextColor="#999"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
+
+              <View style={authStyles.inputRow}>
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={20}
+                  color="#007aff"
+                />
+                <TextInput
+                  style={authStyles.input}
+                  placeholder={t("screens.login.passwordPlaceholder")}
+                  placeholderTextColor="#999"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                />
+              </View>
+              {errorMessage ? (
+                <Text
+                  style={{
+                    color: "red",
+                    textAlign: "center",
+                    marginVertical: 10,
+                    fontSize: 16,
+                    fontWeight: "800",
+                  }}
+                >
+                  {errorMessage}
+                </Text>
+              ) : null}
+
+              {/* Login Button */}
+              <Button
+                title={t("screens.login.loginButton")}
+                onPress={handleLogin}
+                loading={isLoading}
+                buttonStyle={authStyles.button}
+                textStyle={authStyles.buttonText}
+                iconName="log-in-outline"
+              />
+
+              {/* Navigate to Signup */}
+              <TouchableOpacity
+                style={authStyles.link}
+                onPress={navigateToSignup}
+              >
+                <Text style={authStyles.linkText}>
+                  {t("screens.login.signupLink")}
+                </Text>
+              </TouchableOpacity>
+            </Animatable.View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>
