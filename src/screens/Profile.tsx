@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import PremiumModal from "../components/PremiumModal";
+import { setAppLanguage } from "../localization/i18n";
 import { profileStyles } from "../styles/profileStyles";
 import { getUserProfile, logOut } from "../utils/firebaseMethods";
 import { UserProfile } from "../utils/types";
@@ -60,15 +61,19 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
+  useEffect(() => {
+    const handleLanguageChange = (lng: string) => {
+      setSelectedLanguage(lng);
+    };
+    i18n.on("languageChanged", handleLanguageChange);
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, [i18n]);
+
   const toggleSecret = (id: string) => {
     setVisibleSecrets((prev) => ({ ...prev, [id]: !prev[id] }));
   };
-
-  const changeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setSelectedLanguage(lang);
-  };
-
   return (
     <LinearGradient
       colors={["#578FCA", "#E1F0FF", "#FFFFFF"]}
@@ -108,7 +113,9 @@ export default function Profile() {
 
           {/* Account Settings Card */}
           <View style={profileStyles.card}>
-            <Text style={profileStyles.cardTitle}>{t("screens.profile.accountSettings")}</Text>
+            <Text style={profileStyles.cardTitle}>
+              {t("screens.profile.accountSettings")}
+            </Text>
 
             <TouchableOpacity style={profileStyles.settingItem}>
               <Ionicons
@@ -134,7 +141,7 @@ export default function Profile() {
                     selectedLanguage === "en" &&
                       profileStyles.languageButtonActive,
                   ]}
-                  onPress={() => changeLanguage("en")}
+                  onPress={() => setAppLanguage("en")}
                 >
                   <Text
                     style={[
@@ -152,7 +159,7 @@ export default function Profile() {
                     selectedLanguage === "mr" &&
                       profileStyles.languageButtonActive,
                   ]}
-                  onPress={() => changeLanguage("mr")}
+                  onPress={() => setAppLanguage("mr")}
                 >
                   <Text
                     style={[
@@ -214,7 +221,9 @@ export default function Profile() {
 
           {/* Activity Summary Card */}
           <View style={profileStyles.card}>
-            <Text style={profileStyles.cardTitle}>{t("screens.profile.yourDevices")}</Text>
+            <Text style={profileStyles.cardTitle}>
+              {t("screens.profile.yourDevices")}
+            </Text>
             {profile?.devices?.map((device, index) => (
               <View key={device.deviceCode}>
                 <View style={profileStyles.deviceRow}>
@@ -266,7 +275,9 @@ export default function Profile() {
             style={profileStyles.logoutButton}
           >
             <Ionicons name="log-out-outline" size={20} color="#fff" />
-            <Text style={profileStyles.logoutText}>{t("screens.profile.logOut")}</Text>
+            <Text style={profileStyles.logoutText}>
+              {t("screens.profile.logOut")}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
