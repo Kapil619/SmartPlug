@@ -19,10 +19,9 @@ export const profileStyles = StyleSheet.create({
         marginLeft: 10,
     },
     updateStatus: {
-        marginTop: 10,
-        fontSize: 14,
-        color: "#333",
-        textAlign: "center",
+        fontSize: 12,
+        color: "#666",
+        marginTop: 4,
     },
     gradientContainer: {
         flex: 1,
@@ -179,5 +178,27 @@ export const profileStyles = StyleSheet.create({
         fontSize: 14,
         color: "#2E3A45",
         fontWeight: "500",
+    },
+    premiumButtonGradient: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 25,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        width: "100%",
+        alignSelf: "center",
+        marginTop: 10,
+        shadowColor: "#FFD700", // subtle gold shadow
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    premiumButtonText: {
+        color: "black",
+        fontSize: 16,
+        marginLeft: 10,
+        fontWeight: "600",
     },
 });

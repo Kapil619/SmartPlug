@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Updates from "expo-updates";
@@ -12,15 +12,19 @@ import {
   View,
 } from "react-native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import PremiumModal from "../components/PremiumModal";
 import { profileStyles } from "../styles/profileStyles";
-import { users } from "../utils/data";
 import { getUserProfile, logOut } from "../utils/firebaseMethods";
 import { UserProfile } from "../utils/types";
+
 export default function Profile() {
-  const currentUser = users[0];
   const navigation = useNavigation<any>();
   const [profile, setProfile] = useState<UserProfile>();
-  const [updateStatus, setUpdateStatus] = useState<string | null>(null); // State to track update status
+  const [updateStatus, setUpdateStatus] = useState<string | null>(null);
+  const [visibleSecrets, setVisibleSecrets] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [premiumModalVisible, setPremiumModalVisible] = useState(false);
 
   const checkForUpdates = async () => {
     try {
@@ -30,7 +34,7 @@ export default function Profile() {
         setUpdateStatus("Downloading update...");
         await Updates.fetchUpdateAsync();
         setUpdateStatus("Update downloaded. Restarting app...");
-        Updates.reloadAsync(); // Reload the app to apply the update
+        Updates.reloadAsync();
       } else {
         setUpdateStatus("App is up to date.");
       }
@@ -39,11 +43,6 @@ export default function Profile() {
       setUpdateStatus("Failed to check for updates.");
     }
   };
-
-  // State to toggle secret key visibility per device
-  const [visibleSecrets, setVisibleSecrets] = useState<{
-    [key: string]: boolean;
-  }>({});
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -57,6 +56,7 @@ export default function Profile() {
     };
     fetchProfile();
   }, []);
+
   const toggleSecret = (id: string) => {
     setVisibleSecrets((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -71,7 +71,6 @@ export default function Profile() {
           {/* Header / Profile Info */}
           <View style={profileStyles.headerSection}>
             <View style={profileStyles.headerContent}>
-              {/* Profile Image */}
               <View style={profileStyles.avatarContainer}>
                 <Image
                   source={{
@@ -99,29 +98,10 @@ export default function Profile() {
             </View>
           </View>
 
-          <View style={profileStyles.card}>
-            <Text style={profileStyles.cardTitle}>App Updates</Text>
-            <TouchableOpacity
-              style={profileStyles.updateButton}
-              onPress={checkForUpdates}
-            >
-              <Ionicons name="cloud-download-outline" size={20} color="#fff" />
-              <Text style={profileStyles.updateButtonText}>
-                Check for Updates
-              </Text>
-            </TouchableOpacity>
-            {updateStatus && (
-              <Text style={profileStyles.updateStatus}>{updateStatus}</Text>
-            )}
-          </View>
-
           {/* Account Settings Card */}
           <View style={profileStyles.card}>
             <Text style={profileStyles.cardTitle}>Account Settings</Text>
-            <TouchableOpacity style={profileStyles.settingItem}>
-              <Ionicons name="lock-closed-outline" size={20} color="#007aff" />
-              <Text style={profileStyles.settingText}>Change Password</Text>
-            </TouchableOpacity>
+
             <TouchableOpacity style={profileStyles.settingItem}>
               <Ionicons
                 name="notifications-outline"
@@ -137,6 +117,46 @@ export default function Profile() {
               <Text style={profileStyles.settingText}>
                 Language Preferences
               </Text>
+            </TouchableOpacity>
+
+            {/* Smaller Check for Updates Button */}
+            <TouchableOpacity
+              style={profileStyles.settingItem}
+              onPress={checkForUpdates}
+            >
+              <Ionicons
+                name="cloud-download-outline"
+                size={20}
+                color="#007aff"
+              />
+              <Text style={profileStyles.settingText}>Check for Updates</Text>
+            </TouchableOpacity>
+
+            {/* Update Status Text */}
+            {updateStatus && (
+              <Text
+                style={[
+                  profileStyles.updateStatus,
+                  { marginLeft: 36, marginTop: 4 },
+                ]}
+              >
+                {updateStatus}
+              </Text>
+            )}
+
+            {/* Premium Plan Button */}
+            <TouchableOpacity onPress={() => setPremiumModalVisible(true)}>
+              <LinearGradient
+                colors={["#F6DC43", "#FFB433", "#FF9B17"]}
+                style={profileStyles.premiumButtonGradient}
+              >
+                <MaterialCommunityIcons
+                  name="crown-outline"
+                  size={24}
+                  color="#000"
+                />
+                <Text style={profileStyles.premiumButtonText}>Go Premium</Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
 
@@ -185,10 +205,7 @@ export default function Profile() {
           <TouchableOpacity
             onPress={() => {
               logOut();
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Login" }],
-              });
+              navigation.reset({ index: 0, routes: [{ name: "Login" }] });
             }}
             style={profileStyles.logoutButton}
           >
@@ -197,6 +214,10 @@ export default function Profile() {
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
+      <PremiumModal
+        visible={premiumModalVisible}
+        onClose={() => setPremiumModalVisible(false)}
+      />
     </LinearGradient>
   );
 }
