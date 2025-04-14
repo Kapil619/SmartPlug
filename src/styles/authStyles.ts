@@ -116,4 +116,15 @@ export const authStyles = StyleSheet.create({
         color: "#007aff",
         fontSize: 16,
     },
+    languageBtn: {
+        backgroundColor: "#fff",
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        marginTop: 15,
+        borderWidth: 1,
+        borderColor: "#007aff",
+        alignSelf: "center",
+    },
+    languageBtnText: { color: "#007aff", fontSize: 16, fontWeight: "bold" }
 });

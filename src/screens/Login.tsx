@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next"; // Import translation hook
 import {
   Image,
   KeyboardAvoidingView,
@@ -13,9 +14,9 @@ import {
   View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { useTranslation } from "react-i18next"; // Import translation hook
 // Example signIn function from your code
 import Button from "../components/Button";
+import i18n, { setAppLanguage } from "../localization/i18n";
 import { authStyles } from "../styles/authStyles";
 import { signIn } from "../utils/firebaseMethods";
 import { validateEmail, validatePassword } from "../utils/validator";
@@ -81,12 +82,24 @@ export default function Login() {
                 },
               ]}
             />
+
             <Text style={authStyles.title}>
               {t("screens.login.headerTitle")}
             </Text>
             <Text style={authStyles.subtitle}>
               {t("screens.login.headerSubtitle")}
             </Text>
+            <TouchableOpacity
+              onPress={() => {
+                const newLang = i18n.language === "en" ? "mr" : "en";
+                setAppLanguage(newLang);
+              }}
+              style={authStyles.languageBtn}
+            >
+              <Text style={authStyles.languageBtnText}>
+                {i18n.language === "en" ? "मराठीत बदला" : "Switch to English"}
+              </Text>
+            </TouchableOpacity>
           </Animatable.View>
 
           {/* Form Container */}
