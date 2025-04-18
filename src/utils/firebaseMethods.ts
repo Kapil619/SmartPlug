@@ -278,3 +278,22 @@ export const fetchDailyAggregates = async (userId: string, deviceId: string) => 
         return { barData: [], lineData: [] };
     }
 };
+
+export const fetchWifiCredentials = async (deviceId: string) => {
+    const userId = FIREBASE_AUTH.currentUser?.uid;
+    if (!userId) throw new Error("User not authenticated");
+    const wifiRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/wifi`);
+    const snapshot = await get(wifiRef);
+    if (snapshot.exists()) {
+        return snapshot.val();
+    }
+    return { ssid: "", password: "" };
+};
+
+// Save WiFi credentials for a device
+export const saveWifiCredentials = async (deviceId: string, ssid: string, password: string) => {
+    const userId = FIREBASE_AUTH.currentUser?.uid;
+    if (!userId) throw new Error("User not authenticated");
+    const wifiRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/wifi`);
+    await set(wifiRef, { ssid, password });
+};

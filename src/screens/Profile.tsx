@@ -18,6 +18,7 @@ import { setAppLanguage } from "../localization/i18n";
 import { profileStyles } from "../styles/profileStyles";
 import { getUserProfile, logOut } from "../utils/firebaseMethods";
 import { UserProfile } from "../utils/types";
+import WifiCredentialsModal from "../components/WifiModal";
 
 export default function Profile() {
   const navigation = useNavigation<any>();
@@ -29,6 +30,8 @@ export default function Profile() {
   const [premiumModalVisible, setPremiumModalVisible] = useState(false);
   const { i18n, t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
+  const [wifiModalVisible, setWifiModalVisible] = useState(false);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
   const checkForUpdates = async () => {
     try {
@@ -249,6 +252,15 @@ export default function Profile() {
                         color="#007aff"
                       />
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ marginLeft: 10 }}
+                      onPress={() => {
+                        setSelectedDeviceId(device.deviceCode);
+                        setWifiModalVisible(true);
+                      }}
+                    >
+                      <Ionicons name="wifi-outline" size={22} color="green" />
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <View style={profileStyles.statsRow}>
@@ -285,6 +297,13 @@ export default function Profile() {
         visible={premiumModalVisible}
         onClose={() => setPremiumModalVisible(false)}
       />
+      {selectedDeviceId && (
+        <WifiCredentialsModal
+          visible={wifiModalVisible}
+          onClose={() => setWifiModalVisible(false)}
+          deviceId={selectedDeviceId}
+        />
+      )}
     </LinearGradient>
   );
 }
