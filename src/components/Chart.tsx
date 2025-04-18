@@ -39,6 +39,7 @@ const DailyChart: React.FC<DailyChartProps> = ({
         fontWeight: "500",
         color: "#637381",
       }}
+      showValuesAsTopLabel
       data={barChartData}
       width={screenWidth}
       height={200}
@@ -54,7 +55,6 @@ const DailyChart: React.FC<DailyChartProps> = ({
       backgroundColor={"#F2F2F2"}
       noOfSections={5}
       isAnimated={true}
-      isThreeD={true}
     />
   ) : (
     <LineChart
@@ -62,6 +62,7 @@ const DailyChart: React.FC<DailyChartProps> = ({
       areaChart
       data={lineChartData}
       width={screenWidth}
+      showValuesAsDataPointsText
       height={200}
       startOpacity={0.8}
       backgroundColor={"#F2F2F2"}
@@ -74,9 +75,12 @@ const DailyChart: React.FC<DailyChartProps> = ({
       color="skyblue"
       hideDataPoints
       showArrows={true}
+      focusEnabled
+      showDataPointOnFocus
+      showStripOnFocus
+      showTextOnFocus={true}
       thickness={2}
       noOfSections={5}
-      animateTogether={true}
       isAnimated={true}
       animateOnDataChange={true}
     />

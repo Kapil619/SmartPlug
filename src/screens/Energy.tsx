@@ -115,6 +115,21 @@ const Energy: React.FC = () => {
               (kWh)
             </Text>
             <BarChart
+              showValuesAsTopLabel
+              renderTooltip={(value: any) => {
+                return (
+                  <View
+                    style={{
+                      backgroundColor: "#fff",
+                      padding: 10,
+                      borderRadius: 5,
+                      elevation: 4,
+                    }}
+                  >
+                    <Text style={{ fontWeight: "bold" }}>{value}</Text>
+                  </View>
+                );
+              }}
               data={chartData}
               width={width - 120}
               height={250}
