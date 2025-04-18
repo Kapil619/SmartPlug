@@ -82,6 +82,13 @@ export const initializeDeviceRealtimeData = async (userId: string, deviceId: str
                 [currentMonthKey]: { EnergyConsumed: 0, BillingAmount: 0 },
             },
         },
+        wifi: {
+            ssid: "",
+            password: "",
+        },
+        relay: {
+            state: "ON",
+        },
     };
 
     await set(ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}`), structure);

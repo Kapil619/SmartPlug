@@ -66,6 +66,13 @@ export interface DeviceRealtimeStructure {
         weekly: { [week: string]: { EnergyConsumed: number; BillingAmount: number } };
         monthly: { [month: string]: { EnergyConsumed: number; BillingAmount: number } };
     };
+    relay: {
+        state: "ON" | "OFF";
+    }
+    wifi: {
+        ssid: string;
+        password: string;
+    }
 }
 
 export interface DeviceMetadata {
