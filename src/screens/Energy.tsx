@@ -115,30 +115,20 @@ const Energy: React.FC = () => {
               (kWh)
             </Text>
             <BarChart
-              showValuesAsTopLabel
-              renderTooltip={(value: any) => {
-                return (
-                  <View
-                    style={{
-                      backgroundColor: "#fff",
-                      padding: 10,
-                      borderRadius: 5,
-                      elevation: 4,
-                    }}
-                  >
-                    <Text style={{ fontWeight: "bold" }}>{value}</Text>
-                  </View>
-                );
+              topLabelTextStyle={{
+                fontWeight: 800,
               }}
+              maxValue={Math.max(...chartData.map((item) => item.value + 10))}
+              showValuesAsTopLabel
               data={chartData}
-              width={width - 120}
+              width={width - 150}
               height={250}
               spacing={40}
               barWidth={40}
               xAxisColor="#637381"
               yAxisLabelSuffix="kWh"
               yAxisTextStyle={{
-                fontWeight: "500",
+                fontWeight: "800",
                 color: "#637381",
               }}
               initialSpacing={20}
@@ -153,7 +143,6 @@ const Energy: React.FC = () => {
                 fontWeight: "bold",
               }}
               isAnimated={true}
-              isThreeD={true}
             />
           </View>
 
@@ -163,7 +152,7 @@ const Energy: React.FC = () => {
             <Text style={styles.costTitle}>
               {t("screens.energy.totalCost")}
             </Text>
-            <Text style={styles.costValue}>₹ {totalCost}</Text>
+            <Text style={styles.costValue}>₹ {totalCost.toFixed(2)}</Text>
             <Text style={styles.costSubtitle}>
               {t("screens.energy.costSubtitle")}
             </Text>

@@ -24,7 +24,11 @@ import { useTimer } from "../context/TimerContext";
 import { useDeviceData } from "../hooks/useDeviceData";
 import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
-import { setDeviceResetFlag, toggleRelayState } from "../utils/firebaseMethods";
+import {
+  setDeviceResetFlag,
+  toggleRelayState,
+  updateDailyAggregate,
+} from "../utils/firebaseMethods";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
 
 const { width } = Dimensions.get("window");
@@ -85,6 +89,9 @@ const DeviceDetail: React.FC = () => {
     });
   }, [latestData?.EnergyConsumed]);
 
+  useEffect(() => {
+    updateDailyAggregate(currentUser.uid, deviceID);
+  }, [deviceID]);
   return (
     <SafeAreaView style={deviceDetailstyles.container}>
       <Header title={t("screens.deviceDetail.header")} />

@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
-import { get, ref, set } from "firebase/database";
+import { get, ref, set, update } from "firebase/database";
 import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIREBASE_DB, FIREBASE_RTDB } from "../../firebaseConfig";
 import { getDayOfWeek, getWeekKey } from "./helper";
@@ -304,4 +304,51 @@ export const saveWifiCredentials = async (deviceId: string, ssid: string, passwo
 export const setDeviceResetFlag = async (userId: string, deviceId: string) => {
     const resetRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/reset/resetRequired`);
     await set(resetRef, true);
+};
+
+export const updateDailyAggregate = async (userId: string, deviceId: string) => {
+    try {
+        const latestRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/latest`);
+        const aggregatesRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/aggregates`);
+
+        // Fetch the latest data
+        const latestSnapshot = await get(latestRef);
+        if (!latestSnapshot.exists()) return;
+
+        const latestData = latestSnapshot.val();
+        const { EnergyConsumed, BillingAmount, formatted_timestamp } = latestData;
+        if (!formatted_timestamp || isNaN(Date.parse(formatted_timestamp.replace(" ", "T")))) {
+            console.error("Invalid timestamp:", formatted_timestamp);
+            return;
+        }
+
+        // Parse the date part for the daily key
+        const date = new Date(formatted_timestamp.replace(" ", "T"));
+        const dayKey = date.toISOString().slice(0, 10); // "2025-04-18"
+
+        // Get previous day's key
+        const prevDate = new Date(date);
+        prevDate.setDate(prevDate.getDate() - 1);
+        const prevDayKey = prevDate.toISOString().slice(0, 10);
+
+        // Fetch previous day's aggregate
+        const aggregatesSnapshot = await get(aggregatesRef);
+        const aggregates = aggregatesSnapshot.exists() ? aggregatesSnapshot.val() : {};
+        const prevDayData = aggregates.daily?.[prevDayKey] || { EnergyConsumed: 0, BillingAmount: 0 };
+
+        // Calculate daily increment
+        const dailyEnergy = EnergyConsumed - (prevDayData.EnergyConsumed || 0);
+        const dailyCost = BillingAmount - (prevDayData.BillingAmount || 0);
+
+        // Update the daily aggregate for this day
+        const updates: any = {};
+        updates[`daily/${dayKey}`] = {
+            EnergyConsumed: dailyEnergy,
+            BillingAmount: dailyCost,
+        };
+
+        await update(aggregatesRef, updates);
+    } catch (error) {
+        console.error("Error updating daily aggregate:", error);
+    }
 };
