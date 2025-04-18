@@ -123,7 +123,9 @@
       "resetting": "Resetting...",
       "resetHint": "Reset energy and cost counters for this device.",
       "expand": "Expand",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "powerOn": "Power ON",
+      "powerOff": "Power OFF"
     },
     "addDevice": {
       "headerTitle": "Add a New Device",

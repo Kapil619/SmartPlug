@@ -193,22 +193,51 @@ const DeviceDetail: React.FC = () => {
         />
 
         {/* Power Toggle */}
-        <View style={deviceDetailstyles.powerContainer}>
-          <Text style={deviceDetailstyles.powerLabel}>
-            {t("screens.deviceDetail.power")}
-          </Text>
+        <View
+          style={[
+            deviceDetailstyles.powerContainer,
+            {
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            },
+          ]}
+        >
           <TouchableOpacity
             onPress={() => {
               toggleRelayState(currentUser.uid, deviceID);
             }}
-            style={deviceDetailstyles.powerButton}
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 35,
+              backgroundColor: relayState === "ON" ? "#4CAF50" : "#E74C3C",
+              alignItems: "center",
+              justifyContent: "center",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 4,
+              elevation: 4,
+              marginBottom: 8,
+            }}
+            activeOpacity={0.8}
           >
-            <Ionicons
-              name={relayState === "ON" ? "power-outline" : "power-sharp"}
-              size={28}
-              color={relayState === "ON" ? "#4CAF50" : "red"}
-            />
+            <Ionicons name="power" size={38} color="#fff" />
           </TouchableOpacity>
+          <Text
+            style={{
+              color: relayState === "ON" ? "#4CAF50" : "#E74C3C",
+              fontWeight: "bold",
+              fontSize: 16,
+              marginTop: 2,
+              letterSpacing: 1,
+            }}
+          >
+            {relayState === "ON"
+              ? t("screens.deviceDetail.powerOn") || "ON"
+              : t("screens.deviceDetail.powerOff") || "OFF"}
+          </Text>
         </View>
 
         {/* Runtime / Usage Card */}
