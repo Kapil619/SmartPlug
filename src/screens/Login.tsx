@@ -129,7 +129,7 @@ export default function Login() {
               ]}
             >
               <View style={authStyles.inputRow}>
-                <Ionicons name="mail-outline" size={20} color="#007aff" />
+                <Ionicons name="mail-outline" size={20} color="#0B60B0" />
                 <TextInput
                   style={authStyles.input}
                   placeholder={t("screens.login.emailPlaceholder")}
@@ -145,7 +145,7 @@ export default function Login() {
                 <Ionicons
                   name="lock-closed-outline"
                   size={20}
-                  color="#007aff"
+                  color="#0B60B0"
                 />
                 <TextInput
                   style={authStyles.input}

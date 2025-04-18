@@ -83,7 +83,7 @@ export const authStyles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: "#007aff",
+        backgroundColor: "#83B4FF",
         paddingVertical: 10,
         borderRadius: 10,
         alignItems: "center",
@@ -113,7 +113,7 @@ export const authStyles = StyleSheet.create({
         alignItems: "center",
     },
     linkText: {
-        color: "#007aff",
+        color: "#83B4FF",
         fontSize: 16,
     },
     languageBtn: {
@@ -123,8 +123,8 @@ export const authStyles = StyleSheet.create({
         borderRadius: 20,
         marginTop: 15,
         borderWidth: 1,
-        borderColor: "#007aff",
+        borderColor: "#40A2D8",
         alignSelf: "center",
     },
-    languageBtnText: { color: "#007aff", fontSize: 16, fontWeight: "bold" }
+    languageBtnText: { color: "#83B4FF", fontSize: 16, fontWeight: "bold" }
 });

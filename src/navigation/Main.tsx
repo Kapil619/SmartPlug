@@ -51,7 +51,15 @@ const TabNavigator = () => {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarLabel: t(`screens.tabs.${route.name.toLowerCase()}`), // Use translation for tab labels
+        tabBarLabel: t(`screens.tabs.${route.name.toLowerCase()}`),
+        tabBarActiveTintColor: "#2E3A45", // dark gray for active
+        tabBarInactiveTintColor: "#637381", // muted gray for inactive
+        tabBarStyle: {
+          backgroundColor: "#F7F9FC", // light background
+          borderTopWidth: 0,
+          elevation: 10,
+          height: 60,
+        },
       })}
     >
       <Tab.Screen

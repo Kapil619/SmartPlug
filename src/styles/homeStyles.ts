@@ -100,7 +100,7 @@ export const homeStyles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        backgroundColor: "#3E7BFA",
+        backgroundColor: "#9EC6F3",
         alignItems: "center",
         justifyContent: "center",
         elevation: 6,

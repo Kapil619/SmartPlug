@@ -47,7 +47,7 @@ const StatePicker: React.FC<StatePickerProps> = ({
 
   return (
     <>
-      <Ionicons name="location-outline" size={20} color="#007aff" />
+      <Ionicons name="location-outline" size={20} color="#83B4FF" />
       <Picker
         selectedValue={selectedState}
         onValueChange={onValueChange}

@@ -156,7 +156,7 @@ export default function Signup() {
               style={authStyles.formContainer}
             >
               <View style={authStyles.inputRow}>
-                <Ionicons name="person-outline" size={20} color="#007aff" />
+                <Ionicons name="person-outline" size={20} color="#0B60B0" />
                 <TextInput
                   style={authStyles.input}
                   placeholder={t("screens.signup.namePlaceholder")}
@@ -169,7 +169,7 @@ export default function Signup() {
               </View>
               {/* Email */}
               <View style={authStyles.inputRow}>
-                <Ionicons name="mail-outline" size={20} color="#007aff" />
+                <Ionicons name="mail-outline" size={20} color="#0B60B0" />
                 <TextInput
                   style={authStyles.input}
                   placeholder={t("screens.signup.emailPlaceholder")}
@@ -186,7 +186,7 @@ export default function Signup() {
                 <Ionicons
                   name="lock-closed-outline"
                   size={20}
-                  color="#007aff"
+                  color="#0B60B0"
                 />
                 <TextInput
                   style={authStyles.input}
@@ -200,7 +200,7 @@ export default function Signup() {
 
               {/* Special Code */}
               <View style={authStyles.inputRow}>
-                <Ionicons name="key-outline" size={20} color="#007aff" />
+                <Ionicons name="key-outline" size={20} color="#0B60B0" />
                 <TextInput
                   style={authStyles.input}
                   placeholder={t("screens.signup.deviceCodePlaceholder")}
@@ -216,7 +216,7 @@ export default function Signup() {
                   style={{ marginRight: 10 }}
                 />
                 <TouchableOpacity onPress={handleScanQRCode}>
-                  <Ionicons name="qr-code-outline" size={24} color="#007aff" />
+                  <Ionicons name="qr-code-outline" size={24} color="#0A97B0" />
                 </TouchableOpacity>
               </View>
 

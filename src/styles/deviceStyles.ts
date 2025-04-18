@@ -77,7 +77,7 @@ export const deviceStyles = StyleSheet.create({
         width: 56,
         height: 56,
         borderRadius: 28,
-        backgroundColor: "#3E7BFA",
+        backgroundColor: "#9EC6F3",
         alignItems: "center",
         justifyContent: "center",
         elevation: 6,
@@ -108,13 +108,13 @@ export const deviceStyles = StyleSheet.create({
         marginRight: 10,
     },
     devicePickerItemActive: {
-        backgroundColor: "#007aff",
+        backgroundColor: "#83B4FF",
     },
     devicePickerText: {
-        color: "#007aff",
+        color: "gray",
     },
     devicePickerTextActive: {
-        color: "#fff",
+        color: "#000",
     },
     label: {
         fontSize: 14,

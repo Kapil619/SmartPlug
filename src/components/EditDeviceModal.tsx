@@ -167,13 +167,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   saveButton: {
-    backgroundColor: "#007aff",
+    backgroundColor: "#83B4FF",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
   },
   buttonText: {
-    color: "#fff",
+    color: "#000",
     fontSize: 16,
     fontWeight: "600",
   },

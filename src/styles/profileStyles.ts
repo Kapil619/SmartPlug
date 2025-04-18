@@ -214,7 +214,7 @@ export const profileStyles = StyleSheet.create({
         borderRadius: 20,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: "#007aff",
+        borderColor: "#fff",
     },
     languageButton: {
         paddingVertical: 6,
@@ -222,7 +222,7 @@ export const profileStyles = StyleSheet.create({
         backgroundColor: "transparent",
     },
     languageButtonActive: {
-        backgroundColor: "#007aff",
+        backgroundColor: "#578FCA",
     },
     languageButtonText: {
         fontSize: 14,

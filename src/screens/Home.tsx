@@ -135,7 +135,7 @@ const Home = () => {
           }}
           style={homeStyles.floatingButton}
         >
-          <Ionicons name="add" size={30} color="#fff" />
+          <Ionicons name="add" size={30} color="#000" />
         </TouchableOpacity>
       </SafeAreaView>
     </LinearGradient>

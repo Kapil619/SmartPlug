@@ -33,7 +33,7 @@ const AppliancePicker: React.FC<AppliancePickerProps> = ({
       </Picker>
       {selectedAppliance === "Other" && (
         <View style={addDeviceStyles.inputRow}>
-          <Ionicons name="pricetag-outline" size={20} color="#007aff" />
+          <Ionicons name="pricetag-outline" size={20} color="#83B4FF" />
           <TextInput
             style={addDeviceStyles.input}
             placeholder="Enter custom appliance type"

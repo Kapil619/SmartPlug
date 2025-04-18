@@ -129,7 +129,7 @@ export const deviceDetailstyles = StyleSheet.create({
     },
     quickActionLabel: {
         fontSize: 14,
-        color: "#007aff",
+        color: "#83B4FF",
         marginTop: 5,
     },
     settingsCard: {
@@ -179,7 +179,7 @@ export const deviceDetailstyles = StyleSheet.create({
         borderRadius: 30,
     },
     usageIconActive: {
-        backgroundColor: "#007aff",
+        backgroundColor: "#83B4FF",
     },
     usageCardTitle: {
         fontSize: 16,

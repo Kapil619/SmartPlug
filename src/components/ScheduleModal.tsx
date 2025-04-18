@@ -198,7 +198,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[deviceStyles.modalButton, { backgroundColor: "#007aff" }]}
+              style={[deviceStyles.modalButton, { backgroundColor: "#83B4FF" }]}
               onPress={handleSave}
             >
               <Text style={[deviceStyles.modalButtonText, { color: "#fff" }]}>

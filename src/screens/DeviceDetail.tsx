@@ -113,7 +113,7 @@ const DeviceDetail: React.FC = () => {
                   onPress={() => setEditModalVisible(true)}
                   style={deviceDetailstyles.editIcon}
                 >
-                  <Ionicons name="pencil-outline" size={20} color="#007aff" />
+                  <Ionicons name="pencil-outline" size={20} color="#6EACDA" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -380,14 +380,14 @@ const DeviceDetail: React.FC = () => {
               onPress={() => setTimerModalVisible(true)}
               style={deviceDetailstyles.quickActionItem}
             >
-              <Ionicons name="time-outline" size={24} color="#007aff" />
+              <Ionicons name="time-outline" size={24} color="#83B4FF" />
               <Text style={deviceDetailstyles.quickActionLabel}>
                 {t("screens.deviceDetail.timer")}
               </Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity style={deviceDetailstyles.quickActionItem}>
-            <Ionicons name="airplane-outline" size={24} color="#007aff" />
+            <Ionicons name="airplane-outline" size={24} color="#83B4FF" />
             <Text style={deviceDetailstyles.quickActionLabel}>
               {t("screens.deviceDetail.away")}
             </Text>

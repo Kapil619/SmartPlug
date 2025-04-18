@@ -86,7 +86,7 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
                   <Ionicons
                     name="stats-chart"
                     size={24}
-                    color="#007aff"
+                    color="#9EC6F3"
                     style={componentStyles.headerIcon}
                   />
                   <Text style={componentStyles.title}>
@@ -150,7 +150,7 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
             key={i}
             name="ellipse"
             size={8}
-            color={i === activeIndex ? "#007aff" : "#ccc"}
+            color={i === activeIndex ? "#9EC6F3" : "#ccc"}
             style={{ marginHorizontal: 3 }}
           />
         ))}
