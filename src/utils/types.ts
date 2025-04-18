@@ -73,6 +73,9 @@ export interface DeviceRealtimeStructure {
         ssid: string;
         password: string;
     }
+    reset: {
+        resetRequired: boolean;
+    }
 }
 
 export interface DeviceMetadata {

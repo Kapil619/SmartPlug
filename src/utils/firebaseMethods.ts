@@ -89,6 +89,9 @@ export const initializeDeviceRealtimeData = async (userId: string, deviceId: str
         relay: {
             state: "ON",
         },
+        reset: {
+            resetRequired: false,
+        },
     };
 
     await set(ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}`), structure);
@@ -299,6 +302,6 @@ export const saveWifiCredentials = async (deviceId: string, ssid: string, passwo
 };
 
 export const setDeviceResetFlag = async (userId: string, deviceId: string) => {
-    const resetRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/latest/resetRequired`);
+    const resetRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/reset/resetRequired`);
     await set(resetRef, true);
 };
