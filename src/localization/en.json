@@ -109,7 +109,8 @@
       "aggregatedConsumption": "Device Aggregated Consumption",
       "energy": "Energy (kWh)",
       "cost": "Cost (₹)",
-      "activeTime": "Active Time",
+      "currentUsage": "Current Usage",
+      "voltageUsage": "Voltage Usage",
       "energyOverview": "Energy Overview",
       "costOverview": "Cost Overview",
       "timerActive": "Timer Active",
@@ -120,7 +121,9 @@
       "support": "Support",
       "resetDevice": "Reset Device",
       "resetting": "Resetting...",
-      "resetHint": "Reset energy and cost counters for this device."
+      "resetHint": "Reset energy and cost counters for this device.",
+      "expand": "Expand",
+      "collapse": "Collapse"
     },
     "addDevice": {
       "headerTitle": "Add a New Device",

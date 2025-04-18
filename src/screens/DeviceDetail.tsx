@@ -39,12 +39,18 @@ const DeviceDetail: React.FC = () => {
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   const deviceLocation = device.location || "Unknown Location";
   const [relayState, setRelayState] = useState<string>("OFF");
-  const [aggregated, setAggregated] = useState({ energy: 0, cost: 0 });
+  const [aggregated, setAggregated] = useState({
+    energy: 0,
+    cost: 0,
+    current: 0,
+    voltage: 0,
+  });
   const { latestData, dailyUsage } = useDeviceData(currentUser.uid, deviceID);
   const metadata = useUserData(currentUser.uid, device.id);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const { t } = useTranslation(); // Initialize translation hook
   const [resetting, setResetting] = useState(false);
+  const [showMoreStats, setShowMoreStats] = useState(false);
 
   useEffect(() => {
     const relayRef = ref(
@@ -74,6 +80,8 @@ const DeviceDetail: React.FC = () => {
     setAggregated({
       energy: latestData?.EnergyConsumed || 0,
       cost: latestData?.BillingAmount || 0,
+      current: latestData?.Current || 0,
+      voltage: latestData?.Voltage || 0,
     });
   }, [latestData?.EnergyConsumed]);
 
@@ -208,32 +216,70 @@ const DeviceDetail: React.FC = () => {
           <Text style={deviceDetailstyles.runtimeCardTitle}>
             {t("screens.deviceDetail.aggregatedConsumption")}
           </Text>
-          <View style={deviceDetailstyles.runtimeStats}>
-            <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>
-                {aggregated.energy}
-              </Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>
-                {t("screens.deviceDetail.energy")}
-              </Text>
+          <View>
+            <View style={deviceDetailstyles.runtimeStats}>
+              <View style={styles.runtimeRow}>
+                <Text style={deviceDetailstyles.runtimeValue}>
+                  {aggregated.energy.toFixed(2)}
+                </Text>
+                <Text style={deviceDetailstyles.runtimeLabel}>
+                  {t("screens.deviceDetail.energy")}
+                </Text>
+              </View>
+              <View style={deviceDetailstyles.divider} />
+              <View style={styles.runtimeRow}>
+                <Text style={deviceDetailstyles.runtimeValue}>
+                  {aggregated.cost.toFixed(3)}
+                </Text>
+                <Text style={deviceDetailstyles.runtimeLabel}>
+                  {t("screens.deviceDetail.cost")}
+                </Text>
+              </View>
             </View>
-            <View style={deviceDetailstyles.divider} />
-            <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>
-                {aggregated.cost.toFixed(3)}
-              </Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>
-                {t("screens.deviceDetail.cost")}
-              </Text>
-            </View>
-            <View style={deviceDetailstyles.divider} />
+            {/* Expand/Collapse Button */}
 
-            <View style={styles.runtimeRow}>
-              <Text style={deviceDetailstyles.runtimeValue}>--</Text>
-              <Text style={deviceDetailstyles.runtimeLabel}>
-                {t("screens.deviceDetail.activeTime")}
+            {/* Second row: Current & Voltage */}
+            {showMoreStats && (
+              <View style={deviceDetailstyles.runtimeStats}>
+                <View style={styles.runtimeRow}>
+                  <Text style={deviceDetailstyles.runtimeValue}>
+                    {aggregated.current.toFixed(2)}
+                  </Text>
+                  <Text style={deviceDetailstyles.runtimeLabel}>
+                    {t("screens.deviceDetail.currentUsage")}
+                  </Text>
+                </View>
+                <View style={deviceDetailstyles.divider} />
+                <View style={styles.runtimeRow}>
+                  <Text style={deviceDetailstyles.runtimeValue}>
+                    {aggregated.voltage.toFixed(2)}
+                  </Text>
+                  <Text style={deviceDetailstyles.runtimeLabel}>
+                    {t("screens.deviceDetail.voltageUsage")}
+                  </Text>
+                </View>
+              </View>
+            )}
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                marginTop: 6,
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+              onPress={() => setShowMoreStats((prev) => !prev)}
+            >
+              <Text style={{ color: "gray", fontWeight: "500", fontSize: 13 }}>
+                {showMoreStats
+                  ? t("screens.deviceDetail.collapse") || "Show Less"
+                  : t("screens.deviceDetail.expand") || "Show More"}
               </Text>
-            </View>
+              <Ionicons
+                name={showMoreStats ? "chevron-up" : "chevron-down"}
+                size={18}
+                color="gray"
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -343,6 +389,6 @@ const cardWidth = width - 40; // for consistent card sizing if needed
 const styles = StyleSheet.create({
   runtimeRow: {
     alignItems: "center",
-    width: (cardWidth - 20) / 3, // 3 columns in the row
+    width: (cardWidth - 10) / 2, // 3 columns in the row
   },
 });

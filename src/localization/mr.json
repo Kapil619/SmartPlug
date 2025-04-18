@@ -109,7 +109,8 @@
       "aggregatedConsumption": "उपकरण एकत्रित वापर",
       "energy": "ऊर्जा (kWh)",
       "cost": "खर्च (₹)",
-      "activeTime": "सक्रिय वेळ",
+      "currentUsage": "सध्याचा वापर",
+      "voltageUsage": "व्होल्टेज वापर",
       "energyOverview": "ऊर्जा आढावा ",
       "costOverview": "खर्च आढावा ",
       "timerActive": "टायमर सक्रिय",
@@ -120,7 +121,9 @@
       "support": "मदत",
       "resetDevice": "उपकरण रीसेट करा",
       "resetting": "रीसेट करत आहे...",
-      "resetHint": "या उपकरणासाठी ऊर्जा आणि खर्च काउंटर रीसेट करा."
+      "resetHint": "या उपकरणासाठी ऊर्जा आणि खर्च काउंटर रीसेट करा.",
+      "expand": "विस्तार",
+      "collapse": "कोलॅप्स"
     },
     "addDevice": {
       "headerTitle": "नवीन उपकरण जोडा",

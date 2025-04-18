@@ -93,6 +93,7 @@ export const deviceDetailstyles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        marginVertical: 8,
     },
     runtimeValue: {
         fontSize: 20,
