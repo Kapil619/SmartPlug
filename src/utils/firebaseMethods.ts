@@ -297,3 +297,8 @@ export const saveWifiCredentials = async (deviceId: string, ssid: string, passwo
     const wifiRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/wifi`);
     await set(wifiRef, { ssid, password });
 };
+
+export const setDeviceResetFlag = async (userId: string, deviceId: string) => {
+    const resetRef = ref(FIREBASE_RTDB, `users/${userId}/devices/${deviceId}/latest/resetRequired`);
+    await set(resetRef, true);
+};

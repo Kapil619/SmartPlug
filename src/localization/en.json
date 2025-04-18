@@ -117,7 +117,10 @@
       "away": "Away",
       "helpFeedback": "Help & Feedback",
       "supportSubtitle": "Get support or submit your feedback",
-      "support": "Support"
+      "support": "Support",
+      "resetDevice": "Reset Device",
+      "resetting": "Resetting...",
+      "resetHint": "Reset energy and cost counters for this device."
     },
     "addDevice": {
       "headerTitle": "Add a New Device",

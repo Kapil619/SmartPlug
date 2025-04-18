@@ -4,6 +4,7 @@ import { useRoute } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { onValue, ref } from "firebase/database";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next"; // Import translation hook
 import {
   Dimensions,
   Image,
@@ -23,9 +24,8 @@ import { useTimer } from "../context/TimerContext";
 import { useDeviceData } from "../hooks/useDeviceData";
 import { useUserData } from "../hooks/useUserData";
 import { deviceDetailstyles } from "../styles/deviceDetailStyles";
-import { toggleRelayState } from "../utils/firebaseMethods";
+import { setDeviceResetFlag, toggleRelayState } from "../utils/firebaseMethods";
 import { DeviceDetailNavigationProp } from "../utils/navigationTypes";
-import { useTranslation } from "react-i18next"; // Import translation hook
 
 const { width } = Dimensions.get("window");
 
@@ -44,6 +44,7 @@ const DeviceDetail: React.FC = () => {
   const metadata = useUserData(currentUser.uid, device.id);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const { t } = useTranslation(); // Initialize translation hook
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     const relayRef = ref(
@@ -92,12 +93,14 @@ const DeviceDetail: React.FC = () => {
               <Text style={deviceDetailstyles.deviceName}>
                 {metadata?.deviceName || "Smart Switch"}
               </Text>
-              <TouchableOpacity
-                onPress={() => setEditModalVisible(true)}
-                style={deviceDetailstyles.editIcon}
-              >
-                <Ionicons name="pencil-outline" size={20} color="#007aff" />
-              </TouchableOpacity>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <TouchableOpacity
+                  onPress={() => setEditModalVisible(true)}
+                  style={deviceDetailstyles.editIcon}
+                >
+                  <Ionicons name="pencil-outline" size={20} color="#007aff" />
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={deviceDetailstyles.locationRow}>
               <Ionicons name="location-outline" size={16} color="green" />
@@ -111,6 +114,51 @@ const DeviceDetail: React.FC = () => {
                 {metadata?.appliance || "Unknown Appliance"}
               </Text>
             </View>
+            <TouchableOpacity
+              onPress={async () => {
+                setResetting(true);
+                await setDeviceResetFlag(currentUser.uid, deviceID);
+                setResetting(false);
+              }}
+              disabled={resetting}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: "green",
+                borderRadius: 20,
+                paddingVertical: 6,
+                paddingHorizontal: 14,
+                backgroundColor: "#fff",
+                opacity: resetting ? 0.6 : 1,
+                marginTop: 8,
+                alignSelf: "flex-start", // ensures it only takes needed width
+              }}
+              accessibilityLabel={t("screens.deviceDetail.resetDevice")}
+            >
+              <Text
+                style={{
+                  color: "green",
+                  fontSize: 14,
+                  fontWeight: "800",
+                  marginRight: 8,
+                }}
+              >
+                {resetting
+                  ? t("screens.deviceDetail.resetting") || "Resetting..."
+                  : t("screens.deviceDetail.resetDevice") || "Reset Device"}
+              </Text>
+              <Ionicons
+                name={resetting ? "refresh-circle" : "refresh"}
+                size={22}
+                color="green"
+                style={
+                  resetting
+                    ? { marginLeft: 4, transform: [{ rotate: "90deg" }] }
+                    : {}
+                }
+              />
+            </TouchableOpacity>
             {activeTimers[deviceID] && (
               <View style={deviceDetailstyles.timerInfoContainer}>
                 <View style={{ flex: 1, marginLeft: 10 }}>

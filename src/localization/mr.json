@@ -117,7 +117,10 @@
       "away": "दूर",
       "helpFeedback": "मदत आणि अभिप्राय",
       "supportSubtitle": "मदत मिळवा किंवा तुमचा अभिप्राय सबमिट करा",
-      "support": "मदत"
+      "support": "मदत",
+      "resetDevice": "उपकरण रीसेट करा",
+      "resetting": "रीसेट करत आहे...",
+      "resetHint": "या उपकरणासाठी ऊर्जा आणि खर्च काउंटर रीसेट करा."
     },
     "addDevice": {
       "headerTitle": "नवीन उपकरण जोडा",
