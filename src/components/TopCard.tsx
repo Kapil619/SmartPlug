@@ -14,7 +14,7 @@ import { TopCardProps } from "../utils/types";
 import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
-const cardWidth = width - 40;
+const cardWidth = width - 45;
 
 const TopCard: React.FC<TopCardProps> = ({ data }) => {
   const scrollRef = useRef<ScrollView>(null);
@@ -73,11 +73,12 @@ const TopCard: React.FC<TopCardProps> = ({ data }) => {
         onMomentumScrollEnd={handleScroll}
         snapToInterval={cardWidth}
         decelerationRate="fast"
+        contentContainerStyle={{ gap: 5 }} // <-- Add this line
       >
         {data.map((item, index) => (
           <View
             key={index}
-            style={[componentStyles.slide, { width: cardWidth }]}
+            style={[componentStyles.slide, { width: cardWidth }]} // <-- No margin here
           >
             <View style={componentStyles.contentRow}>
               <View style={componentStyles.infoColumn}>
