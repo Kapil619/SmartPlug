@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { applianceOptions, locationOptions } from "../utils/data";
+import { setDeviceResetFlag } from "../utils/firebaseMethods"; // Import the reset flag function
 import AppliancePicker from "./AppliancePicker";
 import LocationPicker from "./LocationPicker";
 
@@ -43,21 +44,26 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({
       setCustomLocation("");
     }
   }, [metadata]);
+
   const handleSave = async () => {
     try {
       const deviceCode = metadata.deviceCode;
       const updatedFields: any = {};
+      let applianceChanged = false;
+
       if (deviceName !== metadata.deviceName) {
         updatedFields["deviceName"] = deviceName;
       }
       if (applianceType !== metadata.appliance) {
         updatedFields["appliance"] =
           applianceType === "Other" ? customAppliance : applianceType;
+        applianceChanged = true; // Mark that the appliance was changed
       }
       if (location !== metadata.location) {
         updatedFields["location"] =
           location === "Other" ? customLocation : location;
       }
+
       if (Object.keys(updatedFields).length > 0) {
         await updateDoc(
           doc(FIREBASE_DB, "users", currentUser.uid, "devices", deviceCode),
@@ -68,6 +74,11 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({
             },
           }
         );
+
+        // Send the reset flag if the appliance was changed
+        if (applianceChanged) {
+          await setDeviceResetFlag(currentUser.uid, deviceCode);
+        }
       }
 
       onClose();
