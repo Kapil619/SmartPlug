@@ -16,6 +16,7 @@ export const homeStyles = StyleSheet.create({
         fontSize: 26,
         fontWeight: "semibold",
         color: "#fff",
+        marginTop: 4
     },
     headerSubtitle: {
         fontSize: 16,
