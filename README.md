@@ -42,6 +42,8 @@ EnergyIQ is a comprehensive mobile application built with React Native and Expo 
     <img src="https://github.com/user-attachments/assets/cea838ac-c55c-43db-8969-7f4ff1c09a0e" width="180" alt="Device Control Screen"/>
     <img src="https://github.com/user-attachments/assets/842c37c2-05b6-485d-be0d-e2a05f220dc5" width="180" alt="Dashboard Screen"/>&nbsp;&nbsp;
     <img src="https://github.com/user-attachments/assets/99dd135a-e04f-4c40-9917-b2f715bf84c1" width="180" alt="Analytics Screen"/>&nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/f3511acd-5847-4c26-b3e8-799e48d85d71" width="180" alt="Analytics Screen"/>&nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/6ca2a4f3-a473-43a8-a4f7-2afcbe704f69" width="180" alt="Analytics Screen"/>&nbsp;&nbsp;
   </p>
 </div>
 
