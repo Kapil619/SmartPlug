@@ -37,10 +37,11 @@ EnergyIQ is a comprehensive mobile application built with React Native and Expo 
 
 <div align="center">
   <p float="left">
-    <img src="https://github.com/user-attachments/assets/4c0fa16a-b0f9-479a-8011-a2acd19e3923" width="180" alt="Home Screen"/>&nbsp;&nbsp;
-    <img src="https://github.com/user-attachments/assets/83754792-e695-4f84-a95e-3789b213b33d" width="180" alt="Device Control Screen"/>
-    <img src="https://github.com/user-attachments/assets/4bc9f15f-9d79-40b8-a7c3-babceeef8251" width="180" alt="Dashboard Screen"/>&nbsp;&nbsp;
-    <img src="https://github.com/user-attachments/assets/0cc8f4af-dd3d-4579-9669-f02f6be45abb" width="180" alt="Analytics Screen"/>&nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/fade053d-05c7-4776-ada1-3b2cb8bf682e" width="180" alt="Home Screen"/>&nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/ad696cef-e103-47b4-8220-b3da55240b39" width="180" alt="Device Control Screen"/>
+    <img src="https://github.com/user-attachments/assets/cea838ac-c55c-43db-8969-7f4ff1c09a0e" width="180" alt="Device Control Screen"/>
+    <img src="https://github.com/user-attachments/assets/842c37c2-05b6-485d-be0d-e2a05f220dc5" width="180" alt="Dashboard Screen"/>&nbsp;&nbsp;
+    <img src="https://github.com/user-attachments/assets/99dd135a-e04f-4c40-9917-b2f715bf84c1" width="180" alt="Analytics Screen"/>&nbsp;&nbsp;
   </p>
 </div>
 
