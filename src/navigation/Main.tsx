@@ -14,6 +14,7 @@ import Profile from "../screens/Profile";
 import Devices from "../screens/Schedules";
 import Signup from "../screens/Signup";
 import Onboarding from "../screens/Onboarding";
+import About from "../screens/About"; // <-- Add this import
 
 // Navigator Declarations
 const Stack = createNativeStackNavigator();
@@ -48,17 +49,27 @@ const TabNavigator = () => {
             iconName = focused ? "flash" : "flash-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "About") {
+            iconName = focused
+              ? "information-circle"
+              : "information-circle-outline";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarLabel: t(`screens.tabs.${route.name.toLowerCase()}`),
+        tabBarLabel:
+          t(`screens.tabs.${route.name.toLowerCase()}`) || route.name,
         tabBarActiveTintColor: "#2E3A45", // dark gray for active
         tabBarInactiveTintColor: "#637381", // muted gray for inactive
         tabBarStyle: {
           backgroundColor: "#F7F9FC", // light background
           borderTopWidth: 0,
           elevation: 10,
-          height: 60,
+          height: 50,
+        },
+        tabBarLabelStyle: {
+          marginTop: -4,
+          fontWeight: "900",
+          paddingBottom: 2,
         },
       })}
     >
@@ -76,6 +87,19 @@ const TabNavigator = () => {
         name="Energy"
         component={Energy}
         options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="About"
+        component={About}
+        options={{
+          headerShown: false,
+          tabBarBadge: "!", // You can use any string or number here
+          tabBarBadgeStyle: {
+            backgroundColor: "#E74C3C", // Red badge for visibility
+            color: "#fff",
+            fontWeight: "bold",
+          },
+        }}
       />
       <Tab.Screen
         name="Profile"
