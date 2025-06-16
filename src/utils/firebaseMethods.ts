@@ -206,7 +206,7 @@ export const updateAggregates = async (userId: string, deviceId: string) => {
         const latestData = latestSnapshot.val();
         const { EnergyConsumed, BillingAmount, formatted_timestamp } = latestData;
         if (!formatted_timestamp || isNaN(Date.parse(formatted_timestamp.replace(" ", "T")))) {
-            console.error("Invalid timestamp:", formatted_timestamp);
+            console.log("Invalid timestamp:", formatted_timestamp);
             return;
         }
         // Parse the timestamp
