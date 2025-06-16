@@ -75,7 +75,7 @@ export default function Signup() {
     setIsLoading(true);
     try {
       await signUp(email, password, name, specialCode, selectedState);
-      navigation.navigate("Main", { screen: "Home" });
+      navigation.replace("Main", { screen: "Home" });
     } catch (error: any) {
       console.log("error", error);
       setErrorMessage(error.message || "Signup failed! Please try again.");

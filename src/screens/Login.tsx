@@ -43,7 +43,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       await signIn(email, password);
-      navigation.navigate("Main", { screen: "Home" });
+      navigation.replace("Main", { screen: "Home" });
       console.log("user logged in");
     } catch (error: any) {
       console.log("error", error);
